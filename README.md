@@ -7,4 +7,4 @@ Holds 3 separate folders for the required documents we will need to submit, each
 - Will need a working latex installation along with `chktex`
 
 ## Implementation
-TODO
+Java Backend and Nextjs frontend. Maven project setup in `simulation` folder.
