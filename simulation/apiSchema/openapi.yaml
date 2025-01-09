@@ -1,0 +1,37 @@
+openapi: 3.0.0
+info:
+  title: Simulation API
+  version: 1.0.0
+paths:
+  /summary:
+    get:
+      summary: Return the set of summary statistics about the junction's performance
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "./parameters.yaml"
+      responses:
+        "200":
+          description: JSON representation of statistics
+          content:
+            application/json:
+              schema: 
+                $ref: "./summary.yaml"
+        "400":
+          description: The format of request body is incorrect
+  /verify:
+    get:
+      summary: Check the submitted JSON for validity using same logic as get:/summary
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "./parameters.yaml"
+      responses:
+        "200":
+          description: Submitted paramaters are valid 
+        "400":
+          description: Submitted paramaters are not valid

@@ -1,0 +1,37 @@
+properties:
+  goingNorth:
+    type: object
+    properties:
+      meanWait:
+        type: integer
+      maxWait:
+        type: integer
+      maxQueueLength:
+        type: integer
+  goingEast:
+    type: object
+    properties:
+      meanWait:
+        type: integer
+      maxWait:
+        type: integer
+      maxQueueLength:
+        type: integer
+  goingSouth:
+    type: object
+    properties:
+      meanWait:
+        type: integer
+      maxWait:
+        type: integer
+      maxQueueLength:
+        type: integer
+  goingWest:
+    type: object
+    properties:
+      meanWait:
+        type: integer
+      maxWait:
+        type: integer
+      maxQueueLength:
+        type: integer

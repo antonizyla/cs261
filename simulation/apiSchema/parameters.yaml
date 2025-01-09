@@ -1,0 +1,79 @@
+properties:
+  flow:
+    type: object
+    properties:
+      north:
+        type: object
+        properties:
+          inflow:
+            type: integer
+          outflow:
+            type: object
+            properties:
+              north:
+                type: integer
+              east:
+                type: integer
+              south:
+                type: integer
+              west:
+                type: integer
+      east:
+        type: object
+        properties:
+          inflow:
+            type: integer
+          outflow:
+            type: object
+            properties:
+              north:
+                type: integer
+              east:
+                type: integer
+              south:
+                type: integer
+              west:
+                type: integer
+      south:
+        type: object
+        properties:
+          inflow:
+            type: integer
+          outflow:
+            type: object
+            properties:
+              north:
+                type: integer
+              east:
+                type: integer
+              south:
+                type: integer
+              west:
+                type: integer
+      west:
+        type: object
+        properties:
+          inflow:
+            type: integer
+          outflow:
+            type: object
+            properties:
+              north:
+                type: integer
+              east:
+                type: integer
+              south:
+                type: integer
+              west:
+                type: integer
+  lanes:
+    type: integer
+  leftTurnLane:
+    type: boolean
+  busLane:
+    type: boolean
+  pedestrianCrossing:
+    type: boolean
+  prioritisedDirection:
+    type: string
+    example: Westerly
