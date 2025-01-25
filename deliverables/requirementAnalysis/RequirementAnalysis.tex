@@ -105,8 +105,50 @@ and maximum queue length.
   \item The system must allow for comparison of one or more sets of input parameters against the metrics defined in section \ref{requirements_user}
 \end{itemize}
 
+\subsection{Requirement 5}
+\subsubsection{Customer Facing}
+The user must be able to select whether cars drive on the left-hand side of 
+the road or right-hand side, affecting the graphical representation of the junction
+configuration and the results of the simulation (junction efficiency metrics).
+\subsubsection{Developer Facing}
+\begin{itemize}
+  \item The system must take into account the setting determining which side of
+  the road cars drive on, affecting the calculations of the simulation and how 
+  the junction configuration is displayed on the UI.
+  \item Priority: should
+  \item Verification: switching cars from driving on the left-hand side to the 
+  right-hand side and observing a change in the graphical representation, running 
+  the simulation, then switching cars back to driving on the left-hand side and 
+  running the simulation again, observing a change in the graphical representation 
+  and a difference in the junction efficiency metrics
+  \item Traceability: Constraints & Assumptions section in the specification, included 
+  as a unique selling point of our software
+\end{itemize}
+
+\subsection{Requirement 7}
+\subsubsection{Customer Facing}
+when the simulation is ran, if a certain setting is configured, then the best 
+possible set of junction settings based on the same input traffic flows and the 
+junction efficiency metrics will be displayed alongside the other junction 
+configurations the user created.
+\subsubsection{Developer Facing}
+\begin{itemize}
+  \item when the simulation is ran, if the setting is configured, then the best 
+  possible junction configuration (and its results) for the set of input traffic 
+  flows must be determined and output along with the results of the junction 
+  configurations created by the user
+  \item Priority: could
+  \item Verification: run the simulation without the setting configured and verify 
+  no extra junction configuration is displayed, then run the simulation again with 
+  the setting configured, and verify that the extra junction configuration is displayed 
+  and that it is the most effective configuration based on its efficiency metrics
+  \item Traceability: while not directly specified, this requirement could be traced back 
+  to the Output section, where it states that the client’s main objective when using 
+  the software is “to identify the most effective configuration of the traffic junction”
+\end{itemize}
+
 \subsection{Non-functional Requirements}
-Requirement 5
+Requirement 8
 \begin{itemize}
   \item The system will show graphical representation of the junction based on the parameters entered (left turn lanes, bus lanes etc). This makes it easier for the user to understand how exactly their settings affect the design of a junction and if they are what they intended.
   \item Priority: Should-have 
