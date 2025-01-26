@@ -125,15 +125,32 @@ configuration and the results of the simulation (junction efficiency metrics).
   as a unique selling point of our software
 \end{itemize}
 
+\subsection{Requirement 6}
+\subsubsection{Developer Facing}
+\begin{itemize}
+  \item The system must take into account the distance between the entrance and exit 
+  points of each junction configuration. So, for example, a left turn from the 
+  leftmost lane of a road has a shorter distance than a right turn from the leftmost 
+  lane of the road (assuming driving on the left-hand side of the road)
+  \item Priority: should
+  \item Verification: run the simulation on a specific example where at least one of 
+  the metrics should be affected when the distance is taken into account (e.g. one 
+  road has 100vph exiting right, preventing another road’s 100vph from exiting to its
+  own right and another road’s 100vph from exiting ahead such that these two do not 
+  interfere with each other)
+  \item Traceability: Constraints & Assumptions section in the specification, included 
+  as a unique selling point of our software
+\end{itemize}
+
 \subsection{Requirement 7}
 \subsubsection{Customer Facing}
-when the simulation is ran, if a certain setting is configured, then the best 
+When the simulation is ran, if a certain setting is configured, then the best 
 possible set of junction settings based on the same input traffic flows and the 
 junction efficiency metrics will be displayed alongside the other junction 
 configurations the user created.
 \subsubsection{Developer Facing}
 \begin{itemize}
-  \item when the simulation is ran, if the setting is configured, then the best 
+  \item When the simulation is ran, if the setting is configured, then the best 
   possible junction configuration (and its results) for the set of input traffic 
   flows must be determined and output along with the results of the junction 
   configurations created by the user
