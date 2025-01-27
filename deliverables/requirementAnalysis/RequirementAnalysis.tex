@@ -166,6 +166,42 @@ configurations the user created.
 \end{itemize}
 
 \subsection{Requirement 9}
+\subsection{Developer Facing}
+\begin{itemize}
+  \item The sytem must allow users to compare the metric of different junction configurations side by side in a table or graph format.
+  \item Must
+  \item Verification: Simulate two different junction configurations with the same inputs and verify that the results are displayed in a side by side comparison
+\end{itemize}
+
+\subsection{Requirement 10}
+\subsection{Developer Facing}
+\begin{itemize}
+  \item The system must validate user input in real time, identifying invalid entries and providing clear feedback to guide the user toward correction.
+  \item Must
+  \item Verification:
+  \begin{itemize}
+      \item Enter a valid number in a traffic flow field and ensure the simulation proceeds without error.
+      \item Enter an invalid value (e.g., “abc” or a negative number) and verify that the system highlights the field, displays an error message, and prevents the 
+      simulation from starting until the error is corrected.
+      \item Leave a required field empty and ensure the system displays a warning, specifying the field that needs attention.
+  \end{itemize}
+\end{itemize}
+
+\subsection{Requirement 11}
+\subsection{Developer Facing}
+\begin{itemize}
+  \item The system must provide user-friendly error messages for invalid inputs or system failures. These messages should clearly explain the issue in
+  non-technical terms for the user, while also logging technical details for debugging purposes.
+  \item Must
+  \item Verification: 
+  \begin{itemize}
+      \item Trigger a known error, such as submitting invalid traffic flow rates, and verify that the system displays a user-friendly error message with
+      details like the affected field and suggested resolution.
+      \item Simulate a system failure and confirm that a technical error message is logged for debugging, while the user sees a generic failure message.
+  \end{itemize}
+\end{itemize}
+
+\subsection{Requirement 9}
 \subsubsection{Customer Facing}
 When the simulation is ran, the user should be able to select a certain exit and display the amount of traffic going into other exits via a sankey diagram junction.
 \subsubsection{Developer Facing}
