@@ -136,7 +136,7 @@ configuration and the results of the simulation (junction efficiency metrics).
   as a unique selling point of our software
 \end{itemize}
 
-Requirement 7
+\subsection{Requirement 7}
 \begin{itemize}
   \item The system will show graphical representation of the junction based on the parameters entered (left turn lanes, bus lanes etc). This makes it easier for the user to understand how exactly their settings affect the design of a junction and if they are what they intended.
   \item Priority: Should-have 
@@ -166,6 +166,17 @@ configurations the user created.
 \end{itemize}
 
 \subsection{Requirement 9}
+\subsubsection{Customer Facing}
+When the simulation is ran, the user should be able to select a certain exit and display the amount of traffic going into other exits via a sankey diagram junction.
+\subsubsection{Developer Facing}
+\begin{itemize}
+  \item When the simulation is ran, the user should be able to click on an exit and see the amount of traffic flowing into the other exits from the selected exit where the volume flowing in into the other exit is proportional to the parameter size
+  \item Priority: could
+  \item Verification: Select an exit and check whether the amount of traffic flowing is proportional to the input sizes. Repeat for the other exits
+  \item Traceability: while not directly specified, the requirement could be traced back to the Output section where the customer wants to be able to “identify the most effective configuration of the traffic junction”. By adding this, the user could see how the traffic flows into other exits via a graphical interface that will change depending on the user's inputs.
+\end{itemize}
+
+\subsection{Requirement 10}
 \subsection{Developer Facing}
 \begin{itemize}
   \item The sytem must allow users to compare the metric of different junction configurations side by side in a table or graph format.
@@ -173,7 +184,7 @@ configurations the user created.
   \item Verification: Simulate two different junction configurations with the same inputs and verify that the results are displayed in a side by side comparison
 \end{itemize}
 
-\subsection{Requirement 10}
+\subsection{Requirement 11}
 \subsection{Developer Facing}
 \begin{itemize}
   \item The system must validate user input in real time, identifying invalid entries and providing clear feedback to guide the user toward correction.
@@ -187,7 +198,7 @@ configurations the user created.
   \end{itemize}
 \end{itemize}
 
-\subsection{Requirement 11}
+\subsection{Requirement 12}
 \subsection{Developer Facing}
 \begin{itemize}
   \item The system must provide user-friendly error messages for invalid inputs or system failures. These messages should clearly explain the issue in
@@ -201,16 +212,7 @@ configurations the user created.
   \end{itemize}
 \end{itemize}
 
-\subsection{Requirement 9}
-\subsubsection{Customer Facing}
-When the simulation is ran, the user should be able to select a certain exit and display the amount of traffic going into other exits via a sankey diagram junction.
-\subsubsection{Developer Facing}
-\begin{itemize}
-  \item When the simulation is ran, the user should be able to click on an exit and see the amount of traffic flowing into the other exits from the selected exit where the volume flowing in into the other exit is proportional to the parameter size
-  \item Priority: could
-  \item Verification: Select an exit and check whether the amount of traffic flowing is proportional to the input sizes. Repeat for the other exits
-  \item Traceability: while not directly specified, the requirement could be traced back to the Output section where the customer wants to be able to “identify the most effective configuration of the traffic junction”. By adding this, the user could see how the traffic flows into other exits via a graphical interface that will change depending on the user's inputs.
-\end{itemize}
+
 
 \subsection{Non-functional Requirements}
 
