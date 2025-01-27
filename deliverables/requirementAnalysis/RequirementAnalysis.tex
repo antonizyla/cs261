@@ -157,13 +157,25 @@ configurations the user created.
   the software is “to identify the most effective configuration of the traffic junction”
 \end{itemize}
 
-\subsection{Non-functional Requirements}
 Requirement 8
 \begin{itemize}
   \item The system will show graphical representation of the junction based on the parameters entered (left turn lanes, bus lanes etc). This makes it easier for the user to understand how exactly their settings affect the design of a junction and if they are what they intended.
   \item Priority: Should-have 
   \item Verification: The representation can be generated as an image and then that image compared to a generated image that has been checked to be correct. This would be able to be unit tested but should also be used  with functional testing.
 \end{itemize}
+
+\subsection{Requirement 9}
+\subsubsection{Customer Facing}
+When the simulation is ran, the user should be able to select a certain exit and display the amount of traffic going into other exits via a sankey diagram junction.
+\subsubsection{Developer Facing}
+\begin{itemize}
+  \item When the simulation is ran, the user should be able to click on an exit and see the amount of traffic flowing into the other exits from the selected exit where the volume flowing in into the other exit is proportional to the parameter size
+  \item Priority: could
+  \item Verification: Select an exit and check whether the amount of traffic flowing is proportional to the input sizes. Repeat for the other exits
+  \item Traceability: while not directly specified, the requirement could be traced back to the Output section where the customer wants to be able to “identify the most effective configuration of the traffic junction”. By adding this, the user could see how the traffic flows into other exits via a graphical interface that will change depending on the user's inputs.
+\end{itemize}
+
+\subsection{Non-functional Requirements}
 
 \section{Project Philosophy}
 \subsection{Team Roles}
