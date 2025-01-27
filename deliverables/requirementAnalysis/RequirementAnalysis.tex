@@ -25,6 +25,7 @@ project management.
 
 \section{System Architecture}
 % Presents a high-level overview of the system, showing distribution of functions across system modules.
+% Make sure that the requirements are in order of priority
 
 \section{System Requirements Specification}
 % Describes functional and non-functional requirements.
@@ -135,7 +136,14 @@ configuration and the results of the simulation (junction efficiency metrics).
   as a unique selling point of our software
 \end{itemize}
 
-\subsection{Requirement 7}
+Requirement 7
+\begin{itemize}
+  \item The system will show graphical representation of the junction based on the parameters entered (left turn lanes, bus lanes etc). This makes it easier for the user to understand how exactly their settings affect the design of a junction and if they are what they intended.
+  \item Priority: Should-have 
+  \item Verification: The representation can be generated as an image and then that image compared to a generated image that has been checked to be correct. This would be able to be unit tested but should also be used  with functional testing.
+\end{itemize}
+
+\subsection{Requirement 8}
 \subsubsection{Customer Facing}
 When the simulation is ran, if a certain setting is configured, then the best 
 possible set of junction settings based on the same input traffic flows and the 
@@ -155,13 +163,6 @@ configurations the user created.
   \item Traceability: while not directly specified, this requirement could be traced back 
   to the Output section, where it states that the client’s main objective when using 
   the software is “to identify the most effective configuration of the traffic junction”
-\end{itemize}
-
-Requirement 8
-\begin{itemize}
-  \item The system will show graphical representation of the junction based on the parameters entered (left turn lanes, bus lanes etc). This makes it easier for the user to understand how exactly their settings affect the design of a junction and if they are what they intended.
-  \item Priority: Should-have 
-  \item Verification: The representation can be generated as an image and then that image compared to a generated image that has been checked to be correct. This would be able to be unit tested but should also be used  with functional testing.
 \end{itemize}
 
 \subsection{Requirement 9}
