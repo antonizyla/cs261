@@ -3,6 +3,8 @@
 \usepackage[a4paper, portrait, margin=2.5cm]{geometry}
 \usepackage{multicol}
 \usepackage{fancyhdr}
+\usepackage{xcolor}
+\usepackage{graphicx}
 % editable bits
 \title{CS261 Group 29 Planning and Design}
 \author{Add your names here}
@@ -30,6 +32,89 @@ You are also required to submit a Planning and Design Document. This should addr
 
 This list is not exhaustive and there will be other concerns which your group will want to address. You will also want to adopt trusted design patterns or design methodologies to provide a template for the actual design of your system. No one method will be favoured (by the assessors) over another, but you will be graded on the process of selecting an appropriate methodology and your use of it.
 Each group will have to submit these two short reports on tabula on Monday 3rd February 2025. Each member of the team should submit these reports along with a team contribution form for the first half of the project (see below). 
+
+\section{Team Planning}
+\subsection{Time Management}
+In our meetings we hae discussed how we are going to manage our time and have agreed to the following deadlines:
+
+\begin{itemize}
+    \item Requirement Analysis: 22/01/2025
+    \item Planning and Design: 29/01/2025
+    \item Back-End Development and Testing: 26/02/2025
+    \item Front-End Development and Testing: 26/02/2025
+    \item Dragons' Den Video: 1/03/2025
+    \item Final Report: 10/03/2025
+\end{itemize}
+
+Below you can see a Gantt chart of our planned work schedule.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\textwidth]{ganttchart.png}
+    \caption{Gantt Chart of Planned Work Schedule}
+    \label{fig:gantt_chart}
+\end{figure}
+
+
+\subsection{Risk Assessment and Management}
+We have identified the following risks and have agreed on the following mitigation strategies:
+\textbf{Risk 1:} Technology Limitations
+\begin{itemize}
+    \item Risk description: Team/Team members may be unfamiliar to some tool, libraries, or frameworks, which may cause delays or reduced performance. 
+    \item Risk Level: \textcolor{Green}{Tolerable}
+    \item Risk Likelihood: \textcolor{BurntOrange}{Moderate}
+    \item Mitigation Strategy: Assign tasks to team members based on their expertise in relevant technologies while ensuring everyone is involved in meaningful roles to maintain prductivity and foster teamwork.
+\end{itemize}
+
+
+\textbf{Risk 2:} Rollback Challenges
+\begin{itemize}
+    \item Risk description: Lack of a version control system could prevent from rolling back to the software's last stable state in case of errors
+    \item Risk Level: \textcolor{Red}{Catastrophic}
+    \item Risk Likelihood: \textcolor{Green}{Low}
+    \item Mitigation Strategy: Utilise github to always maintain a stable version of the software and updating it when being sure that the changes will not affect its usability. 
+\end{itemize}
+
+
+\textbf{Risk 3:} Testing Risks	
+\begin{itemize}
+    \item Risk description: Insufficient testing may reduce confidence in the software
+    \item Risk Level: \textcolor{BurntOrange}{Serious}
+    \item Risk Likelihood: \textcolor{BurntOrange}{Moderate}
+    \item Mitigation Strategy: Unit tests will be designed to test the software to make sure that it is working properly.
+\end{itemize}
+
+\textbf{Risk 4:} Time Management
+\begin{itemize}
+    \item Risk description: Underestimating  task duration or improper prioritization might result in delayed work.
+    \item Risk Level: \textcolor{BurntOrange}{Serious}
+    \item Risk Likelihood: \textcolor{Green}{Low}
+    \item Mitigation Strategy: The team is meeting in regular intervals to ensure work efficiency and mitigate time related risks.
+\end{itemize}
+
+\textbf{Risk 5:} Requirement Misalignment 
+\begin{itemize}
+    \item Risk description: During the development of the software, the end product might not be the same as the one describe in the delivrables due to unforeseen circumstances
+    \item Risk Level: \textcolor{Red}{Catastrophic}
+    \item Risk Likelihood: \textcolor{Green}{Low}
+    \item Mitigation Strategy: Ensure constant internal communication between the team.
+\end{itemize}
+
+\textbf{Risk 6:} Organisational Risks
+\begin{itemize}
+    \item Risk description: Uneven distribution of workload or misscommunication may lead to an uncomplete project and delayed work. 
+    \item Risk Level: \textcolor{BurntOrange}{Serious}
+    \item Risk Likelihood: \textcolor{Green}{Low}
+    \item Mitigation Strategy: The team is meeting in regular intervals to ensure work efficiency and mitigate time related risks.
+\end{itemize}
+
+\textbf{Risk 7:} Team Member MIA
+\begin{itemize}
+    \item Risk description: Team member is not able to complete their amount of work due to unforeseen circumstances, thus delaying work. 
+    \item Risk Level: \textcolor{BurntOrange}{Serious}
+    \item Risk Likelihood: \textcolor{BurntOrange}{Moderate}
+    \item Mitigation Strategy: Team analyses the remaining work from missing member and prioritises and reallocates tasks based on the analysis. 
+\end{itemize}
 
 \section{Front-End}
 %Discussion of using Python and Pygame/similar libraries to create the user interface (including parsing user input) and graphics
