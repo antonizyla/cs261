@@ -124,7 +124,12 @@ We have identified the following risks and have agreed on the following mitigati
 For the back-end, we have decided to implement it in Python due to the whole group being familiar with the language, and to make 
 interfacing between the front-end and back-end simple. We plan to use objects to simulate the junction configurations and calculate 
 the junction efficiency metrics and overall scores, with the structure of classes being as follows:
-(UML Diagram)
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{JunctionSimulationClassDiagram.drawio.pdf}
+    \caption{Junction Simulation Class Diagram}
+    \label{class diagram}
+\end{figure}
 The Junction class contains Lane objects representing each lane of a road entering the junction, grouped together in arrays based on 
 the direction they’re arriving at the junction from. Two functions will be called by the front-end to set up the simulation: 
 setFlowRates to set the flow rates from each direction to the other directions, passed in the form of a 2D array, and 
