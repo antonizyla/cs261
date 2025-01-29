@@ -6,12 +6,12 @@
 \usepackage{graphicx}
 \usepackage{float}
 
-% allow for table of contents to have clickabel links
+% allow for table of contents to have clickable links
 \usepackage{hyperref}
 
 % editable bits
 \title{CS261 Group 29 Requirement Analysis}
-\author{Add your names here}
+\author{Ani Bitri, Krister Hughes, Thomas Phuong, Eshan Sharif, Josh Turner, Antoni Zyla}
 \date{January 2025}
 \fancyfoot[L]{Requirement Analysis}
 \fancyfoot[R]{\thepage}
@@ -24,13 +24,13 @@
 
 \section{Introduction}
 % Justifies the need for the system and outlines what it will do.
-Dorset Software has beeen contracted to create a system used for the modelling 
+Dorset Software has been contracted to create a system used for the modelling 
 of traffic junctions based on various parameters. The system will provide 
-data about how each of these functions impacts the performance of a given 
-junction and allow for comparison of various sets of parameters to help 
-determine the best option for a given junction. As a group we have been given 
-the task of the development of this system along with the documentation and 
-project management.
+data about how each of these configurations impacts the performance of a given 
+junction and allow for the comparison of various sets of parameters to help 
+determine the best configuration for a given junction. As a group, we have been 
+given the task of developing this system, along with managing the project and 
+creating documentation.
 
 \section{System Architecture}
 % Presents a high-level overview of the system, showing distribution of functions across system modules.
@@ -41,6 +41,15 @@ project management.
     \caption{System Architecture Diagram}
     \label{system architecture}
 \end{figure}
+A high-level overview of how we intend the system to work is as follows: the user will 
+enter the traffic flow rates for the simulation and select the configurable parameters 
+for each junction configuration via the user interface, leading to the graphical 
+representation displayed updating to reflect the user input. After pressing a button to 
+start the simulation, the user input will be sent to the backend, where each junction 
+configuration will be simulated and have its traffic light sequencing optimised based on 
+the parameters restricting the order and the best values of the junction efficiency metrics. 
+After all junction configurations have been processed, the data will be sent back to the 
+frontend to generate a report of the efficiency of each junction configuration.
 
 \section{System Requirements Specification}
 % Describes functional and non-functional requirements.
@@ -58,7 +67,7 @@ project management.
             flow rates in the text fields, running it again with a different set in 
             the same fields and verifying the junction efficiency metrics have changed, 
             and then trying to run the simulation with an invalid value in at least one 
-            text field (e.g. “TEST” for Eastbound Traffic Flow Exiting West
+            text field (e.g. “TEST” for Eastbound Traffic Flow Exiting West)
         \item\textbf{Traceability}: Input Parameters section in the specification
     \end{itemize}
     
@@ -130,7 +139,7 @@ project management.
 
     \item \textbf{\underline{Requirement 6 (Should)}}
     \begin{itemize}
-        \item \textbf{C}: 
+        %\item \textbf{C}: %Don't know if there is one for this
         \item \textbf{D}: The system must take into account the distance between the entrance and exit 
             points of each junction configuration. So, for example, a left turn from the 
             leftmost lane of a road has a shorter distance than a right turn from the leftmost 
@@ -178,16 +187,16 @@ project management.
 
     \item \textbf{\underline{Requirement 9 (Could)}}
     \begin{itemize}
-        \item \textbf{C}: When the simulation is ran, the user should be able to select a certain exit 
+        \item \textbf{C}: When the simulation is ran, the user should be able to select a certain junction entrance 
             and display the amount of traffic going into other exits via a 
-            sankey diagram junction.
-        \item \textbf{D}: When the simulation is ran, the user should be able to click on an exit and see 
-            the amount of traffic flowing into the other exits from the selected exit where the volume 
-            flowing in into the other exit is proportional to the parameter size
-        \item \textbf{Verification}: Select an exit and check whether the amount of traffic flowing 
-            is proportional to the input sizes. Repeat for the other exits
-        \item\textbf{Traceability}: while not directly specified, the requirement could be traced back 
-            to the Output section where the customer wants to be able to “identify the most effective 
+            Sankey diagram.
+        \item \textbf{D}: When the simulation is ran, the user should be able to click on a junction entrance and see 
+            the amount of traffic flowing into the other exits from the selected entrance, where the volume 
+            flowing into an exit is proportional to the traffic flow through it.
+        \item \textbf{Verification}: Select a junction entrance and check whether the volume flowing
+            is proportional to the associated traffic flows. Repeat for the other exits.
+        \item\textbf{Traceability}: while not directly specified, this requirement could be traced back 
+            to the Output section, where the customer wants to be able to “identify the most effective 
             configuration of the traffic junction”. By adding this, the user could see how the traffic 
             flows into other exits via a graphical interface that will change depending on the user's 
             inputs.
@@ -244,32 +253,18 @@ Our team is comprised of the following members:
   \item Krister - Backend 
   \item Josh - Frontend and Backend 
   \item Antoni - Backend 
-  \item Eshan -  Frontend
+  \item Eshan - Frontend
   \item Thomas - Frontend
   \item Ani - Video, Frontend and Backend
 \end{itemize}
 
-As a team we have been meeting once a week on Wednesdays and will continue to do 
-so until the end of the project. When recording the Dragon's Den video presentation 
-we will allocate some more time as well as making sure that someone who's familiar 
-with video editing software is able to fully focus on the video to make it as good
-as possible. 
+As a team, we have been meeting once a week on Wednesdays and will continue to do 
+so until the end of the project, and will meet up at additional points through the term if we decide it to be necessary (e.g. to work through the design of a particular part of the project). When recording the Dragon's 
+Den video presentation, we will allocate some more time than a regular meeting, as well as make sure that 
+the person allocated to editing the recording is able to fully focus on the video to make it as good as possible. 
 
-Together we have decided to forgo a project manager and opt for regular meetings 
-with a shared understanding of the goals, if anyone has any concerns about the group 
-structure or work distribution then this can be brought up at the whole group meeting 
-to everyone, everyone is an equal on the team.
-
-\subsection{Development Philosophy}
-%should be in the design  as part of software development methodology
-\begin{itemize}
-  \item Requirement Analysis
-        - 22nd January
-  \item Planning and Design
-        - 29th January
-  \item Implementation and testing
-        - 19th February
-  \item Dragon's Den Video and Final Report
-        - 26th February
-\end{itemize}
+Together, we have decided to forgo a project manager and opt for regular meetings 
+with a shared understanding of the goals. If any team member has any concerns about the group 
+structure or work distribution, then this can be brought up at the whole group meeting 
+to everyone, since everyone is an equal on the team.
 \end{document}
