@@ -5,6 +5,10 @@
 \usepackage{fancyhdr}
 \usepackage{graphicx}
 \usepackage{float}
+
+% allow for table of contents to have clickabel links
+\usepackage{hyperref}
+
 % editable bits
 \title{CS261 Group 29 Requirement Analysis}
 \author{Add your names here}
@@ -14,6 +18,9 @@
 
 \begin{document}
 \maketitle
+
+% table of contents would exceed the page limit
+% \tableoddfcontents
 
 \section{Introduction}
 % Justifies the need for the system and outlines what it will do.
@@ -87,7 +94,7 @@ the user must be provided with the following three junction efficiency metrics
 per road entering the junction, as well as an overall score generated from the 
 three metrics for the whole configuration: average wait time, maximum wait time, 
 and maximum queue length.
-\subsubsection{Developer Facing}
+\subsubsection{Developer Facing} \label{requirements_user}
 \begin{itemize}
   \item When the simulation is ran, for each junction configuration, the system 
   must take the configuration and the input traffic flow rates (shared across all 
@@ -250,14 +257,6 @@ structure or work distribution then this can be brought up at the whole group me
 to everyone, everyone is an equal on the team.
 
 \subsection{Development Philosophy}
-% waterfall/reuse driven development
-We will utilise a hybrid approach combining the main themes of Waterfall with a 
-reuse oriented methodology for the software development part of the project. We 
-have strict deadlines for each part of the waterfall cycle. The following are 
-those timelines, they are spaced to allow sufficient time for each section as 
-well as allowing for the whole team to review each stage and make any corrections 
-we deem necessary. 
-
 %should be in the design  as part of software development methodology
 \begin{itemize}
   \item Requirement Analysis
@@ -269,10 +268,4 @@ we deem necessary.
   \item Dragon's Den Video and Final Report
         - 26th February
 \end{itemize}
-
-Between these stages we will be writing the deliverables as a team alongside,
-during the weekly meetings we will check the progress of the various documents,
-giving feedback about the changes and any things that should be altered to best 
-fit the requirements and plan of the project.
-
 \end{document}
