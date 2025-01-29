@@ -5,6 +5,8 @@
 \usepackage{fancyhdr}
 \usepackage{xcolor}
 \usepackage{graphicx}
+\usepackage{float}
+
 % editable bits
 \title{CS261 Group 29 Planning and Design}
 \author{Add your names here}
@@ -58,61 +60,59 @@ Below you can see a Gantt chart of our planned work schedule.
 
 \subsection{Risk Assessment and Management}
 We have identified the following risks and have agreed on the following mitigation strategies:
-\textbf{Risk 1:} Technology Limitations
+\subsubsection{Technology Limitations}
 \begin{itemize}
     \item Risk description: Team/Team members may be unfamiliar to some tool, libraries, or frameworks, which may cause delays or reduced performance. 
-    \item Risk Level: \textcolor{Green}{Tolerable}
-    \item Risk Likelihood: \textcolor{BurntOrange}{Moderate}
+    \item Risk Level: \textcolor{green}{Tolerable}
+    \item Risk Likelihood: \textcolor{orange}{Moderate}
     \item Mitigation Strategy: Assign tasks to team members based on their expertise in relevant technologies while ensuring everyone is involved in meaningful roles to maintain prductivity and foster teamwork.
 \end{itemize}
 
-
-\textbf{Risk 2:} Rollback Challenges
+\subsubsection{Rollback Challenges}
 \begin{itemize}
     \item Risk description: Lack of a version control system could prevent from rolling back to the software's last stable state in case of errors
-    \item Risk Level: \textcolor{Red}{Catastrophic}
-    \item Risk Likelihood: \textcolor{Green}{Low}
+    \item Risk Level: \textcolor{red}{Catastrophic}
+    \item Risk Likelihood: \textcolor{green}{Low}
     \item Mitigation Strategy: Utilise github to always maintain a stable version of the software and updating it when being sure that the changes will not affect its usability. 
 \end{itemize}
 
-
-\textbf{Risk 3:} Testing Risks	
+\subsubsection{Testing Risks}
 \begin{itemize}
     \item Risk description: Insufficient testing may reduce confidence in the software
-    \item Risk Level: \textcolor{BurntOrange}{Serious}
-    \item Risk Likelihood: \textcolor{BurntOrange}{Moderate}
+    \item Risk Level: \textcolor{orange}{Serious}
+    \item Risk Likelihood: \textcolor{orange}{Moderate}
     \item Mitigation Strategy: Unit tests will be designed to test the software to make sure that it is working properly.
 \end{itemize}
 
-\textbf{Risk 4:} Time Management
+\subsubsection{Time Management}
 \begin{itemize}
     \item Risk description: Underestimating  task duration or improper prioritization might result in delayed work.
-    \item Risk Level: \textcolor{BurntOrange}{Serious}
-    \item Risk Likelihood: \textcolor{Green}{Low}
+    \item Risk Level: \textcolor{orange}{Serious}
+    \item Risk Likelihood: \textcolor{green}{Low}
     \item Mitigation Strategy: The team is meeting in regular intervals to ensure work efficiency and mitigate time related risks.
 \end{itemize}
 
-\textbf{Risk 5:} Requirement Misalignment 
+\subsubsection{Requirement Misalignment}
 \begin{itemize}
     \item Risk description: During the development of the software, the end product might not be the same as the one describe in the delivrables due to unforeseen circumstances
-    \item Risk Level: \textcolor{Red}{Catastrophic}
-    \item Risk Likelihood: \textcolor{Green}{Low}
+    \item Risk Level: \textcolor{red}{Catastrophic}
+    \item Risk Likelihood: \textcolor{green}{Low}
     \item Mitigation Strategy: Ensure constant internal communication between the team.
 \end{itemize}
 
-\textbf{Risk 6:} Organisational Risks
+\subsubsection{Organisational Risks}
 \begin{itemize}
     \item Risk description: Uneven distribution of workload or misscommunication may lead to an uncomplete project and delayed work. 
-    \item Risk Level: \textcolor{BurntOrange}{Serious}
-    \item Risk Likelihood: \textcolor{Green}{Low}
+    \item Risk Level: \textcolor{orange}{Serious}
+    \item Risk Likelihood: \textcolor{green}{Low}
     \item Mitigation Strategy: The team is meeting in regular intervals to ensure work efficiency and mitigate time related risks.
 \end{itemize}
 
-\textbf{Risk 7:} Team Member MIA
+\subsubsection{Team Membr MIA}
 \begin{itemize}
     \item Risk description: Team member is not able to complete their amount of work due to unforeseen circumstances, thus delaying work. 
-    \item Risk Level: \textcolor{BurntOrange}{Serious}
-    \item Risk Likelihood: \textcolor{BurntOrange}{Moderate}
+    \item Risk Level: \textcolor{orange}{Serious}
+    \item Risk Likelihood: \textcolor{orange}{Moderate}
     \item Mitigation Strategy: Team analyses the remaining work from missing member and prioritises and reallocates tasks based on the analysis. 
 \end{itemize}
 
@@ -126,7 +126,7 @@ interfacing between the front-end and back-end simple. We plan to use objects to
 the junction efficiency metrics and overall scores, with the structure of classes being as follows:
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.5\linewidth]{JunctionSimulationClassDiagram.drawio.pdf}
+    \includegraphics[width=1\linewidth]{JunctionSimulationClassDiagram.drawio.pdf}
     \caption{Junction Simulation Class Diagram}
     \label{class diagram}
 \end{figure}
@@ -143,7 +143,6 @@ capabilities of the software in the future.
 Each Lane object contains a queue of Vehicle objects, representing the vehicles in that lane waiting to transit the junction. Each Lane 
 will calculate its own maximum wait time (maxWait), average wait time (avgWait) and maximum queue length (maxLength), which will be 
 compared with the same values of the other Lanes in its direction by the Junction object, in order to get the three values for the direction.
-
 
 \section{Deployment}
 %This is where we discuss containerisation
