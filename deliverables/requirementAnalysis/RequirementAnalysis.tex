@@ -92,7 +92,37 @@ frontend to generate a report of the efficiency of each junction configuration.
         \item\textbf{Traceability}: Configurable Parameters section in the specification
     \end{itemize}
 
-    \item \textbf{\underline{Requirement 3 (Must)}}
+    \item \textbf{\underline{Requirement 3 (Should)}}
+    \begin{itemize}
+        \item \textbf{C}: The user will be presented with a graphical representation of the junction 
+        based on the parameters they have entered (e.g. left-turn lanes, bus lanes), to make it easier 
+        for them to understand how exactly their settings affect the design of the junction and if they 
+        are what they intended.
+        \item \textbf{D}: The system must take the current configuration settings of the junction and 
+        update the graphical representation to accurately reflect the current settings. 
+        \item \textbf{Verification}: The representation can be generated as an image and then that image 
+        compared to a previously generated image that has been checked to be correct. This would be able 
+        to be unit tested but should also be used with functional testing.
+        \item\textbf{Traceability}: Output section in the specification - 'a simple graphical 
+        representation is a "nice-to-have"'
+    \end{itemize}
+
+    \item \textbf{\underline{Requirement 4 (Must)}}
+    \begin{itemize}
+        \item \textbf{C}: The user must be able to create multiple junction configurations (as 
+        well as remove configurations), with the system simulating all of them when the run 
+        simulation button is pressed.
+        \item \textbf{D}: The system must allow for the user to create and remove multiple 
+        junction configurations, and when the simulation is ran, all junction configurations 
+        must be simulated and their required results generated.
+        \item \textbf{Verification}: Create more than one junction configuration, press the run 
+        simulation button, and then verify that results are shown for all the created junction 
+        configurations. Remove a configuration, press the run simulation button again, and verify 
+        that the results are the same except the removed junction's results are no longer present.
+        \item\textbf{Traceability}: Output section and Configurable Parameters section in the specification.
+    \end{itemize}
+
+    \item \textbf{\underline{Requirement 5 (Must)}}
     \begin{itemize}
         \item \textbf{C}: After running the simulation, for each junction configuration, 
             the user must be provided with the following three junction efficiency metrics 
@@ -111,16 +141,18 @@ frontend to generate a report of the efficiency of each junction configuration.
         \item\textbf{Traceability}: Output section in the specification
     \end{itemize}
 
-    \item \textbf{\underline{Requirement 4 ()}}
+    \item \textbf{\underline{Requirement 6 (Must)}}
     \begin{itemize}
-        \item \textbf{C}: The system must allow for comparison of one or more sets of input parameters 
-            against the metrics defined in section \ref{requirements_user}
-        \item \textbf{D}:
-        \item \textbf{Verification}:
-        \item\textbf{Traceability}:
+        \item \textbf{C}: After running the simulation, the user must be presented the efficiency metrics 
+        and score for each junction configuration side by side in a table or graph format.
+        \item \textbf{D}: The system must display the junction efficiency metrics and score of each junction 
+        side by side in a table or graph format.
+        \item \textbf{Verification}: Simulate two different junction configurations with the same 
+            input traffic flows and verify that the results are displayed in a side by side comparison.
+        \item\textbf{Traceability}: Output section in the specification.
     \end{itemize}
 
-    \item \textbf{\underline{Requirement 5 (Should)}}
+    \item \textbf{\underline{Requirement 7 (Should)}}
     \begin{itemize}
         \item \textbf{C}: The user must be able to select whether cars drive on the left-hand side of 
             the road or right-hand side, affecting the graphical representation of the junction
@@ -137,7 +169,7 @@ frontend to generate a report of the efficiency of each junction configuration.
             as a unique selling point of our software
     \end{itemize}
 
-    \item \textbf{\underline{Requirement 6 (Should)}}
+    \item \textbf{\underline{Requirement 8 (Should)}}
     \begin{itemize}
         %\item \textbf{C}: %Don't know if there is one for this
         \item \textbf{D}: The system must take into account the distance between the entrance and exit 
@@ -153,20 +185,7 @@ frontend to generate a report of the efficiency of each junction configuration.
             as a unique selling point of our software
     \end{itemize}
 
-    \item \textbf{\underline{Requirement 7 (Should)}}
-    \begin{itemize}
-        \item \textbf{C}: The system will show graphical representation of the junction based on the 
-            parameters entered (left turn lanes, bus lanes etc). This makes it easier for the user to 
-            understand how exactly their settings affect the design of a junction and if they are what 
-            they intended.
-        \item \textbf{D}: 
-        \item \textbf{Verification}: The representation can be generated as an image and then that image 
-            compared to a generated image that has been checked to be correct. This would be able to be unit 
-            tested but should also be used  with functional testing.
-        \item\textbf{Traceability}: 
-    \end{itemize}
-
-    \item \textbf{\underline{Requirement 8 (Could)}}
+    \item \textbf{\underline{Requirement 9 (Could)}}
     \begin{itemize}
         \item \textbf{C}: When the simulation is ran, if a certain setting is configured, then the best 
             possible set of junction settings based on the same input traffic flows and the 
@@ -185,7 +204,7 @@ frontend to generate a report of the efficiency of each junction configuration.
             the software is “to identify the most effective configuration of the traffic junction”
     \end{itemize}
 
-    \item \textbf{\underline{Requirement 9 (Could)}}
+    \item \textbf{\underline{Requirement 10 (Could)}}
     \begin{itemize}
         \item \textbf{C}: When the simulation is ran, the user should be able to select a certain junction entrance 
             and display the amount of traffic going into other exits via a 
@@ -202,43 +221,35 @@ frontend to generate a report of the efficiency of each junction configuration.
             inputs.
     \end{itemize}
 
-    \item \textbf{\underline{Requirement 10 (Must)}}
-    \begin{itemize}
-        \item \textbf{C}: 
-        \item \textbf{D}: The system must allow users to compare the metric of different junction 
-            configurations side by side in a table or graph format.
-        \item \textbf{Verification}: Simulate two different junction configurations with the same 
-            inputs and verify that the results are displayed in a side by side comparison
-        \item\textbf{Traceability}: 
-    \end{itemize}
-
     \item \textbf{\underline{Requirement 11 (Must)}}
     \begin{itemize}
-        \item \textbf{C}: The system must validate user input in real time, identifying invalid 
-            entries and providing clear feedback to guide the user toward correction.
-        \item \textbf{D}: 
-        \item \textbf{Verification}: Enter a valid number in a traffic flow field and ensure the 
-            simulation proceeds without error. Then enter an invalid value (e.g., “abc” or a 
-            negative number) and verify that the system highlights the field, displays an error 
-            message, and prevents the simulation from starting until the error is corrected. 
-            Finally leave a required field empty and ensure the system displays a warning, 
-            specifying the field that needs attention.
-        \item\textbf{Traceability}: 
+        \item \textbf{C}: The user's inputs must be validated in real time, with the user being provided clear 
+        feedback for any invalid inputs to guide them towards correcting them.
+        \item \textbf{D}: The system must validate user input in real time, identifying any invalid entries, 
+        and provide clear feedback to the user through the user interface to aid them in correcting entries.
+        \item \textbf{Verification}: Enter valid numbers in the traffic flow fields and ensure the 
+        simulation proceeds without error. Then enter an invalid value (e.g., “abc” or a negative number) into 
+        a field, and verify that the system highlights the field, displays an error message, and prevents the 
+        simulation from starting until the error is corrected. Finally leave a required field empty and ensure 
+        the system displays a warning, specifying the field that needs attention.
+        \item\textbf{Traceability}: Input section and User Experience / User Interface subsection of 
+        Considerations section in the specification.
     \end{itemize}
 
     \item \textbf{\underline{Requirement 12 (Must)}}
     \begin{itemize}
-        \item \textbf{C}: The system must provide user-friendly error messages for invalid 
-            inputs or system failures. These messages should clearly explain the issue in
-            non-technical terms for the user, while also logging technical details for debugging 
-            purposes.
-        \item \textbf{D}: 
-        \item \textbf{Verification}: Trigger a known error, such as submitting invalid traffic 
-            flow rates, and verify that the system displays a user-friendly error message with
-            details like the affected field and suggested resolution. Then simulate a system 
-            failure and confirm that a technical error message is logged for debugging, while 
-            the user sees a generic failure message.
-        \item\textbf{Traceability}: 
+        \item \textbf{C}: The user must be provided with user-friendly error messages whenever there is an invalid 
+        input or system failure. They must also be provided technical details so they or a colleague can debug any 
+        issues if desired.
+        \item \textbf{D}: The system must provide user-friendly error messages for invalid inputs or system failures. 
+        These messages should clearly explain the issue in non-technical terms for the user, while also logging 
+        technical details for debugging purposes.
+        \item \textbf{Verification}: Trigger a known error, such as submitting invalid traffic flow rates, and verify 
+        that the system displays a user-friendly error message with details like the affected field and suggested 
+        resolution. Then simulate a system failure and confirm that a technical error message is logged for debugging, 
+        while the user sees a generic failure message.
+        \item\textbf{Traceability}: Input section and User Experience / User Interface subsection of Considerations 
+        section in the specification.
     \end{itemize}
 \end{itemize}
 
@@ -259,7 +270,8 @@ Our team is comprised of the following members:
 \end{itemize}
 
 As a team, we have been meeting once a week on Wednesdays and will continue to do 
-so until the end of the project, and will meet up at additional points through the term if we decide it to be necessary (e.g. to work through the design of a particular part of the project). When recording the Dragon's 
+so until the end of the project, and will meet up at additional points through the term if we decide it to be necessary 
+(e.g. to work through the design of a particular part of the project). When recording the Dragon's 
 Den video presentation, we will allocate some more time than a regular meeting, as well as make sure that 
 the person allocated to editing the recording is able to fully focus on the video to make it as good as possible. 
 
