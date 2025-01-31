@@ -182,19 +182,24 @@ will calculate its own maximum wait time (`maxWait`), average wait time (`avgWai
 compared with the same values of the other Lanes in its direction by the Junction object, in order to get the three values for the direction.
 
 \subsection{Interfacing with Frontend}
+% not using API anymore :(
 
-We will use (Insert Library like flask) to create a basic web server, we will define 
-our API using the OpenAPI schema. Defining an API using this allows us to create a 
-client for our frontend application to use very easily making sure that we have a 
-consistent usage and implementation of our API across both components of the system. 
+Even though the frontend and backend portions of the application will be 
+written in Python we will make sure to have a quasi API between the two 
+different components, encapsulating all logic and intefacing between the 
+frontend and backend into functions that would be a 1:1 translation into 
+what an API would be capable of. For example simulating a junction's 
+performance would only require a single call similar to how it would require 
+a single call to an endpoint if this was to expand to use an API.
 
-The frontend will have some basic validation logic for input data however we will  
-validate data on the backend as well as providing an easy-to-use endpoint to check that 
-a set of data is in fact valid. 
+Separation in this manner will allow for us to keep development efficient, 
+allowing those on the frontend to focus on their tasks and those on the 
+backend to focus on theirs by keeping a well defined method of interaction 
+between the two sides.
 
-Usage of the API would allow us to add usage monitoring and authentication in the future, 
-this is not a concern if the system is to be limited in scope and adoption but if in the 
-future it was to expand and be provided as service to others then this would be useful.
+If the system was to expand in the future it would be simple to split these 
+functions into an API controller and split the front and backend into a 
+server and client architecture.
 
 \subsection{Validation and Error handling}
 
@@ -209,16 +214,13 @@ We will use automated testing to check that the system validates sets of input
 parameters correctly on each build, any changes to the validation code will be then 
 checked automatically that they produce the correct result. 
 
-As we will use an API to interface between the frontend and backend we can indicate 
-the validity of a request using https status codes, using code '400 - Bad Request' 
-with a description of the error will show what the issue is.
+As we are using python for parts of the project and they are going to live 
+in the same project we will be able to reuse the validation logic between both 
+sections, guaranteeing consistent behaviour.
+
 
 \section{Deployment}
 %This is where we discuss containerisation
-One of the key requirements of the system is to be portable and easy to deploy, 
-to facilitate this we will containerise the backend using docker/podman containers. 
-Planning for this from the start will allow us to easily meet the future needs of the 
-client. 
 
 \subsection{Modularity}
 Separation of the frontend and backend into separate services will allow us to more 
