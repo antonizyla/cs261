@@ -62,7 +62,7 @@ frontend to generate a report of the efficiency of each junction configuration.
             in the User Interface (UI).
         \item \textbf{D}: The system must accept input from the text fields, parse the input to 
             determine if each traffic flow is a valid number, and, if all traffic flows 
-            are valid, allow the simulation to be ran.
+            are valid, allow the simulation to be run.
         \item \textbf{Verification}: running the simulation with one set of valid traffic 
             flow rates in the text fields, running it again with a different set in 
             the same fields and verifying the junction efficiency metrics have changed, 
@@ -73,36 +73,30 @@ frontend to generate a report of the efficiency of each junction configuration.
     
     \item \textbf{\underline{Requirement 2 (Must)}}
     \begin{itemize}
-        \item \textbf{C}: The user must be able to adjust the following settings for each 
-            road entering the junction, affecting the results of the simulation: how many 
-            lanes there are (1 to 5), whether there is a left-turn lane, bus lane, cycle 
-            lane (all mutually exclusive, the latter two requiring separate traffic flow rates) 
-            or none of those three, whether there is a pedestrian crossing (requires the duration 
-            of time the crossing is active and the number of crossing requests per hour), 
-            and the traffic light sequencing priority (0 to 4, 0 meaning no priority, 4 
-            meaning highest priority).
-        \item \textbf{D}: For each junction configuration, the system must take into account 
-            its specific settings, adjusting the calculations performed by the simulation 
-            for that specific configuration
+        \item \textbf{C}: The user will be able to adjust the number of lanes (between 1 and 5) 
+            and toggle left lanes, right lanes, bus lanes, and pedestrian crossings. They will 
+            also be able to configure the timings and frequency of pedestrians crossing.
+        \item \textbf{D}: For a given configuration the system will determine if it is a valid 
+            configuration.
         \item \textbf{Verification}: run a simulation with default parameters (2 lanes per 
             road entering the junction, equal priority on all lights, and all other 
             settings set to off/No) as a reference, and then run a simulation per setting 
             with that setting adjusted, showing the results of each simulation is different 
             from the reference.
-        \item\textbf{Traceability}: Configurable Parameters section in the specification
+        \item\textbf{Traceability}: Configurable Parameters section in the specification well
     \end{itemize}
+
+    % Insert requirement for priority
 
     \item \textbf{\underline{Requirement 3 (Should)}}
     \begin{itemize}
         \item \textbf{C}: The user will be presented with a graphical representation of the junction 
-        based on the parameters they have entered (e.g. left-turn lanes, bus lanes), to make it easier 
-        for them to understand how exactly their settings affect the design of the junction and if they 
-        are what they intended.
+        based on the parameters they have entered.
         \item \textbf{D}: The system must take the current configuration settings of the junction and 
-        update the graphical representation to accurately reflect the current settings. 
-        \item \textbf{Verification}: The representation can be generated as an image and then that image 
-        compared to a previously generated image that has been checked to be correct. This would be able 
-        to be unit tested but should also be used with functional testing.
+        generate a representation of the junction which mirrors those settings. 
+        \item \textbf{Verification}: Junctions can be generated with all lane counts from 1-5, then 
+        with a left and right lane, a pedestrian crossing, and a bus lane. We will also check that 
+        lanes display correctly in each orientation.
         \item\textbf{Traceability}: Output section in the specification - 'a simple graphical 
         representation is a "nice-to-have"'
     \end{itemize}
@@ -113,11 +107,11 @@ frontend to generate a report of the efficiency of each junction configuration.
         well as remove configurations), with the system simulating all of them when the run 
         simulation button is pressed.
         \item \textbf{D}: The system must allow for the user to create and remove multiple 
-        junction configurations, and when the simulation is ran, all junction configurations 
+        junction configurations, and when the simulation is run, all junction configurations 
         must be simulated and their required results generated.
         \item \textbf{Verification}: Create more than one junction configuration, press the run 
         simulation button, and then verify that results are shown for all the created junction 
-        configurations. Remove a configuration, press the run simulation button again, and verify 
+        configurations. Remove a conf0-4 iguration, press the run simulation button again, and verify 
         that the results are the same except the removed junction's results are no longer present.
         \item\textbf{Traceability}: Output section and Configurable Parameters section in the specification.
     \end{itemize}
@@ -129,7 +123,7 @@ frontend to generate a report of the efficiency of each junction configuration.
             per road entering the junction, as well as an overall score generated from the 
             three metrics for the whole configuration: average wait time, maximum wait time, 
             and maximum queue length.
-        \item \textbf{D}: When the simulation is ran, for each junction configuration, the system 
+        \item \textbf{D}: When the simulation is run, for each junction configuration, the system 
             must take the configuration and the input traffic flow rates (shared across all 
             configurations) and calculate the average wait time, maximum wait time and 
             maximum queue length per direction entering the junction, as well as combine 
@@ -187,11 +181,11 @@ frontend to generate a report of the efficiency of each junction configuration.
 
     \item \textbf{\underline{Requirement 9 (Could)}}
     \begin{itemize}
-        \item \textbf{C}: When the simulation is ran, if a certain setting is configured, then the best 
-            possible set of junction settings based on the same input traffic flows and the 
+        \item \textbf{C}: When the simulation is run, if a certain setting is configured, then the best 
+            possible set of junction settings based on the same input traffic flows, and the 
             junction efficiency metrics will be displayed alongside the other junction 
             configurations the user created.
-        \item \textbf{D}: When the simulation is ran, if the setting is configured, then the best 
+        \item \textbf{D}: When the simulation is run, if the setting is configured, then the best 
             possible junction configuration (and its results) for the set of input traffic 
             flows must be determined and output along with the results of the junction 
             configurations created by the user
@@ -206,10 +200,10 @@ frontend to generate a report of the efficiency of each junction configuration.
 
     \item \textbf{\underline{Requirement 10 (Could)}}
     \begin{itemize}
-        \item \textbf{C}: When the simulation is ran, the user should be able to select a certain junction entrance 
+        \item \textbf{C}: When the simulation is run, the user should be able to select a certain junction entrance 
             and display the amount of traffic going into other exits via a 
             Sankey diagram.
-        \item \textbf{D}: When the simulation is ran, the user should be able to click on a junction entrance and see 
+        \item \textbf{D}: When the simulation is run, the user should be able to click on a junction entrance and see 
             the amount of traffic flowing into the other exits from the selected entrance, where the volume 
             flowing into an exit is proportional to the traffic flow through it.
         \item \textbf{Verification}: Select a junction entrance and check whether the volume flowing
@@ -230,7 +224,7 @@ frontend to generate a report of the efficiency of each junction configuration.
         \item \textbf{Verification}: Enter valid numbers in the traffic flow fields and ensure the 
         simulation proceeds without error. Then enter an invalid value (e.g., “abc” or a negative number) into 
         a field, and verify that the system highlights the field, displays an error message, and prevents the 
-        simulation from starting until the error is corrected. Finally leave a required field empty and ensure 
+        simulation from starting until the error is corrected. Finally, leave a required field empty and ensure 
         the system displays a warning, specifying the field that needs attention.
         \item\textbf{Traceability}: Input section and User Experience / User Interface subsection of 
         Considerations section in the specification.

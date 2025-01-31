@@ -36,7 +36,7 @@ You are also required to submit a Planning and Design Document. This should addr
 \end{itemize}
 
 This list is not exhaustive and there will be other concerns which your group will want to address. You will also want to adopt trusted design patterns or design methodologies to provide a template for the actual design of your system. No one method will be favoured (by the assessors) over another, but you will be graded on the process of selecting an appropriate methodology and your use of it.
-Each group will have to submit these two short reports on tabula on Monday 3rd February 2025. Each member of the team should submit these reports along with a team contribution form for the first half of the project (see below). 
+Each group will have to submit these two short reports on Tabula on Monday 3rd February 2025. Each member of the team should submit these reports along with a team contribution form for the first half of the project (see below). 
 
 \section{Team Planning}
 \subsection{Time Management}
@@ -97,7 +97,7 @@ We have identified the following risks and have agreed on the following mitigati
 
 \subsubsection{Requirement Misalignment}
 \begin{itemize}
-    \item Risk description: During the development of the software, the end product might not be the same as the one describe in the delivrables due to unforeseen circumstances
+    \item Risk description: During the development of the software, the end product might not be the same as the one describe in the deliverables due to unforeseen circumstances
     \item Risk Level: \textcolor{red}{Catastrophic}
     \item Risk Likelihood: \textcolor{green}{Low}
     \item Mitigation Strategy: Ensure constant internal communication between the team.
@@ -105,7 +105,7 @@ We have identified the following risks and have agreed on the following mitigati
 
 \subsubsection{Organisational Risks}
 \begin{itemize}
-    \item Risk description: Uneven distribution of workload or misscommunication may lead to an uncomplete project and delayed work. 
+    \item Risk description: Uneven distribution of workload or miscommunication may lead to an incomplete project and delayed work. 
     \item Risk Level: \textcolor{orange}{Serious}
     \item Risk Likelihood: \textcolor{green}{Low}
     \item Mitigation Strategy: The team is meeting in regular intervals to ensure work efficiency and mitigate time related risks.
@@ -136,7 +136,7 @@ The picture below shows a mock-up of the user interface:
 \end{figure}
 
 The user will be able to input the number of lanes on each road, the flow rates from each direction to the other directions and specific lanes such
-as the bus lane, left-turn lane or right-turn lane. The simulation can start by clicking the "Start Simulation" button. The simulatuion will then run and the results will be displayed on the screen on a tabular format.
+as the bus lane, left-turn lane or right-turn lane. The simulation can start by clicking the "Start Simulation" button. The simulation will then run and the results will be displayed on the screen on a tabular format.
 The figure below shows a mock-up of the results table:
 
 \begin{figure}[H]
@@ -152,7 +152,7 @@ The front-end will then pass the input to the back-end using an API. The back-en
 which will display them on the screen as described above.
 
 \subsection{Error Handling}
-Throughout the whole proccess of the software, from inputing the parameters to displaying the results, the front-end will have error handling to ensure that the software is robust and reliable.
+Throughout the whole process of the software, from inputting the parameters to displaying the results, the front-end will have error handling to ensure that the software is robust and reliable.
 Friendly error messages will be displayed to the user if they input invalid parameters or if there is an error in the simulation. The following pictures show examples of error messages that will be displayed:
 
 \begin{figure}[H]
@@ -180,17 +180,17 @@ the junction efficiency metrics and overall scores, with the structure of classe
 \end{figure}
 
 The Junction class contains Lane objects representing each lane of a road entering the junction, grouped together in arrays based on 
-the direction they are arriving at the junction from. Two functions will be called by the front-end to set up the simulation: setFlowRates 
-to set the flow rates from each direction to the other directions, passed in the form of a FlowRates object, and setJunctionConfiguration 
+the direction they are arriving at the junction from. Two functions will be called by the front-end to set up the simulation: `setFlowRates` 
+to set the flow rates from each direction to the other directions, passed in the form of a `FlowRates` object, and `setJunctionConfiguration` 
 to set the specific settings of the junction (e.g. is there a left turn lane, how many lanes there are on each incoming road) passed in 
 the form of a Parameters object. For each junction configuration generated by the user, a Junction object will be created and be passed 
 a Parameters object corresponding to those configuration settings. We decided to use objects for passing the data instead of passing each 
-setting as an individual parameter (setJunctionConfiguration) or passing the flow rates as a 2D-array (setFlowRates) since objects would 
+setting as an individual parameter (`setJunctionConfiguration`) or passing the flow rates as a 2D-array (`setFlowRates`) since objects would 
 be easier to work with (for example, no scope for miscommunication about what the indices represent) and make it easier to extend the 
 capabilities of the software in the future.
 
 Each Lane object contains a queue of Vehicle objects, representing the vehicles in that lane waiting to transit the junction. Each Lane 
-will calculate its own maximum wait time (maxWait), average wait time (avgWait) and maximum queue length (maxLength), which will be 
+will calculate its own maximum wait time (`maxWait`), average wait time (`avgWait`) and maximum queue length (`maxLength`), which will be 
 compared with the same values of the other Lanes in its direction by the Junction object, in order to get the three values for the direction.
 
 \subsection{Interfacing with Frontend}
@@ -201,7 +201,7 @@ client for our frontend application to use very easily making sure that we have 
 consistent usage and implementation of our API across both components of the system. 
 
 The frontend will have some basic validation logic for input data however we will  
-validate data on the backend as well as providing an easy to use endpoint to check that 
+validate data on the backend as well as providing an easy-to-use endpoint to check that 
 a set of data is in fact valid. 
 
 Usage of the API would allow us to add usage monitoring and authentication in the future, 
@@ -218,7 +218,7 @@ flows must be equal to the inflow as well as the requirement for each flow to be
 greater than or equal to 0. 
 
 We will use automated testing to check that the system validates sets of input 
-parameters correctly on each build, any changes to the validation code will be be then 
+parameters correctly on each build, any changes to the validation code will be then 
 checked automatically that they produce the correct result. 
 
 As we will use an API to interface between the frontend and backend we can indicate 
@@ -236,8 +236,8 @@ client.
 Separation of the frontend and backend into separate services will allow us to more 
 easily expand the system in the future. The backend simulation is connected to an API 
 which can then be accessed using different applications, the frontend and backend can 
-be developed independantly and can be swapped in and out as long as they maintain the 
-API used to communicate between eachother.
+be developed independently and can be swapped in and out as long as they maintain the 
+API used to communicate between each other.
 
 Docker/Podman is an open standard and will allow for these containers to be ran 
 on any platform with a container engine.
@@ -246,13 +246,13 @@ on any platform with a container engine.
 Usage of containerisation in this manner would allow us to scale the system as the 
 needs of it grow, if for example we have multiple applications taking data from the 
 backend at a time we can run multiple instances of the backend and use a load balancer 
-to distribute client calls between each instance. If the client requires a higer level 
+to distribute client calls between each instance. If the client requires a higher level 
 of uptime than a single instance allows, If they need fault tolerance than a single 
-geographic location and isntance allows then this would be simple to achieve using a 
+geographic location and instance allows then this would be simple to achieve using a 
 set of containers in a distributed network.
 
 Developing inside a container allows for a consistent build and deployment environment 
-everytime, if a client has an installation of docker/podman then they would be able to 
+every time, if a client has an installation of docker/podman then they would be able to 
 run the software just as they would any other container. Containers are largely similar 
 to bare metal performance so in small use cases (start of the program lifecycle) there 
 is no significant impact by using containers.
