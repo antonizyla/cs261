@@ -119,6 +119,20 @@ We have identified the following risks and have agreed on the following mitigati
     \item Mitigation Strategy: Team analyses the remaining work from missing member and prioritises and reallocates tasks based on the analysis. 
 \end{itemize}
 
+\section{Design Pattern}
+We have decided to adopt the MVC (Model-View-Controller) design pattern for the software. This pattern consists of thre main components: the Model, the View and the Controller.
+The Model is responsible for the data and the logic of the software, thus it will be our back-end. The View is responsible for the user interface and will be our front-end. The Controller is responsible for the communication between the Model and the View, 
+thus it will be the API that we will use to interface between the front-end and back-end. The image beloww shows the MVC design pattern:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{pattern.png}
+    \caption{MVC Pattern}
+    \label{pattern}
+\end{figure}
+
+Using the MVC pattern will aid us in separating concers, making the software more modular and easier to maintain. It will also help us separate the development responsibilities between the team members, with some working on the front-end, some on the back-end and some on the API.
+
 \section{Front-End}
 %Discussion of using Python and Pygame/similar libraries to create the user interface (including parsing user input) and graphics
 For the front-end, we have decided to use Python and the PyQT toolkit to create the user interface. This is because the whole group is familiar 
