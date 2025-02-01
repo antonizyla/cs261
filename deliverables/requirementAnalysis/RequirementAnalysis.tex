@@ -55,40 +55,53 @@ frontend to generate a report of the efficiency of each junction configuration.
 % Describes functional and non-functional requirements.
 \subsection{Functional Requirements}
 \begin{itemize}
+
+    % Valid traffic flow input
     \item \textbf{\underline{Requirement 1 (Must)}}
     \begin{itemize}
         \item \textbf{C}: The user must be able to input the rate of traffic flow from 
-            each direction to each other direction via text fields (one per traffic flow) 
-            in the User Interface (UI).
-        \item \textbf{D}: The system must accept input from the text fields, parse the input to 
-            determine if each traffic flow is a valid number, and, if all traffic flows 
-            are valid, allow the simulation to be run.
-        \item \textbf{Verification}: running the simulation with one set of valid traffic 
-            flow rates in the text fields, running it again with a different set in 
-            the same fields and verifying the junction efficiency metrics have changed, 
-            and then trying to run the simulation with an invalid value in at least one 
-            text field (e.g. “TEST” for Eastbound Traffic Flow Exiting West)
+            each direction to each other direction via the User Interface (UI).
+        \item \textbf{D}: The system must accept traffic input from text fields, parse the input to 
+            determine if each traffic flow is a valid integer, and prevent the simulation from 
+            running if any are not.
+        \item \textbf{Verification}: Run the simulation with two valid sets of traffic configurations 
+            to check that the simulation both runs and responds to changes in traffic flow. Then attempt to run 
+            the simulation with an invalid set of traffic flow rates, which should not be possible.
         \item\textbf{Traceability}: Input Parameters section in the specification
     \end{itemize}
     
+    % Valid lane configuration
     \item \textbf{\underline{Requirement 2 (Must)}}
     \begin{itemize}
         \item \textbf{C}: The user will be able to adjust the number of lanes (between 1 and 5) 
             and toggle left lanes, right lanes, bus lanes, and pedestrian crossings. They will 
             also be able to configure the timings and frequency of pedestrians crossing.
         \item \textbf{D}: For a given configuration the system will determine if it is a valid 
-            configuration.
+            configuration and prevent the simulation from running if it is not.
         \item \textbf{Verification}: run a simulation with default parameters (2 lanes per 
             road entering the junction, equal priority on all lights, and all other 
             settings set to off/No) as a reference, and then run a simulation per setting 
             with that setting adjusted, showing the results of each simulation is different 
             from the reference.
-        \item\textbf{Traceability}: Configurable Parameters section in the specification well
+        \item\textbf{Traceability}: Configurable Parameters section in the specification
     \end{itemize}
 
-    % Insert requirement for priority
+    % priority
+    \item \textbf{\underline{Requirement 3 (Must)}}
+    \begin{itemize}
+        \item \textbf{C}: The user will be able to assign a priority value (From 0 which means 
+            no priority, to 4 which is the highest) to traffic entering the junction from certain 
+            directions. 
+        \item \textbf{D}: If any priorities are invalid, then prevent the simulation from running. 
+            Otherwise, ensure that the simulation takes into account traffic priority.
+        \item \textbf{Verification}: run a simulation with no priorities, then compare it to another 
+            with the same layout but with some priorities. Wait times for cars coming from priorities 
+            directions should be reduced in the second simulation.
+        \item\textbf{Traceability}: Configurable Parameters section in the specification
+    \end{itemize}
 
-    \item \textbf{\underline{Requirement 3 (Should)}}
+    % Graphical representation
+    \item \textbf{\underline{Requirement 4 (Should)}}
     \begin{itemize}
         \item \textbf{C}: The user will be presented with a graphical representation of the junction 
         based on the parameters they have entered.
@@ -101,7 +114,8 @@ frontend to generate a report of the efficiency of each junction configuration.
         representation is a "nice-to-have"'
     \end{itemize}
 
-    \item \textbf{\underline{Requirement 4 (Must)}}
+    % Comparisons of junction configurations allowed
+    \item \textbf{\underline{Requirement 5 (Must)}}
     \begin{itemize}
         \item \textbf{C}: The user must be able to create multiple junction configurations (as 
         well as remove configurations), with the system simulating all of them when the run 
@@ -111,31 +125,29 @@ frontend to generate a report of the efficiency of each junction configuration.
         must be simulated and their required results generated.
         \item \textbf{Verification}: Create more than one junction configuration, press the run 
         simulation button, and then verify that results are shown for all the created junction 
-        configurations. Remove a conf0-4 iguration, press the run simulation button again, and verify 
+        configurations. Remove a configuration, press the run simulation button again, and verify 
         that the results are the same except the removed junction's results are no longer present.
         \item\textbf{Traceability}: Output section and Configurable Parameters section in the specification.
     \end{itemize}
 
-    \item \textbf{\underline{Requirement 5 (Must)}}
+    % Junction metrics
+    \item \textbf{\underline{Requirement 6 (Must)}}
     \begin{itemize}
-        \item \textbf{C}: After running the simulation, for each junction configuration, 
-            the user must be provided with the following three junction efficiency metrics 
-            per road entering the junction, as well as an overall score generated from the 
-            three metrics for the whole configuration: average wait time, maximum wait time, 
-            and maximum queue length.
-        \item \textbf{D}: When the simulation is run, for each junction configuration, the system 
-            must take the configuration and the input traffic flow rates (shared across all 
-            configurations) and calculate the average wait time, maximum wait time and 
-            maximum queue length per direction entering the junction, as well as combine 
-            these metrics to calculate an overall score for the whole configuration
+        \item \textbf{C}: After running the simulation the user must be provided with the average 
+            wait time, maximum wait time, maximum queue length, and an overall score for each road 
+            entering the junction. This must be done for each simulated configuration.
+        \item \textbf{D}: When running the simulation, the average wait time, maximum wait time, 
+            maximum queue length must be tracked throughout. These should then be used to generate 
+            an overall score and all four should be output to the user. This should be done for each 
+            road entering the junction in each simulation.
         \item \textbf{Verification}: run the simulation once with two different configurations 
-            or twice with a single configuration and different traffic flows, and verify 
-            that there is a difference between the metrics and overall score of the 
-            configurations/simulation runs
+            or twice with a single configuration and different traffic flows, then verify 
+            that the expected metrics have been generated and that they align with each configuration.
         \item\textbf{Traceability}: Output section in the specification
     \end{itemize}
 
-    \item \textbf{\underline{Requirement 6 (Must)}}
+    % Graphical junction metrics
+    \item \textbf{\underline{Requirement 7 (Must)}}
     \begin{itemize}
         \item \textbf{C}: After running the simulation, the user must be presented the efficiency metrics 
         and score for each junction configuration side by side in a table or graph format.
@@ -146,7 +158,8 @@ frontend to generate a report of the efficiency of each junction configuration.
         \item\textbf{Traceability}: Output section in the specification.
     \end{itemize}
 
-    \item \textbf{\underline{Requirement 7 (Should)}}
+    % left vs right hand drive selection
+    \item \textbf{\underline{Requirement 8 (Should)}}
     \begin{itemize}
         \item \textbf{C}: The user must be able to select whether cars drive on the left-hand side of 
             the road or right-hand side, affecting the graphical representation of the junction
@@ -163,7 +176,8 @@ frontend to generate a report of the efficiency of each junction configuration.
             as a unique selling point of our software
     \end{itemize}
 
-    \item \textbf{\underline{Requirement 8 (Should)}}
+    % Consider distance between lanes in the box junction
+    \item \textbf{\underline{Requirement 9 (Should)}}
     \begin{itemize}
         %\item \textbf{C}: %Don't know if there is one for this
         \item \textbf{D}: The system must take into account the distance between the entrance and exit 
@@ -179,7 +193,8 @@ frontend to generate a report of the efficiency of each junction configuration.
             as a unique selling point of our software
     \end{itemize}
 
-    \item \textbf{\underline{Requirement 9 (Could)}}
+    % junction configuration optimisation
+    \item \textbf{\underline{Requirement 10 (Could)}}
     \begin{itemize}
         \item \textbf{C}: When the simulation is run, if a certain setting is configured, then the best 
             possible set of junction settings based on the same input traffic flows, and the 
@@ -198,7 +213,8 @@ frontend to generate a report of the efficiency of each junction configuration.
             the software is “to identify the most effective configuration of the traffic junction”
     \end{itemize}
 
-    \item \textbf{\underline{Requirement 10 (Could)}}
+    % sankey traffic flow
+    \item \textbf{\underline{Requirement 11 (Could)}}
     \begin{itemize}
         \item \textbf{C}: When the simulation is run, the user should be able to select a certain junction entrance 
             and display the amount of traffic going into other exits via a 
@@ -215,21 +231,23 @@ frontend to generate a report of the efficiency of each junction configuration.
             inputs.
     \end{itemize}
 
-    \item \textbf{\underline{Requirement 11 (Must)}}
-    \begin{itemize}
-        \item \textbf{C}: The user's inputs must be validated in real time, with the user being provided clear 
-        feedback for any invalid inputs to guide them towards correcting them.
-        \item \textbf{D}: The system must validate user input in real time, identifying any invalid entries, 
-        and provide clear feedback to the user through the user interface to aid them in correcting entries.
-        \item \textbf{Verification}: Enter valid numbers in the traffic flow fields and ensure the 
-        simulation proceeds without error. Then enter an invalid value (e.g., “abc” or a negative number) into 
-        a field, and verify that the system highlights the field, displays an error message, and prevents the 
-        simulation from starting until the error is corrected. Finally, leave a required field empty and ensure 
-        the system displays a warning, specifying the field that needs attention.
-        \item\textbf{Traceability}: Input section and User Experience / User Interface subsection of 
-        Considerations section in the specification.
-    \end{itemize}
+    % Removed Input validation requirement (combined into other requirements)
+    % \item \textbf{\underline{Requirement 12 (Must)}}
+    % \begin{itemize}
+    %     \item \textbf{C}: The user's inputs must be validated in real time, with the user being provided clear 
+    %     feedback for any invalid inputs to guide them towards correcting them.
+    %     \item \textbf{D}: The system must validate user input in real time, identifying any invalid entries, 
+    %     and provide clear feedback to the user through the user interface to aid them in correcting entries.
+    %     \item \textbf{Verification}: Enter valid numbers in the traffic flow fields and ensure the 
+    %     simulation proceeds without error. Then enter an invalid value (e.g., “abc” or a negative number) into 
+    %     a field, and verify that the system highlights the field, displays an error message, and prevents the 
+    %     simulation from starting until the error is corrected. Finally, leave a required field empty and ensure 
+    %     the system displays a warning, specifying the field that needs attention.
+    %     \item\textbf{Traceability}: Input section and User Experience / User Interface subsection of 
+    %     Considerations section in the specification.
+    % \end{itemize}
 
+    % Error messages and logging
     \item \textbf{\underline{Requirement 12 (Must)}}
     \begin{itemize}
         \item \textbf{C}: The user must be provided with user-friendly error messages whenever there is an invalid 
@@ -238,10 +256,9 @@ frontend to generate a report of the efficiency of each junction configuration.
         \item \textbf{D}: The system must provide user-friendly error messages for invalid inputs or system failures. 
         These messages should clearly explain the issue in non-technical terms for the user, while also logging 
         technical details for debugging purposes.
-        \item \textbf{Verification}: Trigger a known error, such as submitting invalid traffic flow rates, and verify 
-        that the system displays a user-friendly error message with details like the affected field and suggested 
-        resolution. Then simulate a system failure and confirm that a technical error message is logged for debugging, 
-        while the user sees a generic failure message.
+        \item \textbf{Verification}: Attempt to run the simulation with invalid traffic flow rate values, then verify 
+        that an error message is produced . Then simulate a system failure and confirm that a technical error message 
+        is logged for debugging, while the user sees a generic failure message.
         \item\textbf{Traceability}: Input section and User Experience / User Interface subsection of Considerations 
         section in the specification.
     \end{itemize}
