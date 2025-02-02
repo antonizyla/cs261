@@ -3,16 +3,43 @@ class Vehicle:
         self.direction_from = direction_from
         self.direction_to = direction_to
 
+    def getDirectionFrom(self):
+        return self.direction_from
+    
+    def getDirectionTo(self):
+        return self.direction_to
+
 class Lane:
-    def __init__(self, currentVehicles, queueLimit, flowing, directionTo, directionFrom, maxLength, maxWait, avgWait):
+    def __init__(self, currentVehicles, queueLimit, flowing, directionTo, directionFrom):
         self.currentVehicles = []
         self.queueLimit = queueLimit
         self.flowing = False
         self.directionTo = directionTo
         self.directionFrom = directionFrom
+
+    def getNoVehicles(self):
+        return len(self.currentVehicles)
+    
+    def addVehicle(self, vehicle):
+        self.currentVehicles.append(vehicle)
+
+    def simulateUpdate(self):
+        #TODO
+        pass
+    
+class Direction:
+    def __init__(self, pools, lanes, dedicatedLane, dedicatedLaneFlow, maxLength, maxWait, avgWait):
+        self.pools = pools
+        self.lanes = lanes
+        self.dedicatedLane = dedicatedLane
+        self.dedicatedLaneFlow = dedicatedLaneFlow
         self.maxLength = maxLength
         self.maxWait = maxWait
         self.avgWait = avgWait
+    
+    def simulateUpdate(self):
+        #TODO
+        pass
 
     def getMaxLength(self):
         return self.maxLength
@@ -22,18 +49,8 @@ class Lane:
     
     def getAvgWait(self):
         return self.avgWait
-    
-class Direction:
-    def __init__(self, pools, lanes, dedicatedLane, dedicatedLaneFlow):
-        self.pools = pools
-        self.lanes = lanes
-        self.dedicatedLane = dedicatedLane
-        self.dedicatedLaneFlow = dedicatedLaneFlow
-    
-    def simulateUpdate(self):
-        #TODO
-        pass
 
+    
 class Parameters:
     def __init__(self, noLanes, dedicatedLane, dedicatedLaneFlow, pedestrianCrossing, crossingTime, crossingRPH, sequencingPriority):
         self.noLanes = noLanes
