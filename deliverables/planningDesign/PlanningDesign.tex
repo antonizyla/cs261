@@ -212,7 +212,7 @@ the software in the future.
 When `runSimulation` is run, a for loop will iterate for a set number of iterations (to be decided during development), during 
 which it will choose the most optimal state for the traffic lights (in terms of traffic flow) based on the previous state and the 
 traffic sequencing priorities, as well as call `simulateUpdate` for each Direction object, to add and remove Vehicle objects from 
-its Lane objects to simulate vehicles waiting to transit and transiting the junction. After these iterations, it will call for 
+its Lane objects to simulate vehicles waiting to transit and transiting the junction. After all the iterations, it will call for 
 the junction efficiency metrics of each direction using `getMaxLength()`, `getMaxWait()`, and `getAvgWait()`, calculate the 
 overall score for the configuration, and then instantiate a ResultSet object with the metrics and score to return to the front-end.
 
@@ -222,6 +222,13 @@ direction. Each `Lane` has a limit on the number of vehicles it can contain (`qu
 vehicles are added to each lane to replace any vehicles which have transited the junction, with their respective `pools` value 
 being decreased by the number added to the lane and increased by the corresponding traffic flow rate multiplied by the time the 
 iteration represents.
+
+For the traffic lights, we decided that there would be four main states they could be in (ignoring pedestrian crossings): North and 
+South traffic allowed to exit left and ahead, North and South traffic allowed to exit right, East and West traffic allowed to exit 
+left and ahead, East and West traffic allowed to exit right. This state is passed in the form of an Enum to the Direction and then 
+Lane objects via `simulateUpdate`, where a Lane only dequeues Vehicle objects if the `directionFrom` and `directionTo` attributes 
+of the current Vehicle agree with the state passed. For the simulation, we have assumed that if two vehicles coming from opposite 
+directions are turning right in the junction, they turn in front of each other rather than behind each other.
 
 
 \subsection{Interfacing with Frontend}
