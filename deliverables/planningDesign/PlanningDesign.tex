@@ -113,8 +113,11 @@ For the front-end, we have decided to use Python and the PyQT toolkit to create 
 with the frameworks, and it is a powerful and flexible toolkit that will allow us to create a user-friendly interface.
 
 \subsection{User Interface}
-The user interface will be designed to be simple and intuitive, with the user able to input the parameters of the junction configuration.
-The picture below shows a mock-up of the user interface:
+The user interface is structured into three main sections: input configuration, simulation
+control, and results display, ensuring a logical workflow from data entry to simulation
+analysis. The design prioritises usability, providing clear input options, intuitive controls, and
+meaningful output visualisations. The figure below shows a rough mock up of the design we intend to use.
+
 
 \begin{figure}[H]
     \centering
@@ -123,25 +126,39 @@ The picture below shows a mock-up of the user interface:
     \label{frontendUI}
 \end{figure}
 
-The user will be able to input the number of lanes on each road, the flow rates from each direction to the other directions and specific lanes such
-as the bus lane, left-turn lane or right-turn lane. The simulation can start by clicking the "Start Simulation" button. The simulation will then run and the results will be displayed on the screen on a tabular format.
-The figure below shows a mock-up of the results table:
+The user will be able to switch between two tabs on the left-hand side where one tab requires the user to input the traffic flow rates for each exit. The second tab allows the user to change configurable parameters, such as being able to change the number of lanes on each road. Additional
+configuration options include checkboxes and radio buttons to enable or disable specific junction features such as left-turn lanes, bus/cycle lanes, and pedestrian crossings. A priority selection system (0 to 4 scale) allows users to define which traffic flows receive higher priority. To improve accessibility and ease of use, tooltips and help text will guide users in configuring their simulation parameters correctly.
 
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.8\textwidth]{frontendoutput.png}
-    \caption{Mock-up of the Results Table}
-    \label{frontendoutput}
-\end{figure}
+\subsection{Simulation Control/Interfacing with Back-End}
+The simulation control section includes essential interactive buttons for managing the
+simulation process. The "Run Simulation" button will validate the input to ensure that it is within the required range and that there are no conflicts between certain parameters before sending the user-defined inputs to the back-end
+for processing. Afterwards, the back-end will run the simulation and to return the results to the front-end when it is done processing. 
+The "Reset" button allows users to clear all inputs and reconfigure the
+junction settings. A progress indicator provides real-time feedback, notifying users when the
+simulation is running to prevent duplicate submissions and improve overall responsiveness.
 
-\subsection{Interfacing with Back-End}
-Before accepting any user input, the front-end will validate the input to ensure that it is within the required range and that there are no conflicts between certain parameters.
-The front-end will then pass the input to the back-end using an API. The back-end will run the simulation when the "Start Simulation" button is clicked and return the results to the front-end when the simulation finishes,
-which will display them on the screen as described above.
+\subsection{Integration with Back-End and Data Flow}
+The front-end communicates with the Python-based backend to process inputs and retrieve simulation results. The data flow follows:
+\begin{enumerate}
+    \item Users input traffic parameters and configure junction settings.
+    \item The front-end validates inputs to prevent errors.
+    \item The validated data is sent to the backend simulation engine for processing.
+    \item The backend computes traffic performance metrics, including wait times, queue lengths, and efficiency scores.
+    \item The results are returned to the front-end, which displays them in structured tables, charts, and animations.
+\end{enumerate}
 
-\subsection{Error Handling}
+The front-end will also use PyQt’s 2D animation capabilities to provide a visual
+representation of traffic flow, simulating vehicle movement, queue formation, and signal
+changes dynamically. Since both the front-end and backend are developed in Python,
+integration is seamless, using direct function calls instead of external APIs.
+
+\subsection{Error Handling (User)}
 Throughout the whole process of the software, from inputting the parameters to displaying the results, the front-end will have error handling to ensure that the software is robust and reliable.
-Friendly error messages will be displayed to the user if they input invalid parameters or if there is an error in the simulation. The following pictures show examples of error messages that will be displayed:
+Friendly error messages will be displayed to the user if they input invalid parameters or if there is an error in the simulation. For repeated invalid inputs, the system will provide progressive guidance to users rather
+than displaying generic error messages. Where possible, minor formatting issues will be
+auto-corrected or users will be prompted with suggested values. For example, if a negative
+vehicle flow rate is entered, the system will either convert it to a positive value or display a
+clear explanation prompting re-entry. The following pictures show examples of error messages that will be displayed:
 
 \begin{figure}[H]
     \centering
@@ -149,6 +166,13 @@ Friendly error messages will be displayed to the user if they input invalid para
     \caption{Examples of Error Messages}
     \label{errormsg}
 \end{figure}
+
+\subsection{Error Handling (Developers)}
+To enhance maintainability and debugging efficiency, the front-end will incorporate an error
+logging mechanism. When an issue arises—such as invalid input, backend failure, or
+unexpected UI behaviour—the system will log the error details into a local log file. This log
+will include timestamps, error descriptions, and system state information, allowing
+developers to diagnose and resolve issues efficiently.
 
 \section{Back-End}
 %Discussion of the design of the simulation
