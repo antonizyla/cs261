@@ -1,11 +1,11 @@
 <mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:134.0) Gecko/20100101 Firefox/134.0" version="26.0.10">
   <diagram name="Page-1" id="oxjvKKrLQxTuf2YgquoG">
-    <mxGraphModel dx="1969" dy="1311" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="1395" dy="1045" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
         <mxCell id="jd0vacFJKazLvNhS75w0-1" value="Vehicle" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="471" y="470" width="214" height="117" as="geometry" />
+          <mxGeometry x="471" y="460" width="214" height="117" as="geometry" />
         </mxCell>
         <mxCell id="jd0vacFJKazLvNhS75w0-2" value="&lt;div&gt;- directionFrom: Enum&lt;br&gt;&lt;/div&gt;&lt;div&gt;- directionTo: Enum&lt;/div&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="jd0vacFJKazLvNhS75w0-1" vertex="1">
           <mxGeometry y="26" width="214" height="40" as="geometry" />
@@ -29,16 +29,16 @@
           <mxGeometry y="130" width="340" height="59" as="geometry" />
         </mxCell>
         <mxCell id="jd0vacFJKazLvNhS75w0-9" value="Lane" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="408" y="259.5" width="340" height="164" as="geometry" />
+          <mxGeometry x="408" y="259.5" width="340" height="153" as="geometry" />
         </mxCell>
-        <mxCell id="jd0vacFJKazLvNhS75w0-10" value="&lt;div&gt;- currentVehicles: Queue&lt;/div&gt;&lt;div&gt;- queueLimit: int&lt;br&gt;&lt;/div&gt;&lt;div&gt;- flowing: boolean&lt;/div&gt;&lt;div&gt;- directionTo: Direction[]&lt;br&gt;&lt;/div&gt;&lt;div&gt;- directionFrom: Direction&lt;br&gt;&lt;/div&gt;&lt;br&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="jd0vacFJKazLvNhS75w0-9" vertex="1">
-          <mxGeometry y="26" width="340" height="87" as="geometry" />
+        <mxCell id="jd0vacFJKazLvNhS75w0-10" value="&lt;div&gt;- currentVehicles: Queue&lt;/div&gt;&lt;div&gt;- queueLimit: int&lt;br&gt;&lt;/div&gt;&lt;div&gt;- directionTo: Enum[]&lt;br&gt;&lt;/div&gt;&lt;div&gt;- directionFrom: Enum&lt;br&gt;&lt;/div&gt;&lt;br&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="jd0vacFJKazLvNhS75w0-9" vertex="1">
+          <mxGeometry y="26" width="340" height="65" as="geometry" />
         </mxCell>
         <mxCell id="jd0vacFJKazLvNhS75w0-11" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" parent="jd0vacFJKazLvNhS75w0-9" vertex="1">
-          <mxGeometry y="113" width="340" height="8" as="geometry" />
+          <mxGeometry y="91" width="340" height="8" as="geometry" />
         </mxCell>
-        <mxCell id="jd0vacFJKazLvNhS75w0-12" value="&lt;div&gt;+ addVehicles(int): void&lt;/div&gt;&lt;div&gt;+ setFlowing(boolean): void&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="jd0vacFJKazLvNhS75w0-9" vertex="1">
-          <mxGeometry y="121" width="340" height="43" as="geometry" />
+        <mxCell id="jd0vacFJKazLvNhS75w0-12" value="&lt;div&gt;+ getNoVehicles(): int&lt;br&gt;&lt;/div&gt;&lt;div&gt;+ addVehicles(int): void&lt;/div&gt;&lt;div&gt;+ simulateUpdate(Enum): void&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="jd0vacFJKazLvNhS75w0-9" vertex="1">
+          <mxGeometry y="99" width="340" height="54" as="geometry" />
         </mxCell>
         <mxCell id="9Fev3YQkVDB2IQATz0QZ-1" value="Parameters" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="408" y="-6" width="340" height="256" as="geometry" />
@@ -85,7 +85,7 @@
         <mxCell id="06XONdzjnRlJbY4Ql9yB-7" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" parent="06XONdzjnRlJbY4Ql9yB-5" vertex="1">
           <mxGeometry y="132" width="340" height="8" as="geometry" />
         </mxCell>
-        <mxCell id="06XONdzjnRlJbY4Ql9yB-8" value="&lt;div&gt;+ simulateUpdate(): void&lt;/div&gt;&lt;div&gt;+ getMaxLength(): int&lt;/div&gt;&lt;div&gt;+ getMaxWait(): float&lt;/div&gt;&lt;div&gt;+ getAvgWait(): float&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;br&gt;&lt;/div&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="06XONdzjnRlJbY4Ql9yB-5" vertex="1">
+        <mxCell id="06XONdzjnRlJbY4Ql9yB-8" value="&lt;div&gt;+ simulateUpdate(Enum): void&lt;/div&gt;&lt;div&gt;+ getMaxLength(): int&lt;/div&gt;&lt;div&gt;+ getMaxWait(): float&lt;/div&gt;&lt;div&gt;+ getAvgWait(): float&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;br&gt;&lt;/div&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="06XONdzjnRlJbY4Ql9yB-5" vertex="1">
           <mxGeometry y="140" width="340" height="66" as="geometry" />
         </mxCell>
         <mxCell id="06XONdzjnRlJbY4Ql9yB-11" value="" style="endArrow=diamondThin;endFill=1;endSize=24;html=1;rounded=0;fontSize=12;curved=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" parent="1" source="9Fev3YQkVDB2IQATz0QZ-6" target="jd0vacFJKazLvNhS75w0-5" edge="1">
@@ -106,7 +106,7 @@
             <mxPoint x="669" y="305" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="06XONdzjnRlJbY4Ql9yB-15" value="" style="endArrow=diamondThin;endFill=1;endSize=24;html=1;rounded=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;" parent="1" source="jd0vacFJKazLvNhS75w0-9" target="06XONdzjnRlJbY4Ql9yB-6" edge="1">
+        <mxCell id="06XONdzjnRlJbY4Ql9yB-15" value="" style="endArrow=diamondThin;endFill=1;endSize=24;html=1;rounded=0;entryX=0.999;entryY=-0.005;entryDx=0;entryDy=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryPerimeter=0;" parent="1" source="jd0vacFJKazLvNhS75w0-9" target="06XONdzjnRlJbY4Ql9yB-6" edge="1">
           <mxGeometry width="160" relative="1" as="geometry">
             <mxPoint x="391" y="418" as="sourcePoint" />
             <mxPoint x="391" y="466" as="targetPoint" />
