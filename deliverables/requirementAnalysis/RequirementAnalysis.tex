@@ -172,8 +172,9 @@ frontend to generate a report of the efficiency of each junction configuration.
             the simulation, then switching cars back to driving on the left-hand side and 
             running the simulation again, observing a change in the graphical representation 
             and a difference in the junction efficiency metrics
-        \item\textbf{Traceability}: Constraints and Assumptions section in the specification, included 
-            as a unique selling point of our software
+        \item\textbf{Traceability}: Constraints and Assumptions section in the specification.
+            Many countries drive on the right, so including this feature increases the number 
+            of regions in which the application could be used. This is also a unique selling point.
     \end{itemize}
 
     % Consider distance between lanes in the box junction
@@ -189,43 +190,26 @@ frontend to generate a report of the efficiency of each junction configuration.
             road has 100vph exiting right, preventing another road’s 100vph from exiting to its
             own right and another road’s 100vph from exiting ahead such that these two do not 
             interfere with each other)
-        \item\textbf{Traceability}: Constraints and Assumptions section in the specification, included 
-            as a unique selling point of our software
+        \item\textbf{Traceability}: Constraints and Assumptions section in the specification. 
+            This will increase the accuracy of the simulation and is a unique selling point.
     \end{itemize}
 
     % sankey traffic flow
     \item \textbf{\underline{Requirement 10 (Could)}}
     \begin{itemize}
-        \item \textbf{C}: When the simulation is run, the user should be able to select a certain junction entrance 
-            and display the amount of traffic going into other exits via a 
-            Sankey diagram.
-        \item \textbf{D}: When the simulation is run, the user should be able to click on a junction entrance and see 
-            the amount of traffic flowing into the other exits from the selected entrance, where the volume 
-            flowing into an exit is proportional to the traffic flow through it.
+        \item \textbf{C}: The user will be able to click on an arm of the junction to view the flow of cars 
+            from it to other arms via a Sankey diagram.
+        \item \textbf{D}: When the user clicks on an arm of the junction, a Sankey diagram will be displayed. 
+            Each flow of this diagram should point to another arm of the junction and have a width which is 
+            proportional to the number of cars driving from the selected arm to that arm.
         \item \textbf{Verification}: Select a junction entrance and check whether the volume flowing
             is proportional to the associated traffic flows. Repeat for the other exits.
-        \item\textbf{Traceability}: while not directly specified, this requirement could be traced back 
+        \item\textbf{Traceability}: While not directly specified, this requirement could be traced back 
             to the Output section, where the customer wants to be able to “identify the most effective 
             configuration of the traffic junction”. By adding this, the user could see how the traffic 
             flows into other exits via a graphical interface that will change depending on the user's 
             inputs.
     \end{itemize}
-
-    % Removed Input validation requirement (combined into other requirements)
-    % \item \textbf{\underline{Requirement 12 (Must)}}
-    % \begin{itemize}
-    %     \item \textbf{C}: The user's inputs must be validated in real time, with the user being provided clear 
-    %     feedback for any invalid inputs to guide them towards correcting them.
-    %     \item \textbf{D}: The system must validate user input in real time, identifying any invalid entries, 
-    %     and provide clear feedback to the user through the user interface to aid them in correcting entries.
-    %     \item \textbf{Verification}: Enter valid numbers in the traffic flow fields and ensure the 
-    %     simulation proceeds without error. Then enter an invalid value (e.g., “abc” or a negative number) into 
-    %     a field, and verify that the system highlights the field, displays an error message, and prevents the 
-    %     simulation from starting until the error is corrected. Finally, leave a required field empty and ensure 
-    %     the system displays a warning, specifying the field that needs attention.
-    %     \item\textbf{Traceability}: Input section and User Experience / User Interface subsection of 
-    %     Considerations section in the specification.
-    % \end{itemize}
 
     % Error messages and logging
     \item \textbf{\underline{Requirement 11 (Must)}}
@@ -245,6 +229,32 @@ frontend to generate a report of the efficiency of each junction configuration.
 \end{itemize}
 
 \subsection{Non-functional Requirements}
+\begin{itemize}
+    \item \textbf{\underline{Requirement 12 (Should)}}
+    \begin{itemize}
+        \item The graphical representation of the junction configuration should be able to respond to changes within 
+            0.5 seconds.
+        \item \textbf{Verification}: Record the time taken when changing the junction configuration and ensure that 
+            the average time is below 0.5 seconds.
+        \item\textbf{Traceability}: This is needed to maintain the responsiveness of the application.
+    \end{itemize}
+
+    \item \textbf{\underline{Requirement 13 (Should)}}
+    \begin{itemize}
+        \item The application should be able to run on Windows, Mac, and Linux.
+        \item \textbf{Verification}: The application will be tested on all three
+             platforms and will all simulate the same configuration. All three should 
+             run without crashes and produce the same results. 
+        \item\textbf{Traceability}: This will increase the portability of the application 
+            and increase its usefulness as many people may be unfamiliar with Linux.
+    \end{itemize}
+
+    \item \textbf{\underline{Requirement 14 (Should)}}
+    \begin{itemize}
+        \item The codebase will be modular and well documented.
+        \item\textbf{Traceability}: This will aid with future development of the application.
+    \end{itemize}
+\end{itemize}
 
 \section{Project Philosophy}
 \subsection{Team Roles}
