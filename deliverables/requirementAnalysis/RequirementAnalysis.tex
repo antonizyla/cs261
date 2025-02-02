@@ -193,28 +193,8 @@ frontend to generate a report of the efficiency of each junction configuration.
             as a unique selling point of our software
     \end{itemize}
 
-    % junction configuration optimisation
-    \item \textbf{\underline{Requirement 10 (Could)}}
-    \begin{itemize}
-        \item \textbf{C}: When the simulation is run, if a certain setting is configured, then the best 
-            possible set of junction settings based on the same input traffic flows, and the 
-            junction efficiency metrics will be displayed alongside the other junction 
-            configurations the user created.
-        \item \textbf{D}: When the simulation is run, if the setting is configured, then the best 
-            possible junction configuration (and its results) for the set of input traffic 
-            flows must be determined and output along with the results of the junction 
-            configurations created by the user
-        \item \textbf{Verification}: run the simulation without the setting configured and verify 
-            no extra junction configuration is displayed, then run the simulation again with 
-            the setting configured, and verify that the extra junction configuration is displayed 
-            and that it is the most effective configuration based on its efficiency metrics
-        \item\textbf{Traceability}: while not directly specified, this requirement could be traced back 
-            to the Output section, where it states that the client’s main objective when using 
-            the software is “to identify the most effective configuration of the traffic junction”
-    \end{itemize}
-
     % sankey traffic flow
-    \item \textbf{\underline{Requirement 11 (Could)}}
+    \item \textbf{\underline{Requirement 10 (Could)}}
     \begin{itemize}
         \item \textbf{C}: When the simulation is run, the user should be able to select a certain junction entrance 
             and display the amount of traffic going into other exits via a 
@@ -248,7 +228,7 @@ frontend to generate a report of the efficiency of each junction configuration.
     % \end{itemize}
 
     % Error messages and logging
-    \item \textbf{\underline{Requirement 12 (Must)}}
+    \item \textbf{\underline{Requirement 11 (Must)}}
     \begin{itemize}
         \item \textbf{C}: The user must be provided with user-friendly error messages whenever there is an invalid 
         input or system failure. They must also be provided technical details so they or a colleague can debug any 
