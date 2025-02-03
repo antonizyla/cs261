@@ -266,23 +266,40 @@ checked automatically that they produce the correct result.
 
 As we are using python for parts of the project and they are going to live 
 in the same project we will be able to reuse the validation logic between both 
-sections, guaranteeing consistent behaviour.
-
+sections, guaranteeing consistent behaviour. This also means that if the system 
+is expanded in the future it would allow for quick and consistent changes to the 
+validation logic across the whole application.
 
 \section{Deployment}
 %This is where we discuss containerisation
+As we will be programming both the frontend and backend in python under a single 
+application we will package for each operating system separately, this will require 
+a build process for each platform. As we are developing and testing across all of 
+our team members personal computers we will effectively be testing along the way 
+if it works well across all platforms. We have 2 Mac, 3 Windows and 1 Linux machine.
 
 \subsection{Modularity}
-Separation of the frontend and backend into separate services will allow us to more 
-easily expand the system in the future. The backend simulation is connected to an API 
-which can then be accessed using different applications, the frontend and backend can 
-be developed independently and can be swapped in and out as long as they maintain the 
-API used to communicate between each other.
+Despite our team forgoing the descision to create a separate frontend and backend 
+service we will still make sure that there is a degree of separation between the 
+two, all the logic will be kept to itself and not intertwined inside the frontend.
 
-Docker/Podman is an open standard and will allow for these containers to be ran 
+This will allow us to expand easily in the future by eschewing the backend into 
+it's own service with the front end clients being swapped in and out and tailored 
+to individual customer's needs. This backend service could be containerised, this 
+would allow for it to be setup in a distributed network not only for greater 
+perfomance but also fault tolerance and reliability.
+
+Docker/Podman is an open standard and would allow for these containers to be ran 
 on any platform with a container engine.
 
 \subsection{Scalability and Fault tolerance}
+In the future the backend could be made quite simply into a basic docker container, 
+allowing it to be deployed on any linux machine with great devops ergonomics. In the 
+initial prototype stage that we will submit the system will be running locally on the 
+user's machine, if any non fixable faults are encountered the system will simply 
+restart with an error message, for any fixable faults it will allow the user to change 
+whatever the causing parameter was.
+
 Usage of containerisation in this manner would allow us to scale the system as the 
 needs of it grow, if for example we have multiple applications taking data from the 
 backend at a time we can run multiple instances of the backend and use a load balancer 
@@ -294,7 +311,7 @@ set of containers in a distributed network.
 Developing inside a container allows for a consistent build and deployment environment 
 every time, if a client has an installation of docker/podman then they would be able to 
 run the software just as they would any other container. Containers are largely similar 
-to bare metal performance so in small use cases (start of the program lifecycle) there 
-is no significant impact by using containers.
+to bare metal performance would have minimal effect on an app like this especially as 
+we wouldn't have much interaction with the underlying system e.g filesystem.
 
 \end{document}
