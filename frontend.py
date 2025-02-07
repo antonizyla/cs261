@@ -75,7 +75,7 @@ class MainWindow(QMainWindow):
                 "right_turn_lane": getattr(self, f"{road_name}_right_turn_lane_checkbox").isChecked()
             }
 
-        # Prints inputs in ternminal when button is clicked
+        # Prints inputs in terminal when button is clicked
         for road_name, inputs in road_inputs.items():
             print(f"{road_name.replace('_', ' ').title()}:")
             print(f"  Vehicles per Hour: {inputs['vph']}")
@@ -84,6 +84,12 @@ class MainWindow(QMainWindow):
             print(f"  Left Turn Lane: {inputs['left_turn_lane']}")
             print(f"  Right Turn Lane: {inputs['right_turn_lane']}")
             print()
+
+    # Handle window close event
+    def closeEvent(self, event):
+        print("Window closed.")
+        event.accept()  # Ensure the window actually closes
+
 
 app = QApplication(sys.argv)
 window = MainWindow()
