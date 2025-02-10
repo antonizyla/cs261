@@ -3,6 +3,7 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QGraphicsScene, QGraphics
 from PyQt5.QtGui import QPixmap, QBrush, QColor
 from PyQt5.QtCore import QRectF
 from enum import Enum, Flag, auto, unique
+from abc import ABC, abstractmethod
 
 LANE_WIDTH = 31
 
@@ -23,80 +24,83 @@ class LaneType(Flag):
     SLR = S | L | R
 
 
-class LaneComponent():
-    def __init__(self):
-        self.crosswalkPixmap = None
-        self.lanePixmap = None
+class LaneComponent(ABC):
+    def __init__(self, scene, laneType, hasCrosswalk):
+        crosswalkPath = self.getCrosswalkPath(hasCrosswalk)
+        self.crosswalkItem = scene.addPixmap(QPixmap(crosswalkPath))
 
-    def pixmapsToScene(self, scene):
-        # Add crosswalk divider to scene
-        self.crosswalkItem = QGraphicsPixmapItem(self.crosswalkPixmap)
-        scene.addItem(self.crosswalkItem)
+        lanePath = self.getLanePath(laneType)
+        self.laneItem = scene.addPixmap(QPixmap(lanePath))
+        
+    @abstractmethod
+    def getCrosswalkPath(self, hasCrosswalk):
+        pass
 
-        # Add lane divider to scene
-        self.laneItem = QGraphicsPixmapItem(self.lanePixmap)
-        scene.addItem(self.laneItem)
-    
+    @abstractmethod
+    def getLanePath(self, laneType):
+        pass
+
     def setPos(self, x, y):
         self.crosswalkItem.setPos(x, y)
         self.laneItem.setPos(x, y+22)
 
 
 class DividerTile(LaneComponent):
-    def __init__(self, scene, dividerType, hasCrosswalk):
-        super().__init__()
+    def __init__(self, scene, laneType, hasCrosswalk):
+        super().__init__(scene, laneType, hasCrosswalk)
 
+    def getCrosswalkPath(self, hasCrosswalk):
         if hasCrosswalk:
-            self.crosswalkPixmap = QPixmap('tiles/cw_div.png')
+            crosswalkPath = 'tiles/cw_div.png'
         else:
-            self.crosswalkPixmap = QPixmap('tiles/no_cw_div.png')
+            crosswalkPath = 'tiles/no_cw_div.png'
+        return crosswalkPath
 
-        # Get pixmap for lane divider
-        match dividerType:
+    def getLanePath(self, laneType):
+        match laneType:
             case DivType.IN:
-                self.lanePixmap = QPixmap('tiles/in_div.png')
+                lanePath = 'tiles/in_div.png'
             case DivType.DIR:
-                self.lanePixmap = QPixmap('tiles/dir_div.png')
+                lanePath = 'tiles/dir_div.png'
             case DivType.OUT:
-                self.lanePixmap = QPixmap('tiles/out_div.png')
+                lanePath = 'tiles/out_div.png'
             case _:
                 raise ValueError('Invalid divider style')
-
-        self.pixmapsToScene(scene)
+        return lanePath
 
 
 class LaneTile(LaneComponent):
     def __init__(self, scene, laneType, hasCrosswalk):
-        super().__init__()
+        super().__init__(scene, laneType, hasCrosswalk)
 
-        # Get pixmap for crosswalk divider
+    def getCrosswalkPath(self, hasCrosswalk):
         if hasCrosswalk:
-            self.crosswalkPixmap = QPixmap('tiles/cw')
+            crosswalkPath = 'tiles/cw'
         else:
-            self.crosswalkPixmap = QPixmap('tiles/no_cw')
+            crosswalkPath = 'tiles/no_cw'
+        return crosswalkPath
 
-        # Get pixmap for lane divider
+    def getLanePath(self, laneType):
         match laneType:
             case LaneType.S:
-                self.lanePixmap = QPixmap('tiles/s_in.png')
+                lanePath = 'tiles/s_in.png'
             case LaneType.SL:
-                self.lanePixmap = QPixmap('tiles/sl_in.png')
+                lanePath = 'tiles/sl_in.png'
             case LaneType.SR:
-                self.lanePixmap = QPixmap('tiles/sr_in.png')
+                lanePath = 'tiles/sr_in.png'
             case LaneType.SLR:
-                self.lanePixmap = QPixmap('tiles/slr_in.png')
+                lanePath = 'tiles/slr_in.png'
             case LaneType.L:
-                self.lanePixmap = QPixmap('tiles/l_in.png')
+                lanePath = 'tiles/l_in.png'
             case LaneType.R:
-                self.lanePixmap = QPixmap('tiles/r_in.png')
+                lanePath = 'tiles/r_in.png'
             case LaneType.BUS:
-                self.lanePixmap = QPixmap('tiles/bus_in.png')
+                lanePath = 'tiles/bus_in.png'
             case LaneType.OUT:
-                self.lanePixmap = QPixmap('tiles/out.png')
+                lanePath = 'tiles/out.png'
             case _:
                 raise ValueError('Invalid lane style')
-
-        self.pixmapsToScene(scene)
+        return lanePath
 
 
 class Lane():
