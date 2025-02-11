@@ -2,6 +2,7 @@ from PyQt5.QtWidgets import (QWidget, QPushButton, QVBoxLayout, QLabel, QLineEdi
                              QSpinBox, QCheckBox, QGroupBox, QFormLayout, QToolButton, QHBoxLayout)
 from PyQt5.QtGui import QIntValidator
 from PyQt5.QtCore import Qt
+import os
 
 # Global variables to store inputs
 road_inputs = {
@@ -15,6 +16,9 @@ class InputAndParameterWidget(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
 
+        # Load and apply the stylesheet
+        self.apply_stylesheet()
+
         main_layout = QVBoxLayout()
 
         self.create_road_group(main_layout, "Northbound Traffic Flow", ["North", "East", "West"])
@@ -27,6 +31,15 @@ class InputAndParameterWidget(QWidget):
         main_layout.addWidget(self.submit_button)
 
         self.setLayout(main_layout)
+
+    def apply_stylesheet(self):
+        """Loads and applies the stylesheet."""
+        try:
+            with open(os.path.join(os.path.dirname(__file__), 'inputAndParameterPageStyleSheet.qss'), 'r') as f:
+                stylesheet = f.read()
+                self.setStyleSheet(stylesheet)
+        except FileNotFoundError:
+            print("Stylesheet file not found. Using default styles.")
 
     def create_road_group(self, layout, road_name, exit_directions):
         group_box = QGroupBox()
