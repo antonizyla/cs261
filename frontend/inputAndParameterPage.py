@@ -19,8 +19,13 @@ class InputAndParameterWidget(QWidget):
         # Load and apply the stylesheet
         self.apply_stylesheet()
 
+        # Initialize the default height
+        self.height = 1000
+        self.setFixedSize(600, self.height)  # Set the default height to 1000
+
         main_layout = QVBoxLayout()
 
+        # Create road groups
         self.create_road_group(main_layout, "Northbound Traffic Flow", ["North", "East", "West"])
         self.create_road_group(main_layout, "Southbound Traffic Flow", ["South", "East", "West"])
         self.create_road_group(main_layout, "Eastbound Traffic Flow", ["East", "North", "South"])
@@ -42,6 +47,7 @@ class InputAndParameterWidget(QWidget):
             print("Stylesheet file not found. Using default styles.")
 
     def create_road_group(self, layout, road_name, exit_directions):
+        """Creates a group box for each road section with input fields."""
         group_box = QGroupBox()
         form_layout = QFormLayout()
 
@@ -118,9 +124,20 @@ class InputAndParameterWidget(QWidget):
         if toggle_button.isChecked():
             toggle_button.setText(road_name + " " + "▼")  # Show the content
             group_box.setVisible(True)
+            self.adjust_window_height(1)  # Increase height when expanded
         else:
             toggle_button.setText(road_name + " " + "►")  # Hide the content
             group_box.setVisible(False)
+            # Collapse the group box to avoid large empty spaces
+            self.adjust_window_height(-1)  # Decrease height when collapsed
+
+    def adjust_window_height(self, change):
+        """ Adjusts the window height based on expanded/collapsed groups. """
+        if change == 1:
+            self.height = self.height + (200)
+        else:
+            self.height = self.height - (200)
+        self.setFixedSize(600, self.height)  # Update the window size
 
     def update_total_vph(self, road_name):
         """ Updates the total VpH label based on the sum of exit values. """
@@ -170,6 +187,5 @@ class InputAndParameterWidget(QWidget):
             print(f"  Bus Lane: {inputs['bus_lane']}")
             print(f"  Left Turn Lane: {inputs['left_turn_lane']}")
             print(f"  Right Turn Lane: {inputs['right_turn_lane']}")
-            for direction, vph in inputs["exit_vphs"].items():
-                print(f"  - Exiting {direction}: {vph} VpH")
+            print("  Exit VpH:", inputs['exit_vphs'])
             print()
