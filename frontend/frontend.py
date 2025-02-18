@@ -5,6 +5,7 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow, QTabWidget, QWidget, QLabel, QVBoxLayout
 from inputAndParameterPage import InputAndParameterWidget
+from resultsPage import ResultsPage
 
 class MainApplication(QMainWindow):
     def __init__(self):
@@ -32,11 +33,11 @@ class MainApplication(QMainWindow):
         self.tab_widget.addTab(simulation_tab, "Simulation")
 
         # Tab 3: Simulation Results
-        results_tab = QWidget()
-        results_layout = QVBoxLayout()
-        results_label = QLabel("Simulation Results will be displayed here.")
-        results_layout.addWidget(results_label)
-        results_tab.setLayout(results_layout)
+        results_tab = ResultsPage()
+        # results_layout = QVBoxLayout()
+        # results_label = QLabel("Simulation Results will be displayed here.")
+        # results_layout.addWidget(results_label)
+        # results_tab.setLayout(results_layout)
         self.tab_widget.addTab(results_tab, "Simulation Results")
 
     def closeEvent(self, event):
