@@ -12,27 +12,6 @@ class Parameters:
         self.crossingRPH = crossing_rph
         self.sequencingPriority = sequencing_priority
 
-    def generate_junction(self)->Junction:
-        north_lanes = []
-        east_lanes = []
-        south_lanes = []
-        west_lanes = []
-        if self.dedicatedLane:
-            north_lanes.append(Lane(5, Dir.NORTH, [Dir.SOUTH, Dir.WEST]))
-            east_lanes.append(Lane(5, Dir.EAST, [Dir.SOUTH, Dir.WEST]))
-            south_lanes.append(Lane(5, Dir.SOUTH, [Dir.NORTH, Dir.WEST]))
-            west_lanes.append(Lane(5, Dir.WEST, [Dir.NORTH, Dir.WEST]))
-        lanes_to_gen = self.noLanes - 1 if self.dedicatedLane else self.noLanes
-        if lanes_to_gen == 1:
-            north_lanes.append(Lane(5, Dir.NORTH, [Dir.SOUTH, Dir.WEST, Dir.EAST]))
-            # todo rest of this for east, south, west
-        else:
-            for i in range(lanes_to_gen-2):
-                north_lanes.append(Lane(5, Dir.NORTH, [Dir.SOUTH]))
-            north_lanes.append(Lane(5, Dir.NORTH, [Dir.SOUTH, Dir.EAST]))
-            north_lanes.append(Lane(5, Dir.NORTH, [Dir.SOUTH, Dir.WEST]))
-            # todo rest of this for east, south, west
-        return Junction(north_lanes, east_lanes, south_lanes, west_lanes, self)
 
     def getNoLanes(self)->int:
         return self.noLanes

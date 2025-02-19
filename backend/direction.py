@@ -10,18 +10,21 @@ class Direction:
         self.maxLength = maxLength
         self.maxWait = maxWait
         self.avgWait = avgWait
+
+    def empty_constructor(self):
+       pass
     
-    def simulateUpdate(self) -> None:
+    def simulate_update(self) -> None:
         #TODO
         pass
 
-    def getMaxLength(self) -> int:
+    def get_max_length(self) -> int:
         return self.maxLength
     
-    def getMaxWait(self)-> float:
+    def get_max_wait(self)-> float:
         return self.maxWait
     
-    def getAvgWait(self) -> float:
+    def get_avg_wait(self) -> float:
         return self.avgWait
 
     def check(self) -> bool:
