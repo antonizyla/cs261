@@ -13,26 +13,26 @@ class Parameters:
         self.sequencingPriority = sequencing_priority
 
 
-    def getNoLanes(self)->int:
+    def getNoLanes(self)->list[int]:
         return self.noLanes
     
-    def getDedicatedLane(self)->bool:
+    def getDedicatedLane(self)->list[LaneData]:
         return self.dedicatedLane
     
     def getDedicatedLaneFlow(self)->list[int]:
         return self.dedicatedLaneFlow
     
-    def hasPedestrianCrossing(self)->bool:
+    def hasPedestrianCrossing(self)->list[bool]:
         return self.pedestrianCrossing
     
-    def getCrossingTime(self)->int:
+    def getCrossingTime(self)->list[int]:
         return self.crossingTime
     
-    def getCrossingRPH(self)->float:
+    def getCrossingRPH(self)->list[float]:
         return self.crossingRPH
     
     def getSequencingPriority(self)->list[int]:
         return self.sequencingPriority
 
-    def isValidParamSet(self) -> bool:
+    def isValidParamSet(self) -> list[bool]:
         pass
