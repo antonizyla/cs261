@@ -6,6 +6,22 @@ class Dir(Flag):
     EAST = auto()
     SOUTH = auto()
 
+def left_of(d: Dir):
+    if d is Dir.NORTH:
+        return Dir.WEST
+    elif d is Dir.EAST:
+        return Dir.NORTH
+    elif d is Dir.SOUTH:
+        return Dir.EAST
+    else:
+        return Dir.WEST
+
+def right_of(d: Dir):
+    return left_of(left_of(left_of(d))) # this is too funny to not leave
+
+def opposite_of(d : Dir):
+    return left_of(left_of(d))
+
 
 class Lane:
     def __init__(self, queue_limit, dir_from, dir_to):

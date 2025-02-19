@@ -1,23 +1,31 @@
-import direction
-from flow_rates import flow_rates
+from flowrates import FlowRates
 from lane import Lane, Dir
 from params import Parameters
+from direction import Direction
 
 
 class Junction:
-    def __init__(self, north_lanes: list[Lane], east_lanes: list, south_lanes: list, west_lanes: list, configuration: Parameters):
-        self.northLanes: direction = north_lanes
-        self.eastLanes  = east_lanes
-        self.southLanes = south_lanes
-        self.westLanes = west_lanes
-        self.configuration = configuration
-        self.flow_rates = None
+    def __init__(self, p: Parameters, flows: [FlowRates]):
+        self.northerly_lanes: Direction = None
+        self.easterly_lanes: Direction  = None
+        self.southerly_lanes: Direction = None
+        self.westerly_lanes: Direction = None
+        self.params = p
+        self.flow_rates: [FlowRates] = flows #0-3 indexed North-West
 
-    def set_flow_rates(self, rates: flow_rates):
+    def create_junction(self):
+        # create the directions
+        directions: [Direction] = []
+        for d, i in enumerate(self.flow_rates):
+            directions.append(Direction(self.flow_rates[i], self.params.noLanes))
+            pass
+        pass
+
+    def set_flow_rates(self, rates: FlowRates):
         self.flow_rates = rates
     
     def set_junction_configurations(self, conf: Parameters):
-        self.configuration = conf
+        self.params = conf
 
     def run_simulation(self):
         pass
@@ -26,6 +34,8 @@ class Junction:
     def generate_junction_params(self, p: Parameters):
         self.set_junction_configurations(p)
         self.generate_junction()
+
+
 
     # create a junction based on parameters
     def generate_junction(self):
