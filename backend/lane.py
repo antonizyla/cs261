@@ -24,6 +24,9 @@ class Lane:
     def goes_to(self, d: Dir) -> bool:
         return d in self.directionTo
 
-    def simulate_update(self):
-        #TODO
-        pass
+    def simulate_update(self, directions): #work in progress, may need to control range upper limit with traffic light duration
+        for i in range(0, len(self.currentVehicles)):
+            if (self.currentVehicles[0].getDirectionTo in directions):
+                self.currentVehicles[0].pop(0)
+            else:
+                break
