@@ -14,7 +14,7 @@ def left_of(d: Dir):
     elif d is Dir.SOUTH:
         return Dir.EAST
     else:
-        return Dir.WEST
+        return Dir.SOUTH
 
 def right_of(d: Dir):
     return left_of(left_of(left_of(d))) # this is too funny to not leave
