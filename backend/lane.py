@@ -6,6 +6,22 @@ class Dir(Flag):
     EAST = auto()
     SOUTH = auto()
 
+def left_of(d: Dir):
+    if d is Dir.NORTH:
+        return Dir.WEST
+    elif d is Dir.EAST:
+        return Dir.NORTH
+    elif d is Dir.SOUTH:
+        return Dir.EAST
+    else:
+        return Dir.SOUTH
+
+def right_of(d: Dir):
+    return left_of(left_of(left_of(d))) # this is too funny to not leave
+
+def opposite_of(d : Dir):
+    return left_of(left_of(d))
+
 
 class Lane:
     def __init__(self, queue_limit, dir_from, dir_to):
@@ -24,6 +40,9 @@ class Lane:
     def goes_to(self, d: Dir) -> bool:
         return d in self.directionTo
 
-    def simulate_update(self):
-        #TODO
-        pass
+    def simulate_update(self, directions): #work in progress, may need to control range upper limit with traffic light duration
+        for i in range(0, len(self.currentVehicles)):
+            if (self.currentVehicles[0].getDirectionTo in directions):
+                self.currentVehicles[0].pop(0)
+            else:
+                break

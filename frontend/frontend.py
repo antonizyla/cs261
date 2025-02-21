@@ -1,11 +1,7 @@
-#Combine the pages to one application
-
-# main_application.py
-
 import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow, QTabWidget, QWidget, QLabel, QVBoxLayout
 from inputAndParameterPage import InputAndParameterWidget
-from resultsPage import ResultsWidget
+from resultsPage import ResultsWidget  # or ResultsPage, depending on which one you are using
 
 class MainApplication(QMainWindow):
     def __init__(self):
@@ -33,7 +29,7 @@ class MainApplication(QMainWindow):
         self.tab_widget.addTab(simulation_tab, "Simulation")
 
         # Tab 3: Simulation Results
-        results_tab = ResultsWidget()
+        results_tab = ResultsWidget()  # or ResultsPage, depending on your class
         self.tab_widget.addTab(results_tab, "Simulation Results")
 
     def closeEvent(self, event):

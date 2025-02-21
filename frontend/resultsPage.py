@@ -1,7 +1,21 @@
-from PyQt5.QtWidgets import (QWidget, QPushButton, QGridLayout, QLabel, QGroupBox, 
-                             QFormLayout, QToolButton, QHBoxLayout, QVBoxLayout, QSizePolicy)
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from PyQt5.QtWidgets import (QWidget, QPushButton, QVBoxLayout, QLabel, QLineEdit, 
+                             QSpinBox, QCheckBox, QGroupBox, QFormLayout, QToolButton, 
+                             QHBoxLayout, QGridLayout, QSizePolicy)
 from PyQt5.QtCore import Qt
 import os
+
+# Sample results
+overall = 50
+max_wait = 100
+avg_wait = 75
+max_length = 25
+
+alt_overall = 75
+alt_max_wait = 150
+alt_avg_wait = 125
+alt_max_length = 50
 
 # Global variables to store results
 road_results = {
@@ -39,6 +53,9 @@ class ResultsWidget(QWidget):
         main_layout.addWidget(self.generate_report_button, 3, 0, 1, 2)  # Span two columns
 
         self.setLayout(main_layout)
+
+        # Table and Bar Chart
+        self.create_results_page(main_layout)
 
     def apply_stylesheet(self):
         """Loads and applies the stylesheet."""
@@ -132,7 +149,61 @@ class ResultsWidget(QWidget):
             getattr(self, f"{base_name}_max_queue_label").setText(f"Max Queue Length: {self.max_queue_length[counter]} cars")
 
             counter += 1
-    
+
     def get_report(self):
-        #Get the report from the backend
+        # Get the report from the backend
         return 0
+
+    def create_results_page(self, layout):
+        """Adds the results table and bar chart to the layout."""
+        fig, ax = plt.subplots()
+        ax.xaxis.set_visible(False)
+        ax.yaxis.set_visible(False)
+        ax.set_frame_on(False)
+
+        # Table data
+        data = [
+            ["Metric", "Input Simulation", "Alternative Simulation"],
+            ["Overall", str(overall), str(alt_overall)],
+            ["Max Wait Time", str(max_wait), str(alt_max_wait)],
+            ["Average Wait Time", str(avg_wait), str(alt_avg_wait)],
+            ["Max Length", str(max_length), str(alt_max_length)]
+        ]
+
+        table = ax.table(cellText=data, cellLoc='center', loc='center')
+        table.scale(1, 1.5)
+        table.auto_set_font_size(False)
+        table.set_fontsize(10)
+
+        canvas = FigureCanvas(fig)
+        layout.addWidget(canvas)
+
+        self.create_bar_chart(layout)
+
+        # Add a button to close the results page
+        self.close_button = QPushButton('Close')
+        self.close_button.clicked.connect(self.close)
+        layout.addWidget(self.close_button)
+
+    def create_bar_chart(self, layout):
+        """Adds the bar chart to the layout."""
+        categories = ['Overall', 'Max Wait Time', 'Average Wait Time', 'Max Length']
+        input_simulation = [overall, max_wait, avg_wait, max_length]
+        alt_simulation = [alt_overall, alt_max_wait, alt_avg_wait, alt_max_length]
+
+        x = range(len(categories))
+        x2 = [x + 0.4 for x in x]
+
+        fig, ax = plt.subplots()
+        ax.bar(x, input_simulation, width=0.4, label='Input Simulation')
+        ax.bar(x2, alt_simulation, width=0.4, label='Alternative Simulation')
+
+        ax.set_xlabel('Categories')
+        ax.set_ylabel('Values')
+        ax.set_title('Simulation Results Comparison')
+        ax.set_xticks(x)
+        ax.set_xticklabels(categories)
+        ax.legend()
+
+        canvas = FigureCanvas(fig)
+        layout.addWidget(canvas)
