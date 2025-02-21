@@ -25,9 +25,44 @@ class Direction:
         pass
 
     # tick based update
-    def simulate_update(self) -> None:
-        #TODO
-        pass
+    def simulateUpdate(self, trafficLights):
+        #Dequeue cars
+        spaces = []
+        for lane in self.lanes:
+            lane.simulateUpdate(trafficLights)
+            spaces.append(lane.getQueueLimit() - lane.getNoVehicles()) #How many free spaces are there
+
+        #Enqueue cars
+        while (sum(spaces) != 0): #Include condition for if there aren't any more cars to add
+            index = 0;
+            max = spaces[0]
+            for i in range(1, len(spaces)): #Get lane with most empty spaces
+                if (spaces[i] > max):
+                    max = spaces[i]
+                    index = i
+            
+            #Condition for adding cars
+            rand_int = random.randint(0, 3)
+            dir = None
+            for i in range(0, 4):
+                if rand_int == 0:
+                    dir = Dir.NORTH
+                elif rand_int == 1:
+                    dir = Dir.EAST
+                elif rand_int == 2:
+                    dir = Dir.SOUTH
+                elif rand_int == 3:
+                    dir = Dir.WEST
+                
+                if (self.pools[dir] > 0 && lane.goes_to(dir)):
+                    self.lanes[index].add_vehicle(Vehicle(self.direction_from, dir))
+                    spaces[index] -= 1
+                    self.pools[dir] -= 1
+                    break
+                else:
+                    rand_int = (rand_int + 1) % 4
+                    if (i == 3): #If we couldn't add anything to the lane, pretened the lane is full
+                        spaces[index] = 0
 
     def get_max_length(self) -> int:
         return self.max_length
