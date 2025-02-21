@@ -1,5 +1,6 @@
 from PyQt5.QtWidgets import (QWidget, QPushButton, QVBoxLayout, QLabel, QLineEdit, 
-                             QSpinBox, QCheckBox, QGroupBox, QFormLayout, QToolButton, QHBoxLayout)
+                             QSpinBox, QCheckBox, QGroupBox, QFormLayout, QToolButton, 
+                             QHBoxLayout, QGridLayout)
 from PyQt5.QtGui import QIntValidator
 from PyQt5.QtCore import Qt
 import os
@@ -19,21 +20,25 @@ class InputAndParameterWidget(QWidget):
         # Load and apply the stylesheet
         self.apply_stylesheet()
 
-        # Initialize the default height
-        self.height = 1000
-        self.setFixedSize(600, self.height)  # Set the default height to 1000
+        # Main grid layout (2x2)
+        main_layout = QGridLayout()
 
-        main_layout = QVBoxLayout()
+        # Create road groups and assign them to grid
+        self.north_group = self.create_road_group("Northbound Traffic Flow", ["North", "East", "West"])
+        self.south_group = self.create_road_group("Southbound Traffic Flow", ["South", "East", "West"])
+        self.east_group = self.create_road_group("Eastbound Traffic Flow", ["East", "North", "South"])
+        self.west_group = self.create_road_group("Westbound Traffic Flow", ["West", "North", "South"])
 
-        # Create road groups
-        self.create_road_group(main_layout, "Northbound Traffic Flow", ["North", "East", "West"])
-        self.create_road_group(main_layout, "Southbound Traffic Flow", ["South", "East", "West"])
-        self.create_road_group(main_layout, "Eastbound Traffic Flow", ["East", "North", "South"])
-        self.create_road_group(main_layout, "Westbound Traffic Flow", ["West", "North", "South"])
+        # Arrange in a 2x2 grid
+        main_layout.addWidget(self.north_group, 0, 0)
+        main_layout.addWidget(self.south_group, 0, 1)
+        main_layout.addWidget(self.east_group, 1, 0)
+        main_layout.addWidget(self.west_group, 1, 1)
 
+        # Submit button centered below the grid
         self.submit_button = QPushButton("Start Simulation")
         self.submit_button.clicked.connect(self.update_global_inputs)
-        main_layout.addWidget(self.submit_button)
+        main_layout.addWidget(self.submit_button, 2, 0, 1, 2)  # Spans two columns
 
         self.setLayout(main_layout)
 
@@ -46,25 +51,12 @@ class InputAndParameterWidget(QWidget):
         except FileNotFoundError:
             print("Stylesheet file not found. Using default styles.")
 
-    def create_road_group(self, layout, road_name, exit_directions):
+    def create_road_group(self, road_name, exit_directions):
         """Creates a group box for each road section with input fields."""
-        group_box = QGroupBox()
+        group_box = QGroupBox(road_name)
         form_layout = QFormLayout()
 
-        # Create a button to toggle visibility of the form layout
-        toggle_button = QToolButton()
-        toggle_button.setText(road_name + " " + "▼")  # Default is to show the group
-        toggle_button.setCheckable(True)
-        toggle_button.setChecked(True)
-        toggle_button.clicked.connect(lambda: self.toggle_group(toggle_button, group_box, road_name))
-
-        # Add the button to a horizontal layout
-        header_layout = QHBoxLayout()
-        header_layout.addWidget(toggle_button)
-        header_layout.setContentsMargins(0, 0, 0, 0)  # Remove any margins around the header layout
-        header_layout.addStretch()
-
-        # Total Vehicles per Hour display (not an input)
+        # Total Vehicles per Hour display
         total_vph_label = QLabel("Total Vehicles per Hour (VpH): 0")
         form_layout.addRow(total_vph_label)
 
@@ -77,8 +69,8 @@ class InputAndParameterWidget(QWidget):
             exit_label = QLabel(f"Exiting {direction}:")
             exit_input = QLineEdit()
             exit_input.setValidator(QIntValidator(0, 999))
-            exit_input.setPlaceholderText("0")  # Default placeholder
-            exit_input.textChanged.connect(lambda _, r=road_name: self.update_total_vph(r))  # Auto-update total VpH
+            exit_input.setPlaceholderText("0")  
+            exit_input.textChanged.connect(lambda _, r=road_name: self.update_total_vph(r))
             form_layout.addRow(exit_label, exit_input)
             exit_vph_inputs[direction] = exit_input
 
@@ -90,54 +82,27 @@ class InputAndParameterWidget(QWidget):
 
         # Checkboxes for lane types
         bus_lane_checkbox = QCheckBox("Bus Lane")
+        pedestrian_crossing_checkbox = QCheckBox("Pedestrian Crossing")
         left_turn_lane_checkbox = QCheckBox("Left Turn Lane")
         right_turn_lane_checkbox = QCheckBox("Right Turn Lane")
         form_layout.addRow(bus_lane_checkbox)
+        form_layout.addRow(pedestrian_crossing_checkbox)
         form_layout.addRow(left_turn_lane_checkbox)
         form_layout.addRow(right_turn_lane_checkbox)
 
         # Set layout for the group box
         group_box.setLayout(form_layout)
 
-        # Set header layout at the top of the group box
-        header_widget = QWidget()
-        header_widget.setLayout(header_layout)
-
-        # Add header layout above the form layout
-        group_box_layout = QVBoxLayout()
-        group_box_layout.addWidget(header_widget)
-        group_box_layout.addWidget(group_box)
-
-        # Add the group box to the main layout
-        layout.addLayout(group_box_layout)
-
         # Store references to the inputs
         base_name = road_name.lower().replace(' ', '_')
         setattr(self, f"{base_name}_lanes_input", lanes_input)
         setattr(self, f"{base_name}_bus_lane_checkbox", bus_lane_checkbox)
+        setattr(self, f"{base_name}_pedestrian_crossing_checkbox", pedestrian_crossing_checkbox)
         setattr(self, f"{base_name}_left_turn_lane_checkbox", left_turn_lane_checkbox)
         setattr(self, f"{base_name}_right_turn_lane_checkbox", right_turn_lane_checkbox)
         setattr(self, f"{base_name}_exit_vph_inputs", exit_vph_inputs)
 
-    def toggle_group(self, toggle_button, group_box, road_name):
-        """ Toggles the visibility of the group box content. """
-        if toggle_button.isChecked():
-            toggle_button.setText(road_name + " " + "▼")  # Show the content
-            group_box.setVisible(True)
-            self.adjust_window_height(1)  # Increase height when expanded
-        else:
-            toggle_button.setText(road_name + " " + "►")  # Hide the content
-            group_box.setVisible(False)
-            # Collapse the group box to avoid large empty spaces
-            self.adjust_window_height(-1)  # Decrease height when collapsed
-
-    def adjust_window_height(self, change):
-        """ Adjusts the window height based on expanded/collapsed groups. """
-        if change == 1:
-            self.height = self.height + (200)
-        else:
-            self.height = self.height - (200)
-        self.setFixedSize(600, self.height)  # Update the window size
+        return group_box  # Return the group box to add to the grid layout
 
     def update_total_vph(self, road_name):
         """ Updates the total VpH label based on the sum of exit values. """
@@ -149,7 +114,7 @@ class InputAndParameterWidget(QWidget):
             total_vph = sum(int(input_field.text()) if input_field.text().isdigit() else 0 
                             for input_field in exit_vph_inputs.values())
         except ValueError:
-            total_vph = 0  # In case of invalid input
+            total_vph = 0  
 
         total_vph_label.setText(f"Total Vehicles per Hour (VpH): {total_vph}")
 
@@ -161,6 +126,7 @@ class InputAndParameterWidget(QWidget):
             total_vph = getattr(self, f"{road_name}_total_vph_label").text().split(": ")[1]
             lanes = getattr(self, f"{road_name}_lanes_input").value()
             bus_lane = getattr(self, f"{road_name}_bus_lane_checkbox").isChecked()
+            pedestrian_crossing = getattr(self, f"{road_name}_pedestrian_crossing_checkbox").isChecked()
             left_turn_lane = getattr(self, f"{road_name}_left_turn_lane_checkbox").isChecked()
             right_turn_lane = getattr(self, f"{road_name}_right_turn_lane_checkbox").isChecked()
 
@@ -174,6 +140,7 @@ class InputAndParameterWidget(QWidget):
                 "total_vph": total_vph,
                 "lanes": lanes,
                 "bus_lane": bus_lane,
+                "pedestrian_crossing": pedestrian_crossing,
                 "left_turn_lane": left_turn_lane,
                 "right_turn_lane": right_turn_lane,
                 "exit_vphs": exit_vphs
@@ -185,6 +152,7 @@ class InputAndParameterWidget(QWidget):
             print(f"  Total Vehicles per Hour: {inputs['total_vph']}")  
             print(f"  Number of Lanes: {inputs['lanes']}")
             print(f"  Bus Lane: {inputs['bus_lane']}")
+            print(f"  Pedestrian Crossing: {inputs['pedestrian_crossing']}")
             print(f"  Left Turn Lane: {inputs['left_turn_lane']}")
             print(f"  Right Turn Lane: {inputs['right_turn_lane']}")
             print("  Exit VpH:", inputs['exit_vphs'])
