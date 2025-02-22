@@ -3,7 +3,7 @@ from lane import Dir, Lane
 
 
 class Parameters:
-    def __init__(self, no_lanes:int, dedicated_lane:bool, dedicated_lane_flow: list[int], pedestrian_crossing:bool, crossing_time:int, crossing_rph:float, sequencing_priority:list[int]):
+    def __init__(self, no_lanes:[int], dedicated_lane:[bool], dedicated_lane_flow: [int], pedestrian_crossing:[bool], crossing_time:[int], crossing_rph:float, sequencing_priority:list[int]):
         self.noLanes = no_lanes
         self.dedicatedLane = dedicated_lane
         self.dedicatedLaneFlow = dedicated_lane_flow
@@ -13,26 +13,26 @@ class Parameters:
         self.sequencingPriority = sequencing_priority
 
 
-    def getNoLanes(self)->list[int]:
+    def get_no_lanes(self)->list[int]:
         return self.noLanes
     
-    def getDedicatedLane(self)->list[LaneData]:
+    def get_dedicated_lane(self)->[bool]:
         return self.dedicatedLane
     
-    def getDedicatedLaneFlow(self)->list[int]:
+    def get_dedicated_lane_flow(self)->list[int]:
         return self.dedicatedLaneFlow
     
-    def hasPedestrianCrossing(self)->list[bool]:
+    def has_pedestrian_crossing(self)->[bool]:
         return self.pedestrianCrossing
     
-    def getCrossingTime(self)->list[int]:
+    def get_crossing_time(self)->[int]:
         return self.crossingTime
     
-    def getCrossingRPH(self)->list[float]:
+    def get_crossing_rph(self)->[float]:
         return self.crossingRPH
     
-    def getSequencingPriority(self)->list[int]:
+    def get_sequencing_priority(self)->list[int]:
         return self.sequencingPriority
 
-    def isValidParamSet(self) -> list[bool]:
+    def is_valid_param_set(self) -> list[bool]:
         pass

@@ -25,24 +25,30 @@ def opposite_of(d : Dir):
 
 class Lane:
     def __init__(self, queue_limit, dir_from, dir_to):
-        self.currentVehicles = []
-        self.queueLimit = queue_limit
+        self.current_vehicles = []
+        self.queue_limit = queue_limit
         self.flowing = False
-        self.directionTo = dir_to
-        self.directionFrom = dir_from
+        self.directions_to = dir_to
+        self.direction_from = dir_from
 
     def get_num_vehicles(self):
-        return len(self.currentVehicles)
+        return len(self.current_vehicles)
     
     def add_vehicle(self, vehicle):
-        self.currentVehicles.append(vehicle)
+        self.current_vehicles.append(vehicle)
 
     def goes_to(self, d: Dir) -> bool:
-        return d in self.directionTo
+        return d in self.directions_to
 
     def simulate_update(self, directions): #work in progress, may need to control range upper limit with traffic light duration
-        for i in range(0, len(self.currentVehicles)):
-            if (self.currentVehicles[0].getDirectionTo in directions):
-                self.currentVehicles[0].pop(0)
+        for i in range(0, len(self.current_vehicles)):
+            if self.current_vehicles[0].getDirectionTo in directions:
+                self.current_vehicles[0].pop(0)
             else:
                 break
+
+    def get_queue_limit(self):
+        return self.queue_limit
+
+    def get_no_vehicle_present(self):
+        return len(self.current_vehicles)

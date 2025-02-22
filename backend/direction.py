@@ -1,63 +1,84 @@
+import random
 from flowrates import FlowRates
-from lane import Lane, left_of, right_of, opposite_of
+from lane import Lane, left_of, right_of, opposite_of, Dir
 from params import Parameters
-from vehicle import Vehicle
+from vehicle import Vehicle, VehicleType
+
 
 class Direction:
     def __init__(self, flows: FlowRates, num_lanes: int):
         self.flows = FlowRates
-        self.pool: [Vehicle] = None
+        self.ahead_pool = []
+        self.left_pool = []
+        self.right_pool = []
         self.max_wait = None
         self.max_length = None
         self.avg_wait = None
         self.lanes = []
-        self.num_lanes_to_generate = num_lanes
-        if self.num_lanes_to_generate == 1:
+        if num_lanes == 1:
             self.lanes.append(Lane(5, flows.direction_from, [left_of(flows.direction_from), right_of(flows.direction_from), opposite_of(flows.direction_from)]))
         else:
-            # todo generate rest of lanes based on lanes and dedicated lanes
-            pass
+            if flows.dedicated_left:
+                self.lanes.append(Lane(5, flows.direction_from, [left_of(flows.direction_from)]))
+                num_lanes -= 1
+            elif flows.dedicated_right:
+                self.lanes.append(Lane(5, flows.direction_from, [right_of(flows.direction_from)]))
+                num_lanes -= 1
+            for i in range(num_lanes - len(self.lanes)):
+                self.lanes.append(Lane(5, flows.direction_from, [opposite_of(flows.direction_from)]))
 
     # hourly/longer period update
     def simulate_hourly(self):
-        # todo
-        # top up pools and report on stats
-        pass
+        # working on assumption that bus flows are on top of flow for the direction
+        direction_from: Dir = self.flows.get_direction_from()
+        going_left = left_of(direction_from)
+        going_right = right_of(direction_from)
+        going_ahead = opposite_of(direction_from)
+
+        # ahead, bus and cars
+        self.ahead_pool.append([Vehicle(direction_from, going_ahead, VehicleType.BUS) for x in range(self.flows.get_flow_bus_ahead())])
+        self.ahead_pool.append([Vehicle(direction_from, going_ahead) for x in range(self.flows.get_flow_ahead())])
+        # left going traffic
+        self.left_pool.append([Vehicle(direction_from, going_left) for x in range(self.flows.get_flow_left())])
+        self.left_pool.append([Vehicle(direction_from, going_left, VehicleType.BUS) for x in range(self.flows.get_flow_bus_left())])
+        # right going traffic
+        self.right_pool.append([Vehicle(direction_from, going_right, VehicleType.BUS) for x in range(self.flows.get_flow_bus_right())])
+        self.right_pool.append([Vehicle(direction_from, going_right) for x in range(self.flows.get_flow_right())])
 
     # tick based update
     def simulateUpdate(self, trafficLights):
         #Dequeue cars
         spaces = []
         for lane in self.lanes:
-            lane.simulateUpdate(trafficLights)
-            spaces.append(lane.getQueueLimit() - lane.getNoVehicles()) #How many free spaces are there
+            lane.simulate_update(trafficLights)
+            spaces.append(lane.get_queue_limit() - lane.get_no_vehicle_present()) #How many free spaces are there
 
         #Enqueue cars
-        while (sum(spaces) != 0): #Include condition for if there aren't any more cars to add
+        while sum(spaces) != 0: #Include condition for if there aren't any more cars to add
             index = 0;
             max = spaces[0]
             for i in range(1, len(spaces)): #Get lane with most empty spaces
-                if (spaces[i] > max):
+                if spaces[i] > max:
                     max = spaces[i]
                     index = i
             
             #Condition for adding cars
             rand_int = random.randint(0, 3)
-            dir = None
+            direction = None
             for i in range(0, 4):
                 if rand_int == 0:
-                    dir = Dir.NORTH
+                    direction = Dir.NORTH
                 elif rand_int == 1:
-                    dir = Dir.EAST
+                    direction = Dir.EAST
                 elif rand_int == 2:
-                    dir = Dir.SOUTH
+                    direction = Dir.SOUTH
                 elif rand_int == 3:
-                    dir = Dir.WEST
+                    direction = Dir.WEST
                 
-                if (self.pools[dir] > 0 && lane.goes_to(dir)):
-                    self.lanes[index].add_vehicle(Vehicle(self.direction_from, dir))
+                if self.pools[direction] > 0 and lane.goes_to(direction):
+                    self.lanes[index].add_vehicle(Vehicle(self.direction_from, direction))
                     spaces[index] -= 1
-                    self.pools[dir] -= 1
+                    self.pools[direction] -= 1
                     break
                 else:
                     rand_int = (rand_int + 1) % 4
