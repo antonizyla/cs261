@@ -57,15 +57,14 @@ class DividerTile(LaneComponent):
         return crosswalkPath
 
     def getLanePath(self, laneType):
-        match laneType:
-            case DivType.IN:
-                lanePath = 'tiles/in_div.png'
-            case DivType.DIR:
-                lanePath = 'tiles/dir_div.png'
-            case DivType.OUT:
-                lanePath = 'tiles/out_div.png'
-            case _:
-                raise ValueError('Invalid divider style')
+        if laneType == DivType.IN:
+            lanePath = 'tiles/in_div.png'
+        elif laneType == DivType.DIR:
+            lanePath = 'tiles/dir_div.png'
+        elif laneType == DivType.OUT:
+            lanePath = 'tiles/out_div.png'
+        else:
+            raise ValueError('Invalid divider style')
         return lanePath
 
 
@@ -81,25 +80,24 @@ class LaneTile(LaneComponent):
         return crosswalkPath
 
     def getLanePath(self, laneType):
-        match laneType:
-            case LaneType.S:
-                lanePath = 'tiles/s_in.png'
-            case LaneType.SL:
-                lanePath = 'tiles/sl_in.png'
-            case LaneType.SR:
-                lanePath = 'tiles/sr_in.png'
-            case LaneType.SLR:
-                lanePath = 'tiles/slr_in.png'
-            case LaneType.L:
-                lanePath = 'tiles/l_in.png'
-            case LaneType.R:
-                lanePath = 'tiles/r_in.png'
-            case LaneType.BUS:
-                lanePath = 'tiles/bus_in.png'
-            case LaneType.OUT:
-                lanePath = 'tiles/out.png'
-            case _:
-                raise ValueError('Invalid lane style')
+        if laneType == LaneType.S:
+            lanePath = 'tiles/s_in.png'
+        elif laneType == LaneType.SL:
+            lanePath = 'tiles/sl_in.png'
+        elif laneType == LaneType.SR:
+            lanePath = 'tiles/sr_in.png'
+        elif laneType == LaneType.SLR:
+            lanePath = 'tiles/slr_in.png'
+        elif laneType == LaneType.L:
+            lanePath = 'tiles/l_in.png'
+        elif laneType == LaneType.R:
+            lanePath = 'tiles/r_in.png'
+        elif laneType == LaneType.BUS:
+            lanePath = 'tiles/bus_in.png'
+        elif laneType == LaneType.OUT:
+            lanePath = 'tiles/out.png'
+        else:
+            raise ValueError('Invalid lane style')
         return lanePath
 
 
