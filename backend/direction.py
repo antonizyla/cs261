@@ -3,6 +3,7 @@ from flowrates import FlowRates
 from lane import Lane, left_of, right_of, opposite_of, Dir
 from params import Parameters
 from vehicle import Vehicle, VehicleType
+from Junction import TrafficLights
 
 
 class Direction:
@@ -50,7 +51,15 @@ class Direction:
         #Dequeue cars
         spaces = []
         for lane in self.lanes:
-            lane.simulate_update(trafficLights)
+            if (trafficLights in TrafficLights.NORTH_SOUTH_RIGHT) && (self.flows.get_direction_from() in Dir.NORTH || Dir.SOUTH):
+                lane.simulate_update(right_of(self.flows.get_direction_from()))
+            elif (trafficLights in TrafficLights.NORTH_SOUTH_OTHER) && (self.flows.get_direction_from() in Dir.NORTH || Dir.SOUTH):
+                lane.simulate_update(left_of(self.flows.get_direction_from()) || opposite_of(self.flows.get_direction_from()))
+            elif (trafficLights in TrafficLights.EAST_WEST_RIGHT) && (self.flows.get_direction_from() in Dir.EAST || Dir.WEST):
+                lane.simulate_update(right_of(self.flows.get_direction_from()))
+            elif (trafficLights in TrafficLights.EAST_WEST_OTHER) && (self.flows.get_direction_from() in Dir.EAST || Dir.WEST):
+                lane.simulate_update(left_of(self.flows.get_direction_from()) || opposite_of(self.flows.get_direction_from()))
+            
             spaces.append(lane.get_queue_limit() - lane.get_no_vehicle_present()) #How many free spaces are there
 
         #Enqueue cars
@@ -76,7 +85,7 @@ class Direction:
                     direction = Dir.WEST
                 
                 if self.pools[direction] > 0 and lane.goes_to(direction):
-                    self.lanes[index].add_vehicle(Vehicle(self.direction_from, direction))
+                    self.lanes[index].add_vehicle(Vehicle(self.flows.get_direction_from(), direction))
                     spaces[index] -= 1
                     self.pools[direction] -= 1
                     break
