@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import (QWidget, QPushButton, QVBoxLayout, QLabel, QLineEdit, 
                              QSpinBox, QCheckBox, QGroupBox, QFormLayout, QToolButton, 
-                             QHBoxLayout, QGridLayout)
+                             QHBoxLayout, QGridLayout, QMessageBox)
 from PyQt5.QtGui import QIntValidator
 from PyQt5.QtCore import Qt
 import os
@@ -112,14 +112,64 @@ class InputAndParameterWidget(QWidget):
 
         try:
             total_vph = sum(int(input_field.text()) if input_field.text().isdigit() else 0 
-                            for input_field in exit_vph_inputs.values())
+                           for input_field in exit_vph_inputs.values())
+        
         except ValueError:
             total_vph = 0  
 
         total_vph_label.setText(f"Total Vehicles per Hour (VpH): {total_vph}")
 
+
+    # Validating Inputs based on exits and lane types
+    def validate_inputs(self):
+
+        invalid_inputs = []
+        for road_name in ["northbound_traffic_flow", "southbound_traffic_flow",
+                      "eastbound_traffic_flow", "westbound_traffic_flow"]:
+
+            base_name = road_name.lower().replace(' ', '_')
+            exit_vph_inputs = getattr(self, f"{base_name}_exit_vph_inputs")
+            left_turn_lane = getattr(self, f"{base_name}_left_turn_lane_checkbox").isChecked()
+            right_turn_lane = getattr(self, f"{base_name}_right_turn_lane_checkbox").isChecked()
+
+            for direction, input_field in exit_vph_inputs.items():
+                    value = int(input_field.text()) if input_field.text().isdigit() else 0
+
+                    #Checking where the vehicle is coming from, where it is going and if there is a lane for it
+                    if base_name.startswith("northbound"):
+                        if direction == "West" and value>0 and not left_turn_lane:
+                            invalid_inputs.append("Northbound vehicles exiting West require a left turn lane. ")
+                        if direction == "East" and value>0 and not right_turn_lane:
+                            invalid_inputs.append("Northbound vehicles exiting East require a right turn lane. ")
+                    elif base_name.startswith("southbound"):
+                        if direction == "West" and value>0 and not right_turn_lane:
+                            invalid_inputs.append("Southbound vehicles exiting West require a right turn lane. ")
+                        if direction == "East" and value>0 and not left_turn_lane:
+                            invalid_inputs.append("Southbound vehicles exiting East require a left turn lane. ")
+                    elif base_name.startswith("eastbound"):
+                        if direction == "North" and value>0 and not right_turn_lane:
+                            invalid_inputs.append("Eastbound vehicles exiting North require a left turn lane. ")
+                        if direction == "South" and value>0 and not left_turn_lane:
+                            invalid_inputs.append("Eastbound vehicles exiting South require a right turn lane. ")
+                    elif base_name.startswith("westbound"):
+                        if direction == "North" and value>0 and not left_turn_lane:
+                            invalid_inputs.append("Westbound vehicles exiting North require a right turn lane. ")
+                        if direction == "South" and value>0 and not right_turn_lane:
+                            invalid_inputs.append("Westbound vehicles exiting South require a left turn lane. ")
+        
+        if invalid_inputs:
+            QMessageBox.critical(self, "Invalid Inputs", "\n ".join(invalid_inputs))
+            return False
+        
+        return True
+
+
     def update_global_inputs(self):
         """ Stores user inputs into the global dictionary for use in simulations. """
+
+        if not self.validate_inputs():
+            return
+
         for road_name in ["northbound_traffic_flow", "southbound_traffic_flow", 
                           "eastbound_traffic_flow", "westbound_traffic_flow"]:
             
