@@ -41,7 +41,6 @@ class LaneType(Flag):
 
 class LaneDividerType(Enum):
     INCOMING = auto()  # Between lanes going in
-    CENTRAL = auto() # Between lanes going in and lanes going out
     OUTGOING = auto() # Between lanes going out
 
 
@@ -58,7 +57,6 @@ class Pixmap():
     __LANES = {}
     
     INGOING_DIVIDER = None
-    CENTRAL_DIVIDER = None
     OUTGOING_DIVIDER = None
     __LANE_DIVIDERS = {}
     
@@ -132,11 +130,9 @@ class Pixmap():
         }
         
         cls.INGOING_DIVIDER = QPixmap((_BASE_DIR / 'tiles/in_div.png').resolve().__str__())
-        cls.CENTRAL_DIVIDER = QPixmap((_BASE_DIR / 'tiles/dir_div.png').resolve().__str__())
         cls.OUTGOING_DIVIDER = QPixmap((_BASE_DIR / 'tiles/out_div.png').resolve().__str__())
         cls.__LANE_DIVIDERS = {
             LaneDividerType.INCOMING: cls.INGOING_DIVIDER,
-            LaneDividerType.CENTRAL: cls.CENTRAL_DIVIDER,
             LaneDividerType.OUTGOING: cls.OUTGOING_DIVIDER
         }
         
@@ -164,7 +160,7 @@ class SizeAndPos():
     
     def set_pos(self, x, y):
         raise NotImplementedError("set_pos() not implemented")
-    
+
 
 # Cant use ABC since it has a conflicting metaclass with PyQt classes
 class Tile(QGraphicsItem, SizeAndPos):
@@ -189,7 +185,8 @@ class PixmapTile(QGraphicsPixmapItem, Tile):
         QGraphicsPixmapItem.__init__(self)
         Tile.__init__(self)
         self.setPixmap(pixmap)
-    
+
+
 class TileGroup(QGraphicsItemGroup, Tile):
     def __init__(self):
         super().__init__()
@@ -217,8 +214,7 @@ class TileGroup(QGraphicsItemGroup, Tile):
         for item in self.childItems():
             boundingRect |= item.sceneBoundingRect()
         return boundingRect
-        
-        
+
 
 class HorizontalTileGroup(TileGroup):
     def __init__(self):
@@ -231,8 +227,8 @@ class HorizontalTileGroup(TileGroup):
             item.arrange()
             offset += item.width()
         self.update()
-        
-        
+
+
 class VerticalTileGroup(TileGroup):
     def __init__(self):
         super().__init__()
@@ -244,9 +240,10 @@ class VerticalTileGroup(TileGroup):
             item.arrange()
             offset += item.height()
         self.update()
-            
+
 
 T = TypeVar("T")
+
 
 class LaneCrosswalkGroup(VerticalTileGroup, Generic[T]):
     def __init__(self, lane_type, has_crosswalk: bool):
@@ -281,7 +278,7 @@ class LaneDivider(LaneCrosswalkGroup[LaneDividerType]):
         
     def _create_lane_item(self, lane_divider_type: LaneDividerType) -> PixmapTile:
         return PixmapTile(Pixmap.get_lane_divider(lane_divider_type))      
-            
+
 
 class CentralIsland(HorizontalTileGroup):
     def __init__(self, tile_count):
@@ -297,7 +294,7 @@ class CentralIsland(HorizontalTileGroup):
             item.set_pos(offset, 0)
             item.arrange()
             offset += item.width()
-            
+
 
 class Arm(HorizontalTileGroup):
     def __init__(self, arm_data):
@@ -347,14 +344,11 @@ class Arm(HorizontalTileGroup):
     
     def calculate_straight_lanes(self, arm_data):
         lanes = []
-        print("\n", arm_data.lane_count_in)
         lane_count = arm_data.lane_count_in
         if arm_data.dedicated_left:
-            print("left")
             lane_count -= 1
 
         if arm_data.dedicated_right:
-            print("right")
             lane_count -= 1
 
         if lane_count == 0:
@@ -367,10 +361,7 @@ class Arm(HorizontalTileGroup):
             lanes[0] |= LaneType.LEFT
             lanes[-1] |= LaneType.RIGHT
             
-        print(lanes)
         return lanes
-
-#TODO
 
 
 class ArmData():
@@ -384,7 +375,7 @@ class ArmData():
         self.dedicated_right = dedicated_lanes[2]
         
         self.has_crosswalk = has_crosswalk
-        
+
 
 class Junction(TileGroup):
     def __init__(self, junction_data):
@@ -457,14 +448,6 @@ class Junction(TileGroup):
         self.items[3].set_pos(self.items[3].height(), self.items[0].height())
 
 
-        
-            
-            
-        
-    
-    
-
-
 class ImageViewer(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -504,7 +487,7 @@ class ImageViewer(QMainWindow):
         self.resize(width + 4, height + 4)
         self.view.resize(width + 4, height + 4)
         self.scene.setSceneRect(QRectF(0, 0, width, height))
-        
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
