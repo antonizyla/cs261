@@ -55,7 +55,6 @@ class ResultsWidget(QWidget):
         self.setLayout(main_layout)
 
         # Table and Bar Chart
-        self.create_results_page(main_layout)
 
     def apply_stylesheet(self):
         """Loads and applies the stylesheet."""
@@ -97,6 +96,7 @@ class ResultsWidget(QWidget):
 
         # Store reference for updating results later
         base_name = road_name.lower().replace(' ', '_')
+        setattr(self, f"{base_name}_chart", None)
         setattr(self, f"{base_name}_avg_wait_label", avg_wait_label)
         setattr(self, f"{base_name}_max_wait_label", max_wait_label)
         setattr(self, f"{base_name}_max_queue_label", max_queue_label)
@@ -148,62 +148,93 @@ class ResultsWidget(QWidget):
             getattr(self, f"{base_name}_max_wait_label").setText(f"Max Wait Time: {self.max_wait_time[counter]} sec")
             getattr(self, f"{base_name}_max_queue_label").setText(f"Max Queue Length: {self.max_queue_length[counter]} cars")
 
+            self.update_chart(road_name, counter)
             counter += 1
 
     def get_report(self):
         # Get the report from the backend
         return 0
 
-    def create_results_page(self, layout):
-        """Adds the results table and bar chart to the layout."""
-        fig, ax = plt.subplots()
-        ax.xaxis.set_visible(False)
-        ax.yaxis.set_visible(False)
-        ax.set_frame_on(False)
+    # def create_results_page(self, layout):
+    #     """Adds the results table and bar chart to the layout."""
+    #     fig, ax = plt.subplots()
+    #     ax.xaxis.set_visible(False)
+    #     ax.yaxis.set_visible(False)
+    #     ax.set_frame_on(False)
 
-        # Table data
-        data = [
-            ["Metric", "Input Simulation", "Alternative Simulation"],
-            ["Overall", str(overall), str(alt_overall)],
-            ["Max Wait Time", str(max_wait), str(alt_max_wait)],
-            ["Average Wait Time", str(avg_wait), str(alt_avg_wait)],
-            ["Max Length", str(max_length), str(alt_max_length)]
-        ]
+    #     # Table data
+    #     data = [
+    #         ["Metric", "Input Simulation", "Alternative Simulation"],
+    #         ["Overall", str(overall), str(alt_overall)],
+    #         ["Max Wait Time", str(max_wait), str(alt_max_wait)],
+    #         ["Average Wait Time", str(avg_wait), str(alt_avg_wait)],
+    #         ["Max Length", str(max_length), str(alt_max_length)]
+    #     ]
 
-        table = ax.table(cellText=data, cellLoc='center', loc='center')
-        table.scale(1, 1.5)
-        table.auto_set_font_size(False)
-        table.set_fontsize(10)
+    #     table = ax.table(cellText=data, cellLoc='center', loc='center')
+    #     table.scale(1, 1.5)
+    #     table.auto_set_font_size(False)
+    #     table.set_fontsize(10)
 
-        canvas = FigureCanvas(fig)
-        layout.addWidget(canvas)
+    #     canvas = FigureCanvas(fig)
+    #     layout.addWidget(canvas)
 
-        self.create_bar_chart(layout)
+    #     self.create_bar_chart(layout)
 
-        # Add a button to close the results page
-        self.close_button = QPushButton('Close')
-        self.close_button.clicked.connect(self.close)
-        layout.addWidget(self.close_button)
+    #     # Add a button to close the results page
+    #     self.close_button = QPushButton('Close')
+    #     self.close_button.clicked.connect(self.close)
+    #     layout.addWidget(self.close_button)
 
-    def create_bar_chart(self, layout):
-        """Adds the bar chart to the layout."""
-        categories = ['Overall', 'Max Wait Time', 'Average Wait Time', 'Max Length']
-        input_simulation = [overall, max_wait, avg_wait, max_length]
-        alt_simulation = [alt_overall, alt_max_wait, alt_avg_wait, alt_max_length]
+    # def create_bar_chart(self, layout):
+    #     """Adds the bar chart to the layout."""
+    #     categories = ['Overall', 'Max Wait Time', 'Average Wait Time', 'Max Length']
+    #     input_simulation = [overall, max_wait, avg_wait, max_length]
+    #     alt_simulation = [alt_overall, alt_max_wait, alt_avg_wait, alt_max_length]
+
+    #     x = range(len(categories))
+    #     x2 = [x + 0.4 for x in x]
+
+    #     fig, ax = plt.subplots()
+    #     ax.bar(x, input_simulation, width=0.4, label='Input Simulation')
+    #     ax.bar(x2, alt_simulation, width=0.4, label='Alternative Simulation')
+
+    #     ax.set_xlabel('Categories')
+    #     ax.set_ylabel('Values')
+    #     ax.set_title('Simulation Results Comparison')
+    #     ax.set_xticks(x)
+    #     ax.set_xticklabels(categories)
+    #     ax.legend()
+
+    #     canvas = FigureCanvas(fig)
+    #     layout.addWidget(canvas)
+
+    def update_chart(self, road_name, index):
+        
+        base_name = road_name.lower().replace(' ', '_')
+        if getattr(self, f"{base_name}_chart"):
+            getattr(self, f"{base_name}_chart").deleteLater()
+
+        categories = ['Average Wait Time', 'Max Wait Time', 'Max Queue Length']
+        input_values = [self.average_wait[index], self.max_wait_time[index], self.max_queue_length[index]]
+        alt_values = [alt_avg_wait, alt_max_wait, alt_max_length]
 
         x = range(len(categories))
-        x2 = [x + 0.4 for x in x]
+        x2 = [val + 0.4 for val in x]
 
         fig, ax = plt.subplots()
-        ax.bar(x, input_simulation, width=0.4, label='Input Simulation')
-        ax.bar(x2, alt_simulation, width=0.4, label='Alternative Simulation')
+        ax.bar(x, input_values, width=0.4, label='Input Simulation')
+        ax.bar(x2, alt_values, width=0.4, label='Alternative Simulation')
 
         ax.set_xlabel('Categories')
         ax.set_ylabel('Values')
-        ax.set_title('Simulation Results Comparison')
+        ax.set_title(f'{road_name.replace("_", " ").title()} Comparison')
         ax.set_xticks(x)
         ax.set_xticklabels(categories)
         ax.legend()
 
         canvas = FigureCanvas(fig)
-        layout.addWidget(canvas)
+        setattr(self, f"{base_name}_chart", canvas)
+        self.layout().addWidget(canvas)
+
+            
