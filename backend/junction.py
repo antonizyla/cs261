@@ -1,9 +1,9 @@
 from enum import Flag, auto
-
 from flowrates import FlowRates
 from lane import Lane, Dir
 from params import Parameters
 from direction import Direction
+from results import ResultSet
 
 class TrafficLights(Flag):
     NORTH_SOUTH_RIGHT = auto()
@@ -19,6 +19,14 @@ class Junction:
         self.easterly_lanes = Direction(self.flow_rates[1], self.params.noLanes)
         self.southerly_lanes = Direction(self.flow_rates[2], self.params.noLanes)
         self.westerly_lanes = Direction(self.flow_rates[3], self.params.noLanes)
+
+    def create_junction(self):
+        # create the directions
+        directions: [Direction] = []
+        for d, i in enumerate(self.flow_rates):
+            directions.append(Direction(self.flow_rates[i], self.params.noLanes))
+            pass
+        pass
 
     def set_flow_rates(self, rates: FlowRates):
         self.flow_rates = rates
@@ -45,14 +53,12 @@ class Junction:
                 trafficLightOrder.append(TrafficLights.EAST_WEST_OTHER)
 
         for i in range(0, 200): #Value to change during development 
-            self.northerly_lanes.simulateUpdate(trafficLightOrder[i%4], trafficLightTiming[i%4]/60)
+            self.northerly_lanes.simulateUpdate(trafficLightOrder[i%4], trafficLightTiming[i%4]/60) #Need to further multiply by some constant - currently is number of cars per minute, 
             self.easterly_lanes.simulateUpdate(trafficLightOrder[i%4], trafficLightTiming[i%4]/60)
             self.southerly_lanes.simulateUpdate(trafficLightOrder[i%4], trafficLightTiming[i%4]/60)
             self.westerly_lanes.simulateUpdate(trafficLightOrder[i%4], trafficLightTiming[i%4]/60)
 
         #Generate and Return ResultSet
+        #return ResultSet(n, e, s, w, )
 
         
-
-
-

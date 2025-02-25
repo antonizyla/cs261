@@ -41,12 +41,29 @@ class Lane:
     def goes_to(self, d: Dir) -> bool:
         return d in self.directions_to
 
-    def simulate_update(self, directions): #work in progress, may need to control range upper limit with traffic light duration
-        for i in range(0, len(self.current_vehicles)):
+    def simulate_update(self, directions, traffic_light_time): #work in progress, may need to control range upper limit with traffic light duration
+        timer = traffic_light_time
+        first_flag = true
+        
+        while (timer > 0): #Choose more appropriate constants/make dependent on number of lanes
             if self.current_vehicles[0].getDirectionTo in directions:
+                if (first_flag): #First car will take a while to clear, but the cars after it will take less time since they can start moving while the one in front of it is in the junction
+                    if (self.current_vehicles[0].getDirectionTo() == left_of(self.current_vehicles[0].getDirectionFrom())):
+                        timer -= 4
+                    elif (self.current_vehicles[0].getDirectionTo() == opposite_of(self.current_vehicles[0].getDirectionFrom())):
+                        timer -= 6
+                    elif (self.current_vehicles[0].getDirectionTo() == left_of(self.current_vehicles[0].getDirectionFrom())):
+                        timer -= 10
+                    
+                    first_flag = false
+
                 self.current_vehicles[0].pop(0)
             else:
                 break
+        
+        
+        for i in range(0, len(self.current_vehicles)):
+            
 
     def get_queue_limit(self):
         return self.queue_limit

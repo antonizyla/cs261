@@ -1,9 +1,9 @@
 import random
-
-from backend.junction import TrafficLights
 from flowrates import FlowRates
 from lane import Lane, left_of, right_of, opposite_of, Dir
+from params import Parameters
 from vehicle import Vehicle, VehicleType
+from Junction import TrafficLights
 
 
 class Direction:
@@ -45,19 +45,19 @@ class Direction:
         spaces = []
         for lane in self.lanes:
             if (trafficLights in TrafficLights.NORTH_SOUTH_RIGHT) and (self.flows.get_direction_from() in Dir.NORTH | Dir.SOUTH):
-                lane.simulate_update(right_of(self.flows.get_direction_from()))
+                lane.simulate_update(right_of(self.flows.get_direction_from()), trafficlight_timing)
             elif (trafficLights in TrafficLights.NORTH_SOUTH_OTHER) and (self.flows.get_direction_from() in Dir.NORTH | Dir.SOUTH):
-                lane.simulate_update(left_of(self.flows.get_direction_from()) or opposite_of(self.flows.get_direction_from()))
+                lane.simulate_update(left_of(self.flows.get_direction_from()) | opposite_of(self.flows.get_direction_from()), trafficlight_timing)
             elif (trafficLights in TrafficLights.EAST_WEST_RIGHT) and (self.flows.get_direction_from() in Dir.EAST | Dir.WEST):
-                lane.simulate_update(right_of(self.flows.get_direction_from()))
+                lane.simulate_update(right_of(self.flows.get_direction_from()), trafficlight_timing)
             elif (trafficLights in TrafficLights.EAST_WEST_OTHER) and (self.flows.get_direction_from() in Dir.EAST | Dir.WEST):
-                lane.simulate_update(left_of(self.flows.get_direction_from()) or opposite_of(self.flows.get_direction_from()))
+                lane.simulate_update(left_of(self.flows.get_direction_from()) | opposite_of(self.flows.get_direction_from()), trafficlight_timing)
             
             spaces.append(lane.get_queue_limit() - lane.get_no_vehicle_present()) #How many free spaces are there
 
         #Enqueue cars
         while sum(spaces) != 0: #Include condition for if there aren't any more cars to add
-            index = 0;
+            index = 0
             max = spaces[0]
             for i in range(1, len(spaces)): #Get lane with most empty spaces
                 if spaces[i] > max:
@@ -77,10 +77,17 @@ class Direction:
                 elif rand_int == 3:
                     direction = Dir.WEST
                 
-                if self.pools[direction] > 0 and lane.goes_to(direction):
-                    self.lanes[index].add_vehicle(Vehicle(self.flows.get_direction_from(), direction, VehicleType.BUS if self.lanes[index].is_bus_lane else VehicleType.CAR))
+                #Need to consider busses heading right - extra condition?
+                #Still need to consider giving priority to left if left and ahead lane
+                if self.pools[direction] > 0 and (not lane.is_bus_lane) and lane.goes_to(direction): #NEED TO DEFINE LANE SOMEWHERE
+                    self.lanes[index].add_vehicle(Vehicle(self.flows.get_direction_from(), direction, VehicleType.CAR))
                     spaces[index] -= 1
                     self.pools[direction] -= 1
+                    break
+                elif self.pools_bus[direction] > 0 and lane.is_bus_lane and lane.goes_to(direction): #NEED TO DEFINE LANE SOMEWHERE
+                    self.lanes[index].add_vehicle(Vehicle(self.flows.get_direction_from(), direction, VehicleType.BUS))
+                    spaces[index] -= 1
+                    self.pools_bus[direction] -= 1
                     break
                 else:
                     rand_int = (rand_int + 1) % 4
