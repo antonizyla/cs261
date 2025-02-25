@@ -24,12 +24,13 @@ def opposite_of(d : Dir):
 
 
 class Lane:
-    def __init__(self, queue_limit, dir_from, dir_to):
+    def __init__(self, queue_limit, dir_from, dir_to, bus=False):
         self.current_vehicles = []
         self.queue_limit = queue_limit
         self.flowing = False
         self.directions_to = dir_to
         self.direction_from = dir_from
+        self.is_bus_lane = bus
 
     def get_num_vehicles(self):
         return len(self.current_vehicles)

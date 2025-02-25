@@ -1,3 +1,5 @@
+from enum import Flag, auto
+
 from flowrates import FlowRates
 from lane import Lane, Dir
 from params import Parameters
@@ -18,14 +20,6 @@ class Junction:
         self.southerly_lanes = Direction(self.flow_rates[2], self.params.noLanes)
         self.westerly_lanes = Direction(self.flow_rates[3], self.params.noLanes)
 
-    def create_junction(self):
-        # create the directions
-        directions: [Direction] = []
-        for d, i in enumerate(self.flow_rates):
-            directions.append(Direction(self.flow_rates[i], self.params.noLanes))
-            pass
-        pass
-
     def set_flow_rates(self, rates: FlowRates):
         self.flow_rates = rates
     
@@ -41,13 +35,13 @@ class Junction:
         trafficLightTiming = [NSR, NSO, EWR, EWO].sort(reverse=True)
         trafficLightOrder = []
         for i in range(0, 4):
-            if (flowOrder[i] == NSR) && (TrafficLights.NORTH_SOUTH_RIGHT not in trafficLightOrder):
+            if (trafficLightTiming[i] == NSR) and (TrafficLights.NORTH_SOUTH_RIGHT not in trafficLightOrder):
                 trafficLightOrder.append(TrafficLights.NORTH_SOUTH_RIGHT)
-            elif (flowOrder[i] == NSO) && (TrafficLights.NORTH_SOUTH_OTHER not in trafficLightOrder):
+            elif (trafficLightTiming[i] == NSO) and (TrafficLights.NORTH_SOUTH_OTHER not in trafficLightOrder):
                 trafficLightOrder.append(TrafficLights.NORTH_SOUTH_OTHER)
-            elif (flowOrder[i] == EWR) && (TrafficLights.EAST_WEST_RIGHT not in trafficLightOrder):
+            elif (trafficLightTiming[i] == EWR) and (TrafficLights.EAST_WEST_RIGHT not in trafficLightOrder):
                 trafficLightOrder.append(TrafficLights.EAST_WEST_RIGHT)
-            elif (flowOrder[i] == EWO) && (TrafficLights.EAST_WEST_OTHER not in trafficLightOrder):
+            elif (trafficLightTiming[i] == EWO) and (TrafficLights.EAST_WEST_OTHER not in trafficLightOrder):
                 trafficLightOrder.append(TrafficLights.EAST_WEST_OTHER)
 
         for i in range(0, 200): #Value to change during development 
