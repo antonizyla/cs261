@@ -124,45 +124,63 @@ class InputAndParameterWidget(QWidget):
 
     # Validating Inputs based on exits and lane types
     def validate_inputs(self):
-
         invalid_inputs = []
         for road_name in ["northbound_traffic_flow", "southbound_traffic_flow",
-                      "eastbound_traffic_flow", "westbound_traffic_flow"]:
+                          "eastbound_traffic_flow", "westbound_traffic_flow"]:
 
             base_name = road_name.lower().replace(' ', '_')
             exit_vph_inputs = getattr(self, f"{base_name}_exit_vph_inputs")
             left_turn_lane = getattr(self, f"{base_name}_left_turn_lane_checkbox").isChecked()
             right_turn_lane = getattr(self, f"{base_name}_right_turn_lane_checkbox").isChecked()
+            lanes = getattr(self, f"{base_name}_lanes_input").value()
+            pedestrian_crossing = getattr(self, f"{base_name}_pedestrian_crossing_checkbox").isChecked()
 
             for direction, input_field in exit_vph_inputs.items():
-                    value = int(input_field.text()) if input_field.text().isdigit() else 0
+                value = int(input_field.text()) if input_field.text().isdigit() else 0
 
-                    #Checking where the vehicle is coming from, where it is going and if there is a lane for it
-                    if base_name.startswith("northbound"):
-                        if direction == "West" and value>0 and not left_turn_lane:
-                            invalid_inputs.append("Northbound vehicles exiting West require a left turn lane. ")
-                        if direction == "East" and value>0 and not right_turn_lane:
-                            invalid_inputs.append("Northbound vehicles exiting East require a right turn lane. ")
-                    elif base_name.startswith("southbound"):
-                        if direction == "West" and value>0 and not right_turn_lane:
-                            invalid_inputs.append("Southbound vehicles exiting West require a right turn lane. ")
-                        if direction == "East" and value>0 and not left_turn_lane:
-                            invalid_inputs.append("Southbound vehicles exiting East require a left turn lane. ")
-                    elif base_name.startswith("eastbound"):
-                        if direction == "North" and value>0 and not right_turn_lane:
-                            invalid_inputs.append("Eastbound vehicles exiting North require a left turn lane. ")
-                        if direction == "South" and value>0 and not left_turn_lane:
-                            invalid_inputs.append("Eastbound vehicles exiting South require a right turn lane. ")
-                    elif base_name.startswith("westbound"):
-                        if direction == "North" and value>0 and not left_turn_lane:
-                            invalid_inputs.append("Westbound vehicles exiting North require a right turn lane. ")
-                        if direction == "South" and value>0 and not right_turn_lane:
-                            invalid_inputs.append("Westbound vehicles exiting South require a left turn lane. ")
-        
+                # Checking where the vehicle is coming from, where it is going and if there is a lane for it
+                if base_name.startswith("northbound"):
+                    if direction == "West" and value > 0 and not left_turn_lane:
+                        invalid_inputs.append("Northbound vehicles exiting West require a left turn lane.")
+                    if direction == "East" and value > 0 and not right_turn_lane:
+                        invalid_inputs.append("Northbound vehicles exiting East require a right turn lane.")
+                elif base_name.startswith("southbound"):
+                    if direction == "West" and value > 0 and not right_turn_lane:
+                        invalid_inputs.append("Southbound vehicles exiting West require a right turn lane.")
+                    if direction == "East" and value > 0 and not left_turn_lane:
+                        invalid_inputs.append("Southbound vehicles exiting East require a left turn lane.")
+                elif base_name.startswith("eastbound"):
+                    if direction == "North" and value > 0 and not right_turn_lane:
+                        invalid_inputs.append("Eastbound vehicles exiting North require a left turn lane.")
+                    if direction == "South" and value > 0 and not left_turn_lane:
+                        invalid_inputs.append("Eastbound vehicles exiting South require a right turn lane.")
+                elif base_name.startswith("westbound"):
+                    if direction == "North" and value > 0 and not left_turn_lane:
+                        invalid_inputs.append("Westbound vehicles exiting North require a right turn lane.")
+                    if direction == "South" and value > 0 and not right_turn_lane:
+                        invalid_inputs.append("Westbound vehicles exiting South require a right turn lane.")
+
+            # Checking if the number of lanes is enough for the traffic flow
+            if (left_turn_lane or right_turn_lane) and lanes < 2:
+                invalid_inputs.append(f"{road_name.replace('_', ' ').title()} requires at least 2 lanes if a turn lane is selected.")
+            if left_turn_lane and right_turn_lane and lanes < 3:
+                invalid_inputs.append(f"{road_name.replace('_', ' ').title()} requires at least 3 lanes if both turn lanes are selected.")
+
+        # Check if pedestrian crossing is consistent
+        pedestrian_crossings = []
+        for road_name in ["northbound_traffic_flow", "southbound_traffic_flow",
+                          "eastbound_traffic_flow", "westbound_traffic_flow"]:
+            base_name = road_name.lower().replace(' ', '_')
+            pedestrian_crossing = getattr(self, f"{base_name}_pedestrian_crossing_checkbox").isChecked()
+            pedestrian_crossings.append(pedestrian_crossing)
+
+        if not all(pedestrian_crossings) and any(pedestrian_crossings):
+            invalid_inputs.append("Pedestrian crossing must be enabled for all directions or none.")
+
         if invalid_inputs:
-            QMessageBox.critical(self, "Invalid Inputs", "\n ".join(invalid_inputs))
+            QMessageBox.critical(self, "Invalid Inputs", "\n".join(invalid_inputs))
             return False
-        
+
         return True
 
 
