@@ -45,11 +45,13 @@ class InputAndParameterWidget(QWidget):
     def apply_stylesheet(self):
         """Loads and applies the stylesheet."""
         try:
-            with open(os.path.join(os.path.dirname(__file__), 'inputAndParameterPageStyleSheet.qss'), 'r') as f:
+            stylesheet_path = os.path.join(os.path.dirname(__file__), 'inputAndParameterPageStyleSheet.qss')
+            with open(stylesheet_path, 'r') as f:
                 stylesheet = f.read()
                 self.setStyleSheet(stylesheet)
         except FileNotFoundError:
             print("Stylesheet file not found. Using default styles.")
+
 
     def create_road_group(self, road_name, exit_directions):
         """Creates a group box for each road section with input fields."""
