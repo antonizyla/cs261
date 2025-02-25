@@ -1,17 +1,16 @@
 import random
+
+from backend.junction import TrafficLights
 from flowrates import FlowRates
 from lane import Lane, left_of, right_of, opposite_of, Dir
-from params import Parameters
 from vehicle import Vehicle, VehicleType
-from Junction import TrafficLights
 
 
 class Direction:
     def __init__(self, flows: FlowRates, num_lanes: int):
         self.flows = FlowRates
-        self.ahead_pool = []
-        self.left_pool = []
-        self.right_pool = []
+        self.pools: [int] = [0, 0, 0]
+        self.pools_bus: [int] = [0,0,0]
         self.max_wait = None
         self.max_length = None
         self.avg_wait = None
@@ -31,34 +30,28 @@ class Direction:
     # hourly/longer period update
     def simulate_hourly(self):
         # working on assumption that bus flows are on top of flow for the direction
-        direction_from: Dir = self.flows.get_direction_from()
-        going_left = left_of(direction_from)
-        going_right = right_of(direction_from)
-        going_ahead = opposite_of(direction_from)
+        self.pools[0] += self.flows.get_flow_left()
+        self.pools_bus[0] += self.flows.get_flow_bus_left()
 
-        # ahead, bus and cars
-        self.ahead_pool.append([Vehicle(direction_from, going_ahead, VehicleType.BUS) for x in range(self.flows.get_flow_bus_ahead())])
-        self.ahead_pool.append([Vehicle(direction_from, going_ahead) for x in range(self.flows.get_flow_ahead())])
-        # left going traffic
-        self.left_pool.append([Vehicle(direction_from, going_left) for x in range(self.flows.get_flow_left())])
-        self.left_pool.append([Vehicle(direction_from, going_left, VehicleType.BUS) for x in range(self.flows.get_flow_bus_left())])
-        # right going traffic
-        self.right_pool.append([Vehicle(direction_from, going_right, VehicleType.BUS) for x in range(self.flows.get_flow_bus_right())])
-        self.right_pool.append([Vehicle(direction_from, going_right) for x in range(self.flows.get_flow_right())])
+        self.pools[1] += self.flows.get_flow_ahead()
+        self.pools_bus[1] += self.flows.get_flow_bus_ahead()
+
+        self.pools[2] += self.flows.get_flow_right()
+        self.pools_bus[2] += self.flows.get_flow_bus_right()
 
     # tick based update
-    def simulateUpdate(self, trafficLights):
+    def simulateUpdate(self, trafficLights, trafficlight_timing):
         #Dequeue cars
         spaces = []
         for lane in self.lanes:
-            if (trafficLights in TrafficLights.NORTH_SOUTH_RIGHT) && (self.flows.get_direction_from() in Dir.NORTH || Dir.SOUTH):
+            if (trafficLights in TrafficLights.NORTH_SOUTH_RIGHT) and (self.flows.get_direction_from() in Dir.NORTH | Dir.SOUTH):
                 lane.simulate_update(right_of(self.flows.get_direction_from()))
-            elif (trafficLights in TrafficLights.NORTH_SOUTH_OTHER) && (self.flows.get_direction_from() in Dir.NORTH || Dir.SOUTH):
-                lane.simulate_update(left_of(self.flows.get_direction_from()) || opposite_of(self.flows.get_direction_from()))
-            elif (trafficLights in TrafficLights.EAST_WEST_RIGHT) && (self.flows.get_direction_from() in Dir.EAST || Dir.WEST):
+            elif (trafficLights in TrafficLights.NORTH_SOUTH_OTHER) and (self.flows.get_direction_from() in Dir.NORTH | Dir.SOUTH):
+                lane.simulate_update(left_of(self.flows.get_direction_from()) or opposite_of(self.flows.get_direction_from()))
+            elif (trafficLights in TrafficLights.EAST_WEST_RIGHT) and (self.flows.get_direction_from() in Dir.EAST | Dir.WEST):
                 lane.simulate_update(right_of(self.flows.get_direction_from()))
-            elif (trafficLights in TrafficLights.EAST_WEST_OTHER) && (self.flows.get_direction_from() in Dir.EAST || Dir.WEST):
-                lane.simulate_update(left_of(self.flows.get_direction_from()) || opposite_of(self.flows.get_direction_from()))
+            elif (trafficLights in TrafficLights.EAST_WEST_OTHER) and (self.flows.get_direction_from() in Dir.EAST | Dir.WEST):
+                lane.simulate_update(left_of(self.flows.get_direction_from()) or opposite_of(self.flows.get_direction_from()))
             
             spaces.append(lane.get_queue_limit() - lane.get_no_vehicle_present()) #How many free spaces are there
 
@@ -85,7 +78,7 @@ class Direction:
                     direction = Dir.WEST
                 
                 if self.pools[direction] > 0 and lane.goes_to(direction):
-                    self.lanes[index].add_vehicle(Vehicle(self.flows.get_direction_from(), direction))
+                    self.lanes[index].add_vehicle(Vehicle(self.flows.get_direction_from(), direction, VehicleType.BUS if self.lanes[index].is_bus_lane else VehicleType.CAR))
                     spaces[index] -= 1
                     self.pools[direction] -= 1
                     break
