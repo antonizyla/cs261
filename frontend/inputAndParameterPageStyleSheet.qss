@@ -1,12 +1,30 @@
 QPushButton {
-    font-family: Arial, sans-serif;
-    font-size: 16px;
+    background-color: #324ca8;  /* iOS Blue */
     color: white;
-    background-color: pink;
+    border-radius: 10px;
+    padding: 8px 16px;
+    font-size: 16px;
+    font-weight: bold;
+    font-family: -apple-system, "SF Pro Text", "Helvetica Neue", "Arial", sans-serif;
+    border: none;
+}
+
+QPushButton:hover {
+    background-color: #005EC5;  /* Slightly darker blue */
+}
+
+QPushButton:pressed {
+    background-color: #0047A0;  /* Even darker blue */
+}
+
+QPushButton:disabled {
+    background-color: #AAB2BD;  /* iOS disabled grey */
+    color: white;
 }
 
 QLabel {
-    font-family: "Times New Roman", serif;
-    font-size: 14px;
-    color: black;
+    font-family: -apple-system, "SF Pro Text", "Helvetica Neue", "Arial", sans-serif;
+    font-size: 16px;
+    color: #272727;
+    font-weight: medium;
 }
