@@ -199,8 +199,7 @@ class PixmapTile(QGraphicsPixmapItem, Tile):
     # Tile implementation of a QGraphicsPixmapItem
 
     def __init__(self, pixmap):
-        QGraphicsPixmapItem.__init__(self)
-        Tile.__init__(self)
+        super().__init__()
         self.setPixmap(pixmap)
 
 
@@ -211,7 +210,6 @@ class TileGroup(QGraphicsItemGroup, Tile, metaclass = QABCMeta):
 
     def __init__(self):
         super().__init__()
-        Tile.__init__(self)
         self.subtiles = []
         self._boundingRect = None
     
@@ -246,9 +244,6 @@ class TileGroup(QGraphicsItemGroup, Tile, metaclass = QABCMeta):
 
 class HorizontalTileGroup(TileGroup):
     # A tilegroup which aranges subtiles horizontally
-
-    def __init__(self):
-        super().__init__()
     
     def _arrange(self):
         offset = 0
@@ -260,9 +255,6 @@ class HorizontalTileGroup(TileGroup):
 
 class VerticalTileGroup(TileGroup):
     # A tilegroup which aranges subtiles vertically
-
-    def __init__(self):
-        super().__init__()
     
     def _arrange(self):
         offset = 0
