@@ -1,5 +1,5 @@
 import sys
-from PyQt5.QtWidgets import QPushButton, QGraphicsItem, QApplication, QMainWindow, QGraphicsScene, QGraphicsView, QGraphicsPixmapItem, QGraphicsItemGroup
+from PyQt5.QtWidgets import QWidget, QPushButton, QGraphicsItem, QApplication, QMainWindow, QGraphicsScene, QGraphicsView, QGraphicsPixmapItem, QGraphicsItemGroup
 from PyQt5.QtGui import QPixmap, QBrush, QColor, QTransform
 from PyQt5.QtCore import QRectF, QObject
 from enum import Enum, Flag, auto, unique
@@ -7,6 +7,9 @@ from abc import ABC, abstractmethod, ABCMeta
 from pathlib import Path
 from typing import TypeVar, Generic, Optional, Callable, Any
 from random import randint
+import os
+from PyQt5.QtCore import Qt
+
 
 T = TypeVar("T")
 
@@ -533,11 +536,14 @@ class JunctionView(QGraphicsView):
 
 
 # The following code is temporary for testing
-class ImageViewer(QMainWindow):
-    def __init__(self):
-        super().__init__()
-        self.setWindowTitle("Visualisation")
-        self.setGeometry(100, 100, 600, 500)
+class ImageViewer(QWidget):
+    def __init__(self, parent = None):
+        super().__init__(parent)
+
+        self.apply_stylesheet()
+
+        # self.setWindowTitle("Visualisation")
+        # self.setGeometry(100, 100, 600, 500)
 
         self.button = QPushButton("Randomise", self)
         self.button.clicked.connect(self.randomise_junction)
@@ -571,8 +577,18 @@ class ImageViewer(QMainWindow):
         self.resize(junction_width, junction_height + button_height)
 
 
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    viewer = ImageViewer()
-    viewer.show()
-    sys.exit(app.exec_())
+    def apply_stylesheet(self):
+        """Loads and applies the stylesheet."""
+        try:
+            with open(os.path.join(os.path.dirname(__file__), 'inputAndParameterPageStyleSheet.qss'), 'r') as f:
+                stylesheet = f.read()
+                self.setStyleSheet(stylesheet)
+        except FileNotFoundError:
+            print("Stylesheet file not found. Using default styles.")
+
+
+# if __name__ == "__main__":
+#     app = QApplication(sys.argv)
+#     viewer = ImageViewer()
+#     viewer.show()
+#     sys.exit(app.exec_())

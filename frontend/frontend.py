@@ -2,6 +2,7 @@ import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow, QTabWidget, QWidget, QLabel, QVBoxLayout
 from inputAndParameterPage import InputAndParameterWidget
 from resultsPage import ResultsWidget  # or ResultsPage, depending on which one you are using
+from visualisation import ImageViewer
 
 class MainApplication(QMainWindow):
     def __init__(self):
@@ -21,11 +22,11 @@ class MainApplication(QMainWindow):
         self.tab_widget.addTab(input_tab, "Input Parameters")
 
         # Tab 2: Simulation 
-        simulation_tab = QWidget()
-        simulation_layout = QVBoxLayout()
-        simulation_label = QLabel("Simulation will be displayed here.")
-        simulation_layout.addWidget(simulation_label)
-        simulation_tab.setLayout(simulation_layout)
+        simulation_tab = ImageViewer()  
+        # simulation_layout = QVBoxLayout()
+        # simulation_label = QLabel("Simulation will be displayed here.")
+        # simulation_layout.addWidget(simulation_label)
+        # simulation_tab.setLayout(simulation_layout)
         self.tab_widget.addTab(simulation_tab, "Simulation")
 
         # Tab 3: Simulation Results
