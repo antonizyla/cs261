@@ -65,34 +65,81 @@ class Direction:
                     index = i
             
             #Condition for adding cars
-            rand_int = random.randint(0, 3)
-            direction = None
-            for i in range(0, 4):
-                if rand_int == 0:
-                    direction = Dir.NORTH
-                elif rand_int == 1:
-                    direction = Dir.EAST
-                elif rand_int == 2:
-                    direction = Dir.SOUTH
-                elif rand_int == 3:
-                    direction = Dir.WEST
-                
-                #Need to consider busses heading right - extra condition?
-                #Still need to consider giving priority to left if left and ahead lane
-                if self.pools[direction] > 0 and (not lane.is_bus_lane) and lane.goes_to(direction): #NEED TO DEFINE LANE SOMEWHERE
-                    self.lanes[index].add_vehicle(Vehicle(self.flows.get_direction_from(), direction, VehicleType.CAR))
+            lane = self.lanes[index]
+
+            if (lane.goes_to(left_of(self.flows.get_direction_from())) and not lane.goes_to(right_of(self.flows.get_direction_from()))): #Lane with left turn but no right turn (might have ahead)
+                if self.pools[0] > 0 and not lane.is_bus_lane:
+                    lane.add_vehicle(Vehicle(self.flows.get_direction_from(), left_of(self.flows.get_direction_from()), VehicleType.CAR))
                     spaces[index] -= 1
-                    self.pools[direction] -= 1
-                    break
-                elif self.pools_bus[direction] > 0 and lane.is_bus_lane and lane.goes_to(direction): #NEED TO DEFINE LANE SOMEWHERE
-                    self.lanes[index].add_vehicle(Vehicle(self.flows.get_direction_from(), direction, VehicleType.BUS))
+                    self.pools[0] -= 1
+                elif (lane.goes_to(opposite_of(self.flows.get_direction_from())) and self.pools[1] > 0 and not lane.is_bus_lane):
+                    lane.add_vehicle(Vehicle(self.flows.get_direction_from(), opposite_of(self.flows.get_direction_from()), VehicleType.CAR))
                     spaces[index] -= 1
-                    self.pools_bus[direction] -= 1
-                    break
+                    self.pools[1] -= 1
+                elif self.pools_bus[0] > 0 and lane.is_bus_lane:
+                    lane.add_vehicle(Vehicle(self.flows.get_direction_from(), left_of(self.flows.get_direction_from()), VehicleType.BUS))
+                    spaces[index] -= 1
+                    self.pools_bus[0] -= 1
+                elif (lane.goes_to(opposite_of(self.flows.get_direction_from())) and self.pools_bus[1] > 0 and lane.is_bus_lane):
+                    lane.add_vehicle(Vehicle(self.flows.get_direction_from(), opposite_of(self.flows.get_direction_from()), VehicleType.BUS))
+                    spaces[index] -= 1
+                    self.pools_bus[1] -= 1
                 else:
-                    rand_int = (rand_int + 1) % 4
-                    if (i == 3): #If we couldn't add anything to the lane, pretened the lane is full
-                        spaces[index] = 0
+                    spaces[index] = 0 #If we couldn't add anything to the lane, pretened the lane is full
+            elif (lane.goes_to(right_of(self.flows.get_direction_from())) and not lane.goes_to(left_of(self.flows.get_direction_from()))): #Lane with right turn but no left turn (might have ahead)
+                if self.pools[2] > 0 or self.pools_bus[2] > 0:
+                    vehicle = None
+                    if self.pools[2] > 0 and self.pools_bus[2] > 0:
+                        vehicle = random.choice([VehicleType.CAR, VehicleType.BUS])
+                    else if self.pools[2] > 0:
+                        vehicle = VehicleType.CAR
+                    else:
+                        vehicle = VehicleType.BUS
+                    
+                    lane.add_vehicle(Vehicle(self.flows.get_direction_from(), right_of(self.flows.get_direction_from()), vehicle))
+                    spaces[index] -= 1
+                    if vehicle == VehicleType.CAR:
+                        self.pools[2] -= 1
+                    else:
+                        self.pools_bus[2] -= 1
+                elif (lane.goes_to(opposite_of(self.flows.get_direction_from())) and self.pools[1] > 0 and not lane.is_bus_lane): #Don't technically need the third condition since we don't have right turning bus lanes
+                    lane.add_vehicle(Vehicle(self.flows.get_direction_from(), opposite_of(self.flows.get_direction_from()), VehicleType.CAR))
+                    spaces[index] -= 1
+                    self.pools[1] -= 1
+                else:
+                    spaces[index] = 0 #If we couldn't add anything to the lane, pretened the lane is full
+            elif (not lane.goes_to(left_of(self.flows.get_direction_from())) and not lane.goes_to(right_of(self.flows.get_direction_from()))): #Lane with only ahead (no left turn nor right turn)
+                if (lane.goes_to(opposite_of(self.flows.get_direction_from())) and self.pools[1] > 0 and not lane.is_bus_lane):
+                    lane.add_vehicle(Vehicle(self.flows.get_direction_from(), opposite_of(self.flows.get_direction_from()), VehicleType.CAR))
+                    spaces[index] -= 1
+                    self.pools[1] -= 1
+                elif (lane.goes_to(opposite_of(self.flows.get_direction_from())) and self.pools_bus[1] > 0 and lane.is_bus_lane):
+                    lane.add_vehicle(Vehicle(self.flows.get_direction_from(), opposite_of(self.flows.get_direction_from()), VehicleType.BUS))
+                    spaces[index] -= 1
+                    self.pools_bus[1] -= 1
+                else:
+                    spaces[index] = 0 #If we couldn't add anything to the lane, pretened the lane is full
+            else: #Lane with left, ahead and right
+                directions = []
+                if self.pools[0] > 0:
+                    directions.append(left_of(self.flows.get_direction_from()))
+                if self.pools[1] > 0:
+                    directions.append(opposite_of(self.flows.get_direction_from()))
+                if self.pools[2] > 0:
+                    directions.append(right_of(self.flows.get_direction_from()))
+
+                if directions != []:
+                    direction = random.choice(directions)
+                    lane.add_vehicle(Vehicle(self.flows.get_direction_from(), direction, VehicleType.CAR))
+                    spaces[index] -= 1
+                    if direction == left_of(self.flows.get_direction_from()):
+                        self.pools[0] -= 1
+                    elif direction == opposite_of(self.flows.get_direction_from()):
+                        self.pools[1] -= 1
+                    else:
+                        self.pools[2] -= 1
+                else:
+                    spaces[index] = 0
 
     def get_max_length(self) -> int:
         return self.max_length
