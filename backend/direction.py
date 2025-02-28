@@ -140,6 +140,15 @@ class Direction:
                         self.pools[2] -= 1
                 else:
                     spaces[index] = 0
+    
+        #Calculating max length
+        max_lane = 0
+        for lane in self.lanes:
+            if lane.get_num_vehicles() > max_lane:
+                max_lane = lane.get_num_vehicles()
+
+        if max_lane + math.ceil(sum(self.pools) / len(self.lanes)) > self.max_length:
+            self.max_length = max_lane + math.ceil(sum(self.pools) / len(self.lanes))
 
     def get_max_length(self) -> int:
         return self.max_length
