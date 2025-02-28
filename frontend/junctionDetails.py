@@ -12,13 +12,11 @@ class Directions(Enum):
     WEST = 3
 
     def to_Dir(self):
-        print(self.value)
-        if self.value == Directions.NORTH:
-            print("test")
+        if self == Directions.NORTH:
             return Dir.NORTH
-        elif self.value == Directions.EAST:
+        elif self == Directions.EAST:
             return Dir.EAST
-        elif self.value == Directions.SOUTH:
+        elif self == Directions.SOUTH:
             return Dir.SOUTH
         else:
             return Dir.WEST
@@ -31,5 +29,3 @@ class JunctionDetails():
     
     def __getitem__(self, index):
         return self.arms[index]
-
-print(Directions.SOUTH.to_Dir())
