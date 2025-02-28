@@ -5,12 +5,12 @@ from PyQt5.QtGui import QIntValidator
 from PyQt5.QtCore import Qt
 import os
 
-# Global variables to store inputs
+# Global variables to store inputs, Note that the direction is the direction traffic comes from
 road_inputs = {
-    "northbound_traffic_flow": {},
-    "eastbound_traffic_flow": {},
-    "westbound_traffic_flow": {},
-    "southbound_traffic_flow": {}
+    "south_traffic_flow": {},
+    "west_traffic_flow": {},
+    "east_traffic_flow": {},
+    "north_traffic_flow": {}
 }
 
 class InputAndParameterWidget(QWidget):
@@ -24,10 +24,10 @@ class InputAndParameterWidget(QWidget):
         main_layout = QGridLayout()
 
         # Create road groups and assign them to grid
-        self.north_group = self.create_road_group("Northbound Traffic Flow", ["North", "East", "West"])
-        self.south_group = self.create_road_group("Southbound Traffic Flow", ["South", "East", "West"])
-        self.east_group = self.create_road_group("Eastbound Traffic Flow", ["East", "North", "South"])
-        self.west_group = self.create_road_group("Westbound Traffic Flow", ["West", "North", "South"])
+        self.north_group = self.create_road_group("South Traffic Flow", ["North", "East", "West"])
+        self.south_group = self.create_road_group("North Traffic Flow", ["South", "East", "West"])
+        self.east_group = self.create_road_group("West Traffic Flow", ["East", "North", "South"])
+        self.west_group = self.create_road_group("East Traffic Flow", ["West", "North", "South"])
 
         # Arrange in a 2x2 grid
         main_layout.addWidget(self.north_group, 0, 0)
@@ -97,6 +97,7 @@ class InputAndParameterWidget(QWidget):
 
         # Store references to the inputs
         base_name = road_name.lower().replace(' ', '_')
+        print(f"{base_name = }")
         setattr(self, f"{base_name}_lanes_input", lanes_input)
         setattr(self, f"{base_name}_bus_lane_checkbox", bus_lane_checkbox)
         setattr(self, f"{base_name}_pedestrian_crossing_checkbox", pedestrian_crossing_checkbox)
@@ -125,8 +126,8 @@ class InputAndParameterWidget(QWidget):
     # Validating Inputs based on exits and lane types
     def validate_inputs(self):
         invalid_inputs = []
-        for road_name in ["northbound_traffic_flow", "southbound_traffic_flow",
-                          "eastbound_traffic_flow", "westbound_traffic_flow"]:
+        for road_name in ["south_traffic_flow", "north_traffic_flow",
+                          "west_traffic_flow", "east_traffic_flow"]:
 
             base_name = road_name.lower().replace(' ', '_')
             exit_vph_inputs = getattr(self, f"{base_name}_exit_vph_inputs")
@@ -139,22 +140,22 @@ class InputAndParameterWidget(QWidget):
                 value = int(input_field.text()) if input_field.text().isdigit() else 0
 
                 # Checking where the vehicle is coming from, where it is going and if there is a lane for it
-                if base_name.startswith("northbound"):
+                if base_name.startswith("south"):
                     if direction == "West" and value > 0 and not left_turn_lane:
                         invalid_inputs.append("Northbound vehicles exiting West require a left turn lane.")
                     if direction == "East" and value > 0 and not right_turn_lane:
                         invalid_inputs.append("Northbound vehicles exiting East require a right turn lane.")
-                elif base_name.startswith("southbound"):
+                elif base_name.startswith("north"):
                     if direction == "West" and value > 0 and not right_turn_lane:
                         invalid_inputs.append("Southbound vehicles exiting West require a right turn lane.")
                     if direction == "East" and value > 0 and not left_turn_lane:
                         invalid_inputs.append("Southbound vehicles exiting East require a left turn lane.")
-                elif base_name.startswith("eastbound"):
+                elif base_name.startswith("west"):
                     if direction == "North" and value > 0 and not right_turn_lane:
                         invalid_inputs.append("Eastbound vehicles exiting North require a left turn lane.")
                     if direction == "South" and value > 0 and not left_turn_lane:
                         invalid_inputs.append("Eastbound vehicles exiting South require a right turn lane.")
-                elif base_name.startswith("westbound"):
+                elif base_name.startswith("east"):
                     if direction == "North" and value > 0 and not left_turn_lane:
                         invalid_inputs.append("Westbound vehicles exiting North require a right turn lane.")
                     if direction == "South" and value > 0 and not right_turn_lane:
@@ -168,8 +169,8 @@ class InputAndParameterWidget(QWidget):
 
         # Check if pedestrian crossing is consistent
         pedestrian_crossings = []
-        for road_name in ["northbound_traffic_flow", "southbound_traffic_flow",
-                          "eastbound_traffic_flow", "westbound_traffic_flow"]:
+        for road_name in ["south_traffic_flow", "north_traffic_flow",
+                          "west_traffic_flow", "east_traffic_flow"]:
             base_name = road_name.lower().replace(' ', '_')
             pedestrian_crossing = getattr(self, f"{base_name}_pedestrian_crossing_checkbox").isChecked()
             pedestrian_crossings.append(pedestrian_crossing)
@@ -184,14 +185,60 @@ class InputAndParameterWidget(QWidget):
         return True
 
 
+    # def update_global_inputs(self):
+    #     """ Stores user inputs into the global dictionary for use in simulations. """
+
+    #     if not self.validate_inputs():
+    #         return
+
+    #     for road_name in ["south_traffic_flow", "north_traffic_flow", 
+    #                       "west_traffic_flow", "east_traffic_flow"]:
+            
+    #         total_vph = getattr(self, f"{road_name}_total_vph_label").text().split(": ")[1]
+    #         lanes = getattr(self, f"{road_name}_lanes_input").value()
+    #         bus_lane = getattr(self, f"{road_name}_bus_lane_checkbox").isChecked()
+    #         pedestrian_crossing = getattr(self, f"{road_name}_pedestrian_crossing_checkbox").isChecked()
+    #         left_turn_lane = getattr(self, f"{road_name}_left_turn_lane_checkbox").isChecked()
+    #         right_turn_lane = getattr(self, f"{road_name}_right_turn_lane_checkbox").isChecked()
+
+    #         # Collect exiting VpH values
+    #         exit_vphs = {}
+    #         for direction, input_field in getattr(self, f"{road_name}_exit_vph_inputs").items():
+    #             exit_vphs[direction] = input_field.text()
+
+    #         # Store inputs in the global dictionary
+    #         road_inputs[road_name] = {
+    #             "total_vph": total_vph,
+    #             "lanes": lanes,
+    #             "bus_lane": bus_lane,
+    #             "pedestrian_crossing": pedestrian_crossing,
+    #             "left_turn_lane": left_turn_lane,
+    #             "right_turn_lane": right_turn_lane,
+    #             "exit_vphs": exit_vphs
+    #         }
+
+    #     # Print all inputs to the terminal
+    #     for road_name, inputs in road_inputs.items():
+    #         print(f"{road_name.replace('_', ' ').title()}:")
+    #         print(f"  Total Vehicles per Hour: {inputs['total_vph']}")  
+    #         print(f"  Number of Lanes: {inputs['lanes']}")
+    #         print(f"  Bus Lane: {inputs['bus_lane']}")
+    #         print(f"  Pedestrian Crossing: {inputs['pedestrian_crossing']}")
+    #         print(f"  Left Turn Lane: {inputs['left_turn_lane']}")
+    #         print(f"  Right Turn Lane: {inputs['right_turn_lane']}")
+    #         print("  Exit VpH:", inputs['exit_vphs'])
+    #         print()
+
     def update_global_inputs(self):
         """ Stores user inputs into the global dictionary for use in simulations. """
 
         if not self.validate_inputs():
             return
+        
+        # road_names = ["south_traffic_flow", "north_traffic_flow", "west_traffic_flow", "east_traffic_flow"]
 
-        for road_name in ["northbound_traffic_flow", "southbound_traffic_flow", 
-                          "eastbound_traffic_flow", "westbound_traffic_flow"]:
+        for road_name in ["south_traffic_flow", "north_traffic_flow", 
+                          "west_traffic_flow", "east_traffic_flow"]:
             
             total_vph = getattr(self, f"{road_name}_total_vph_label").text().split(": ")[1]
             lanes = getattr(self, f"{road_name}_lanes_input").value()
