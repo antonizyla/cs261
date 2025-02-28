@@ -9,8 +9,8 @@ from Junction import TrafficLights
 class Direction:
     def __init__(self, flows: FlowRates, num_lanes: int):
         self.flows = FlowRates
-        self.pools: [int] = [0, 0, 0]
-        self.pools_bus: [int] = [0,0,0]
+        self.pools: list[int] = [0, 0, 0]
+        self.pools_bus: list[int] = [0,0,0]
         self.max_wait = None
         self.max_length = None
         self.avg_wait = None
@@ -91,7 +91,7 @@ class Direction:
                     vehicle = None
                     if self.pools[2] > 0 and self.pools_bus[2] > 0:
                         vehicle = random.choice([VehicleType.CAR, VehicleType.BUS])
-                    else if self.pools[2] > 0:
+                    elif self.pools[2] > 0:
                         vehicle = VehicleType.CAR
                     else:
                         vehicle = VehicleType.BUS
