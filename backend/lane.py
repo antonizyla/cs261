@@ -43,7 +43,7 @@ class Lane:
 
     def simulate_update(self, directions, traffic_light_time): #work in progress, may need to control range upper limit with traffic light duration
         timer = traffic_light_time
-        first_flag = true
+        first_flag = True
         
         while (timer > 0): #Choose more appropriate constants/make dependent on number of lanes
             if self.current_vehicles[0].getDirectionTo in directions:
@@ -52,17 +52,19 @@ class Lane:
                         timer -= 4
                     elif (self.current_vehicles[0].getDirectionTo() == opposite_of(self.current_vehicles[0].getDirectionFrom())):
                         timer -= 6
-                    elif (self.current_vehicles[0].getDirectionTo() == left_of(self.current_vehicles[0].getDirectionFrom())):
+                    elif (self.current_vehicles[0].getDirectionTo() == right_of(self.current_vehicles[0].getDirectionFrom())):
                         timer -= 10
                     
-                    first_flag = false
+                    first_flag = False
+                else:
+                    if self.current_vehicles[0].getDirectionTo() == right_of(self.current_vehicles[0].getDirectionFrom()):
+                        timer -= 4 #Different since each right turning car needs to wait for a right turning car from the opposite direction to finish turning.
+                    else:
+                        timer -= 1
 
                 self.current_vehicles[0].pop(0)
             else:
                 break
-        
-        
-        for i in range(0, len(self.current_vehicles)):
             
 
     def get_queue_limit(self):
