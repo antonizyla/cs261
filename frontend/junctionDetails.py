@@ -25,7 +25,10 @@ class JunctionDetails():
     arms = []
 
     def __iter__(self):
-        return self.arms
+        return iter(self.arms)
     
     def __getitem__(self, index):
         return self.arms[index]
+    
+    def get_FlowRate_list(self):
+        return self.arms

@@ -4,6 +4,10 @@ from PyQt5.QtWidgets import (QWidget, QPushButton, QVBoxLayout, QLabel, QLineEdi
 from PyQt5.QtGui import QIntValidator
 from PyQt5.QtCore import Qt
 import os
+from junctionDetails import JunctionDetails, Directions
+import sys
+sys.path.append('../backend')
+from flowrates import FlowRates
 
 # Global variables to store inputs, Note that the direction is the direction traffic comes from
 road_inputs = {
@@ -185,61 +189,16 @@ class InputAndParameterWidget(QWidget):
         return True
 
 
-    # def update_global_inputs(self):
-    #     """ Stores user inputs into the global dictionary for use in simulations. """
-
-    #     if not self.validate_inputs():
-    #         return
-
-    #     for road_name in ["south_traffic_flow", "north_traffic_flow", 
-    #                       "west_traffic_flow", "east_traffic_flow"]:
-            
-    #         total_vph = getattr(self, f"{road_name}_total_vph_label").text().split(": ")[1]
-    #         lanes = getattr(self, f"{road_name}_lanes_input").value()
-    #         bus_lane = getattr(self, f"{road_name}_bus_lane_checkbox").isChecked()
-    #         pedestrian_crossing = getattr(self, f"{road_name}_pedestrian_crossing_checkbox").isChecked()
-    #         left_turn_lane = getattr(self, f"{road_name}_left_turn_lane_checkbox").isChecked()
-    #         right_turn_lane = getattr(self, f"{road_name}_right_turn_lane_checkbox").isChecked()
-
-    #         # Collect exiting VpH values
-    #         exit_vphs = {}
-    #         for direction, input_field in getattr(self, f"{road_name}_exit_vph_inputs").items():
-    #             exit_vphs[direction] = input_field.text()
-
-    #         # Store inputs in the global dictionary
-    #         road_inputs[road_name] = {
-    #             "total_vph": total_vph,
-    #             "lanes": lanes,
-    #             "bus_lane": bus_lane,
-    #             "pedestrian_crossing": pedestrian_crossing,
-    #             "left_turn_lane": left_turn_lane,
-    #             "right_turn_lane": right_turn_lane,
-    #             "exit_vphs": exit_vphs
-    #         }
-
-    #     # Print all inputs to the terminal
-    #     for road_name, inputs in road_inputs.items():
-    #         print(f"{road_name.replace('_', ' ').title()}:")
-    #         print(f"  Total Vehicles per Hour: {inputs['total_vph']}")  
-    #         print(f"  Number of Lanes: {inputs['lanes']}")
-    #         print(f"  Bus Lane: {inputs['bus_lane']}")
-    #         print(f"  Pedestrian Crossing: {inputs['pedestrian_crossing']}")
-    #         print(f"  Left Turn Lane: {inputs['left_turn_lane']}")
-    #         print(f"  Right Turn Lane: {inputs['right_turn_lane']}")
-    #         print("  Exit VpH:", inputs['exit_vphs'])
-    #         print()
-
     def update_global_inputs(self):
         """ Stores user inputs into the global dictionary for use in simulations. """
 
         if not self.validate_inputs():
             return
-        
-        # road_names = ["south_traffic_flow", "north_traffic_flow", "west_traffic_flow", "east_traffic_flow"]
 
         for road_name in ["south_traffic_flow", "north_traffic_flow", 
                           "west_traffic_flow", "east_traffic_flow"]:
             
+            print("'",getattr(self, f"{road_name}_total_vph_label").text(),"'")
             total_vph = getattr(self, f"{road_name}_total_vph_label").text().split(": ")[1]
             lanes = getattr(self, f"{road_name}_lanes_input").value()
             bus_lane = getattr(self, f"{road_name}_bus_lane_checkbox").isChecked()
@@ -274,3 +233,31 @@ class InputAndParameterWidget(QWidget):
             print(f"  Right Turn Lane: {inputs['right_turn_lane']}")
             print("  Exit VpH:", inputs['exit_vphs'])
             print()
+
+    # def get_global_inputs(self):
+    #     """ Stores user inputs into the global dictionary for use in simulations. """
+
+    #     if not self.validate_inputs():
+    #         return
+        
+    #     road_names = ["south_traffic_flow", "north_traffic_flow", "west_traffic_flow", "east_traffic_flow"]
+
+    #     junction = JunctionDetails()
+        
+    #     for direction in Directions:
+    #         road_name = road_names[direction.value]
+            
+    #         arm = FlowRate(
+    #             dir_from = direction.to_Dir(), 
+    #             ahead:int, # Slightly more complex
+    #             left:int, 
+    #             right:int, 
+    #             dedicated_left:bool = getattr(self, f"{road_name}_left_turn_lane_checkbox").isChecked(), 
+    #             dedicated_bus: int = getattr(self, f"{road_name}_bus_lane_checkbox").isChecked(), 
+    #             dedicated_right: bool = getattr(self, f"{road_name}_right_turn_lane_checkbox").isChecked(), 
+    #             seq_priority: int # Didnt have time
+    #         )
+            
+    #         junction.arms.append(arm)
+            
+    #     return junction.get_FlowRate_list()
