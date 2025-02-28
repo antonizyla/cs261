@@ -5,6 +5,7 @@ from PyQt5.QtWidgets import (QWidget, QPushButton, QVBoxLayout, QLabel, QLineEdi
                              QHBoxLayout, QGridLayout, QSizePolicy)
 from PyQt5.QtCore import Qt
 import os
+from pylatex import Document, Figure, NoEscape, Section, Itemize
 
 # Sample results
 overall = 50
@@ -182,3 +183,37 @@ class ResultsWidget(QWidget):
         canvas = FigureCanvas(fig)
         setattr(self, f"{base_name}_chart", canvas)
         getattr(self, f"{base_name}_form_layout").addRow(canvas)
+
+
+
+def main(fname, width, *args, **kwargs):
+    geometry_options = {"right": "2cm", "left": "2cm"}
+    doc = Document(fname, geometry_options=geometry_options)
+
+    doc.append("Below are the results of the simulation.")
+
+    with doc.create(Section("North Results")):
+        doc.append(f"Here are the overall results for your first input parameters")
+
+        with doc.create(Itemize()) as itemize:
+            itemize.add_item(f"Average Wait Time: {overall} sec")
+            itemize.add_item(f"Average Wait Time: {avg_wait} sec")
+            itemize.add_item(f"Max Wait Time: {max_wait} sec")
+            itemize.add_item(f"Max Queue Length: {max_length} cars")
+
+        doc.append(f"Here are the overall results for your second input parameters")
+
+        with doc.create(Itemize()) as itemize:
+            itemize.add_item(f"Average Wait Time: {alt_overall} sec")
+            itemize.add_item(f"Average Wait Time: {alt_avg_wait} sec")
+            itemize.add_item(f"Max Wait Time: {alt_max_wait} sec")
+            itemize.add_item(f"Max Queue Length: {alt_max_length} cars")
+
+
+
+
+
+            
+
+
+

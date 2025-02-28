@@ -9,8 +9,8 @@ from Junction import TrafficLights
 class Direction:
     def __init__(self, flows: FlowRates, num_lanes: int):
         self.flows = FlowRates
-        self.pools: [int] = [0, 0, 0]
-        self.pools_bus: [int] = [0,0,0]
+        self.pools: list[int] = [0, 0, 0]
+        self.pools_bus: list[int] = [0,0,0]
         self.max_wait = None
         self.max_length = None
         self.avg_wait = None
@@ -91,7 +91,7 @@ class Direction:
                     vehicle = None
                     if self.pools[2] > 0 and self.pools_bus[2] > 0:
                         vehicle = random.choice([VehicleType.CAR, VehicleType.BUS])
-                    else if self.pools[2] > 0:
+                    elif self.pools[2] > 0:
                         vehicle = VehicleType.CAR
                     else:
                         vehicle = VehicleType.BUS
@@ -140,6 +140,15 @@ class Direction:
                         self.pools[2] -= 1
                 else:
                     spaces[index] = 0
+    
+        #Calculating max length
+        max_lane = 0
+        for lane in self.lanes:
+            if lane.get_num_vehicles() > max_lane:
+                max_lane = lane.get_num_vehicles()
+
+        if max_lane + math.ceil(sum(self.pools) / len(self.lanes)) > self.max_length:
+            self.max_length = max_lane + math.ceil(sum(self.pools) / len(self.lanes))
 
     def get_max_length(self) -> int:
         return self.max_length
