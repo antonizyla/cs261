@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from PyQt5.QtWidgets import (QWidget, QPushButton, QVBoxLayout, QLabel, QLineEdit, 
                              QSpinBox, QCheckBox, QGroupBox, QFormLayout, QToolButton, 
-                             QHBoxLayout, QGridLayout, QSizePolicy)
+                             QHBoxLayout, QGridLayout, QSizePolicy, QFileDialog)
 from PyQt5.QtCore import Qt
 import os
 from pylatex import Document, Figure, NoEscape, Section, Itemize
@@ -154,9 +154,42 @@ class ResultsWidget(QWidget):
             counter += 1
 
     def get_report(self):
-        # Get the report from the backend
-        return 0
+        """Generates a PDF report with the results and bar charts."""
 
+        # Ask the user where to save the PDF
+        options = QFileDialog.Options()
+        file_path, _ = QFileDialog.getSaveFileName(self, options=options)
+        if not file_path:
+            return  # User canceled the save dialog
+
+        # Generate the PDF
+        geometry_options = {"top": "3cm", "bottom": "3cm", "right": "2cm", "left": "2cm"}
+        doc = Document(geometry_options=geometry_options)
+
+        doc.append("Below are the results of the simulation.")
+
+        for road_name in ["northbound_traffic_flow", "southbound_traffic_flow", 
+                          "eastbound_traffic_flow", "westbound_traffic_flow"]:
+            
+            base_name = road_name.lower().replace('_', '_')
+            
+            with doc.create(Section(f"{road_name.replace('_', ' ').title()} Results")):
+                doc.append(f"Here are the overall results for {road_name.replace('_', ' ').title()}")
+
+                with doc.create(Itemize()) as itemize:
+                    itemize.add_item(f"Average Wait Time: {road_results[road_name]['average_wait']} sec")
+                    itemize.add_item(f"Max Wait Time: {road_results[road_name]['max_wait_times']} sec")
+                    itemize.add_item(f"Max Queue Length: {road_results[road_name]['max_queue_length']} cars")
+
+                # Add the chart directly to the PDF
+                chart = getattr(self, f"{base_name}_chart")
+                if chart:
+                    with doc.create(Figure(position="htbp")) as plot:
+                        plot.add_plot(width=NoEscape(r'0.8\textwidth'), dpi=300)
+                        plot.add_caption(f'{road_name.replace("_", " ").title()} Comparison Chart')
+
+        doc.generate_pdf(file_path, clean_tex=True, clean=True)
+       
     def update_chart(self, road_name, index):
         base_name = road_name.lower().replace(' ', '_')
         if getattr(self, f"{base_name}_chart"):
@@ -183,37 +216,3 @@ class ResultsWidget(QWidget):
         canvas = FigureCanvas(fig)
         setattr(self, f"{base_name}_chart", canvas)
         getattr(self, f"{base_name}_form_layout").addRow(canvas)
-
-
-
-def main(fname, width, *args, **kwargs):
-    geometry_options = {"right": "2cm", "left": "2cm"}
-    doc = Document(fname, geometry_options=geometry_options)
-
-    doc.append("Below are the results of the simulation.")
-
-    with doc.create(Section("North Results")):
-        doc.append(f"Here are the overall results for your first input parameters")
-
-        with doc.create(Itemize()) as itemize:
-            itemize.add_item(f"Average Wait Time: {overall} sec")
-            itemize.add_item(f"Average Wait Time: {avg_wait} sec")
-            itemize.add_item(f"Max Wait Time: {max_wait} sec")
-            itemize.add_item(f"Max Queue Length: {max_length} cars")
-
-        doc.append(f"Here are the overall results for your second input parameters")
-
-        with doc.create(Itemize()) as itemize:
-            itemize.add_item(f"Average Wait Time: {alt_overall} sec")
-            itemize.add_item(f"Average Wait Time: {alt_avg_wait} sec")
-            itemize.add_item(f"Max Wait Time: {alt_max_wait} sec")
-            itemize.add_item(f"Max Queue Length: {alt_max_length} cars")
-
-
-
-
-
-            
-
-
-
