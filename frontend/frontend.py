@@ -1,8 +1,32 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QMainWindow, QTabWidget, QWidget, QLabel, QVBoxLayout
+from PyQt5.QtWidgets import QApplication, QMainWindow, QTabWidget, QWidget, QLabel, QVBoxLayout, QPushButton, QDialog
 from inputAndParameterPage import InputAndParameterWidget
-from resultsPage import ResultsWidget  # or ResultsPage, depending on which one you are using
+from resultsPage import ResultsWidget
 from visualisation import ImageViewer
+
+class HomeWindow(QDialog):
+    def __init__(self):
+        super().__init__()
+
+        self.setWindowTitle("Home")
+        self.setGeometry(100, 100, 400, 400)
+
+        layout = QVBoxLayout()
+        self.label = QLabel("Welcome to the Simulation Application!")
+        self.button = QPushButton("Go to Input Parameters")
+        self.button.clicked.connect(self.go_to_main_app)
+
+        layout.addWidget(self.label)
+        layout.addWidget(self.button)
+        self.setLayout(layout)
+
+    def go_to_main_app(self):
+        self.accept()
+
+    def closeEvent(self, event):
+        print("Home window closed.")
+        event.accept()
+        sys.exit()
 
 class MainApplication(QMainWindow):
     def __init__(self):
@@ -23,10 +47,6 @@ class MainApplication(QMainWindow):
 
         # Tab 2: Simulation 
         simulation_tab = ImageViewer()  
-        # simulation_layout = QVBoxLayout()
-        # simulation_label = QLabel("Simulation will be displayed here.")
-        # simulation_layout.addWidget(simulation_label)
-        # simulation_tab.setLayout(simulation_layout)
         self.tab_widget.addTab(simulation_tab, "Simulation")
 
         # Tab 3: Simulation Results
@@ -39,6 +59,10 @@ class MainApplication(QMainWindow):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    main_app = MainApplication()
-    main_app.show()
+
+    home_window = HomeWindow()
+    if home_window.exec_() == QDialog.Accepted:
+        main_app = MainApplication()
+        main_app.show()
+
     sys.exit(app.exec_())

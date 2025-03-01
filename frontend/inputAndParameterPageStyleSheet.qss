@@ -1,7 +1,7 @@
 QPushButton {
     background-color: #324ca8;  /* iOS Blue */
     color: white;
-    border-radius: 10px;
+    border-radius: 6px;
     padding: 8px 16px;
     font-size: 16px;
     font-weight: bold;
@@ -27,4 +27,22 @@ QLabel {
     font-size: 16px;
     color: #272727;
     font-weight: medium;
+}
+
+#submit_button {
+    background-color:rgb(53, 198, 114);  
+    color: white;               
+    border: none;
+    border-radius: 6px;         
+    padding: 8px 16px;          
+    font-size: 14px;
+    font-weight: bold;
+    }
+    
+#submit_button:hover {
+    background-color: #28B463; /* Slightly darker green on hover */
+}
+
+#submit_button:pressed {
+    background-color: #239B56; /* Even darker when clicked */
 }

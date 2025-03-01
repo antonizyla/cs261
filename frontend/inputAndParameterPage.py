@@ -17,6 +17,13 @@ road_inputs = {
     "north_traffic_flow": {}
 }
 
+alt_road_inputs = {
+    "alt_south_traffic_flow": {},
+    "alt_west_traffic_flow": {},
+    "alt_east_traffic_flow": {},
+    "alt_north_traffic_flow": {}
+}
+
 class InputAndParameterWidget(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -33,16 +40,56 @@ class InputAndParameterWidget(QWidget):
         self.east_group = self.create_road_group("West Traffic Flow", ["East", "North", "South"])
         self.west_group = self.create_road_group("East Traffic Flow", ["West", "North", "South"])
 
-        # Arrange in a 2x2 grid
+        # Alt road groups
+        self.alt_south_group = self.create_road_group("Alt South Traffic Flow", ["North", "East", "West"])
+        self.alt_north_group = self.create_road_group("Alt North Traffic Flow", ["South", "East", "West"])
+        self.alt_west_group = self.create_road_group("Alt West Traffic Flow", ["East", "North", "South"])
+        self.alt_east_group = self.create_road_group("Alt East Traffic Flow", ["West", "North", "South"])
+
+        # Arrange in a 4x2 grid
         main_layout.addWidget(self.north_group, 0, 0)
         main_layout.addWidget(self.south_group, 0, 1)
-        main_layout.addWidget(self.east_group, 1, 0)
-        main_layout.addWidget(self.west_group, 1, 1)
+        main_layout.addWidget(self.east_group, 0, 2)
+        main_layout.addWidget(self.west_group, 0, 3)
+
+        # Initially hide alt road groups
+        self.alt_north_group.hide()
+        self.alt_south_group.hide()
+        self.alt_east_group.hide()
+        self.alt_west_group.hide()
+
+        # Add alt road groups to the layout but keep them hidden
+        main_layout.addWidget(self.alt_north_group, 1, 0)
+        main_layout.addWidget(self.alt_south_group, 1, 1)
+        main_layout.addWidget(self.alt_east_group, 1, 2)
+        main_layout.addWidget(self.alt_west_group, 1, 3)
+
+        # Pedestrian crossing buttons
+        self.pedestrian_crossing_button = QPushButton("Toggle Pedestrian Crossing (Main Roads)")
+        self.pedestrian_crossing_button.clicked.connect(self.toggle_pedestrian_crossing_main)
+        main_layout.addWidget(self.pedestrian_crossing_button, 2, 0, 1, 2)
+
+        self.alt_pedestrian_crossing_button = QPushButton("Toggle Pedestrian Crossing (Alt Roads)")
+        self.alt_pedestrian_crossing_button.clicked.connect(self.toggle_pedestrian_crossing_alt)
+        self.alt_pedestrian_crossing_button.hide()  # Initially hide
+        main_layout.addWidget(self.alt_pedestrian_crossing_button, 2, 2, 1, 2)
+
+        # Button to show alt road inputs
+        self.show_alt_inputs_button = QPushButton("Add Alternate Road Inputs")
+        self.show_alt_inputs_button.clicked.connect(self.show_alt_inputs)
+        main_layout.addWidget(self.show_alt_inputs_button, 3, 0, 1, 4)  # Spans four columns
+
+        # Button to hide alt road inputs
+        self.hide_alt_inputs_button = QPushButton("Hide Alternate Road Inputs")
+        self.hide_alt_inputs_button.clicked.connect(self.hide_alt_inputs)
+        self.hide_alt_inputs_button.hide()  # Initially hide
+        main_layout.addWidget(self.hide_alt_inputs_button, 3, 0, 1, 4)  # Spans four columns
 
         # Submit button centered below the grid
         self.submit_button = QPushButton("Start Simulation")
+        self.submit_button.setObjectName("submit_button")
         self.submit_button.clicked.connect(self.update_global_inputs)
-        main_layout.addWidget(self.submit_button, 2, 0, 1, 2)  # Spans two columns
+        main_layout.addWidget(self.submit_button, 4, 0, 1, 4)  # Spans four columns
 
         self.setLayout(main_layout)
 
@@ -55,7 +102,6 @@ class InputAndParameterWidget(QWidget):
                 self.setStyleSheet(stylesheet)
         except FileNotFoundError:
             print("Stylesheet file not found. Using default styles.")
-
 
     def create_road_group(self, road_name, exit_directions):
         """Creates a group box for each road section with input fields."""
@@ -101,7 +147,6 @@ class InputAndParameterWidget(QWidget):
 
         # Store references to the inputs
         base_name = road_name.lower().replace(' ', '_')
-        print(f"{base_name = }")
         setattr(self, f"{base_name}_lanes_input", lanes_input)
         setattr(self, f"{base_name}_bus_lane_checkbox", bus_lane_checkbox)
         setattr(self, f"{base_name}_pedestrian_crossing_checkbox", pedestrian_crossing_checkbox)
@@ -126,12 +171,46 @@ class InputAndParameterWidget(QWidget):
 
         total_vph_label.setText(f"Total Vehicles per Hour (VpH): {total_vph}")
 
+    def toggle_pedestrian_crossing_main(self):
+        """ Toggles pedestrian crossing for main road inputs. """
+        for road_name in ["south_traffic_flow", "north_traffic_flow", 
+                          "west_traffic_flow", "east_traffic_flow"]:
+            checkbox = getattr(self, f"{road_name}_pedestrian_crossing_checkbox")
+            checkbox.setChecked(not checkbox.isChecked())
 
-    # Validating Inputs based on exits and lane types
+    def toggle_pedestrian_crossing_alt(self):
+        """ Toggles pedestrian crossing for alt road inputs. """
+        for road_name in ["alt_south_traffic_flow", "alt_north_traffic_flow", 
+                          "alt_west_traffic_flow", "alt_east_traffic_flow"]:
+            checkbox = getattr(self, f"{road_name}_pedestrian_crossing_checkbox")
+            checkbox.setChecked(not checkbox.isChecked())
+
+    def show_alt_inputs(self):
+        """ Shows the alternate road input configurations. """
+        self.alt_north_group.show()
+        self.alt_south_group.show()
+        self.alt_east_group.show()
+        self.alt_west_group.show()
+        self.alt_pedestrian_crossing_button.show()
+        self.show_alt_inputs_button.hide()
+        self.hide_alt_inputs_button.show()
+
+    def hide_alt_inputs(self):
+        """ Hides the alternate road input configurations. """
+        self.alt_north_group.hide()
+        self.alt_south_group.hide()
+        self.alt_east_group.hide()
+        self.alt_west_group.hide()
+        self.alt_pedestrian_crossing_button.hide()
+        self.hide_alt_inputs_button.hide()
+        self.show_alt_inputs_button.show()
+
     def validate_inputs(self):
         invalid_inputs = []
         for road_name in ["south_traffic_flow", "north_traffic_flow",
-                          "west_traffic_flow", "east_traffic_flow"]:
+                          "west_traffic_flow", "east_traffic_flow",
+                          "alt_south_traffic_flow", "alt_north_traffic_flow",
+                          "alt_west_traffic_flow", "alt_east_traffic_flow"]:
 
             base_name = road_name.lower().replace(' ', '_')
             exit_vph_inputs = getattr(self, f"{base_name}_exit_vph_inputs")
@@ -144,26 +223,26 @@ class InputAndParameterWidget(QWidget):
                 value = int(input_field.text()) if input_field.text().isdigit() else 0
 
                 # Checking where the vehicle is coming from, where it is going and if there is a lane for it
-                if base_name.startswith("south"):
+                if base_name.startswith("south") or base_name.startswith("alt_south"):
                     if direction == "West" and value > 0 and not left_turn_lane:
-                        invalid_inputs.append("Northbound vehicles exiting West require a left turn lane.")
+                        invalid_inputs.append("Vehicles coming from the South and exiting West require a left turn lane.")
                     if direction == "East" and value > 0 and not right_turn_lane:
-                        invalid_inputs.append("Northbound vehicles exiting East require a right turn lane.")
-                elif base_name.startswith("north"):
+                        invalid_inputs.append("Vehicles coming from the south and exiting East require a right turn lane.")
+                elif base_name.startswith("north") or base_name.startswith("alt_north"):
                     if direction == "West" and value > 0 and not right_turn_lane:
-                        invalid_inputs.append("Southbound vehicles exiting West require a right turn lane.")
+                        invalid_inputs.append("Vehicles coming from the North and exiting West require a right turn lane.")
                     if direction == "East" and value > 0 and not left_turn_lane:
-                        invalid_inputs.append("Southbound vehicles exiting East require a left turn lane.")
-                elif base_name.startswith("west"):
+                        invalid_inputs.append("Vehicles coming from the North and exiting East require a left turn lane.")
+                elif base_name.startswith("west") or base_name.startswith("alt_west"):
                     if direction == "North" and value > 0 and not right_turn_lane:
-                        invalid_inputs.append("Eastbound vehicles exiting North require a left turn lane.")
+                        invalid_inputs.append("Vehicles coming from the West and exiting North require a left turn lane.")
                     if direction == "South" and value > 0 and not left_turn_lane:
-                        invalid_inputs.append("Eastbound vehicles exiting South require a right turn lane.")
-                elif base_name.startswith("east"):
+                        invalid_inputs.append("Vehicles coming from the West and exiting South require a right turn lane.")
+                elif base_name.startswith("east") or base_name.startswith("alt_east"):
                     if direction == "North" and value > 0 and not left_turn_lane:
-                        invalid_inputs.append("Westbound vehicles exiting North require a right turn lane.")
+                        invalid_inputs.append("Vehicles coming from the East and exiting North require a right turn lane.")
                     if direction == "South" and value > 0 and not right_turn_lane:
-                        invalid_inputs.append("Westbound vehicles exiting South require a right turn lane.")
+                        invalid_inputs.append("Vehicles coming from the East and exiting South require a right turn lane.")
 
             # Checking if the number of lanes is enough for the traffic flow
             if (left_turn_lane or right_turn_lane) and lanes < 2:
@@ -171,23 +250,35 @@ class InputAndParameterWidget(QWidget):
             if left_turn_lane and right_turn_lane and lanes < 3:
                 invalid_inputs.append(f"{road_name.replace('_', ' ').title()} requires at least 3 lanes if both turn lanes are selected.")
 
-        # Check if pedestrian crossing is consistent
-        pedestrian_crossings = []
+        # Check if pedestrian crossing is consistent for main inputs
+        main_pedestrian_crossings = []
         for road_name in ["south_traffic_flow", "north_traffic_flow",
-                          "west_traffic_flow", "east_traffic_flow"]:
+                  "west_traffic_flow", "east_traffic_flow"]:
+            
             base_name = road_name.lower().replace(' ', '_')
             pedestrian_crossing = getattr(self, f"{base_name}_pedestrian_crossing_checkbox").isChecked()
-            pedestrian_crossings.append(pedestrian_crossing)
+            main_pedestrian_crossings.append(pedestrian_crossing)
 
-        if not all(pedestrian_crossings) and any(pedestrian_crossings):
-            invalid_inputs.append("Pedestrian crossing must be enabled for all directions or none.")
+        if not all(main_pedestrian_crossings) and any(main_pedestrian_crossings):
+            invalid_inputs.append("Pedestrian crossing must be enabled for all main directions or none.")
+
+        # Check if pedestrian crossing is consistent for alt inputs
+        alt_pedestrian_crossings = []
+        for road_name in ["alt_south_traffic_flow", "alt_north_traffic_flow",
+                  "alt_west_traffic_flow", "alt_east_traffic_flow"]:
+            
+            base_name = road_name.lower().replace(' ', '_')
+            pedestrian_crossing = getattr(self, f"{base_name}_pedestrian_crossing_checkbox").isChecked()
+            alt_pedestrian_crossings.append(pedestrian_crossing)
+
+        if not all(alt_pedestrian_crossings) and any(alt_pedestrian_crossings):
+            invalid_inputs.append("Pedestrian crossing must be enabled for all alt directions or none.")
 
         if invalid_inputs:
             QMessageBox.critical(self, "Invalid Inputs", "\n".join(invalid_inputs))
             return False
 
         return True
-
 
     def update_global_inputs(self):
         """ Stores user inputs into the global dictionary for use in simulations. """
@@ -198,7 +289,6 @@ class InputAndParameterWidget(QWidget):
         for road_name in ["south_traffic_flow", "north_traffic_flow", 
                           "west_traffic_flow", "east_traffic_flow"]:
             
-            print("'",getattr(self, f"{road_name}_total_vph_label").text(),"'")
             total_vph = getattr(self, f"{road_name}_total_vph_label").text().split(": ")[1]
             lanes = getattr(self, f"{road_name}_lanes_input").value()
             bus_lane = getattr(self, f"{road_name}_bus_lane_checkbox").isChecked()
@@ -233,31 +323,3 @@ class InputAndParameterWidget(QWidget):
             print(f"  Right Turn Lane: {inputs['right_turn_lane']}")
             print("  Exit VpH:", inputs['exit_vphs'])
             print()
-
-    # def get_global_inputs(self):
-    #     """ Stores user inputs into the global dictionary for use in simulations. """
-
-    #     if not self.validate_inputs():
-    #         return
-        
-    #     road_names = ["south_traffic_flow", "north_traffic_flow", "west_traffic_flow", "east_traffic_flow"]
-
-    #     junction = JunctionDetails()
-        
-    #     for direction in Directions:
-    #         road_name = road_names[direction.value]
-            
-    #         arm = FlowRate(
-    #             dir_from = direction.to_Dir(), 
-    #             ahead:int, # Slightly more complex
-    #             left:int, 
-    #             right:int, 
-    #             dedicated_left:bool = getattr(self, f"{road_name}_left_turn_lane_checkbox").isChecked(), 
-    #             dedicated_bus: int = getattr(self, f"{road_name}_bus_lane_checkbox").isChecked(), 
-    #             dedicated_right: bool = getattr(self, f"{road_name}_right_turn_lane_checkbox").isChecked(), 
-    #             seq_priority: int # Didnt have time
-    #         )
-            
-    #         junction.arms.append(arm)
-            
-    #     return junction.get_FlowRate_list()
