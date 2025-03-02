@@ -1,7 +1,3 @@
-QWidget {
-    
-}
-
 QLabel {
     font-family: "Helvetica Neue", sans-serif;
     font-size: 16px;
@@ -69,4 +65,33 @@ QPushButton:disabled {
     padding: 8px 8px;
     text-align: center;
     font-weight: bold;
+}
+
+QGroupBox::title {
+    subcontrol-origin: margin;
+    subcontrol-position: top center;
+    font-size: 18px;
+    padding: 5px;
+    border: none;
+    border-radius: 10px;
+    background-color: #6A89A7;
+}
+
+
+#exitButton {
+    background-color: #FF3B30;  
+    color: white;               
+    border: none;
+    border-radius: 6px;         
+    padding: 8px 16px;          
+    font-size: 14px;
+    font-weight: bold;
+    }
+    
+#exitButton:hover {
+    background-color: #D32F2F; 
+}
+
+#exitButton:pressed {
+    background-color: #C5281C; 
 }

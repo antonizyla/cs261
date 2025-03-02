@@ -67,7 +67,7 @@ class InputAndParameterWidget(QWidget):
         # Pedestrian crossing buttons
         self.pedestrian_crossing_button = QPushButton("Toggle Pedestrian Crossing (Main Configuration)")
         self.pedestrian_crossing_button.clicked.connect(self.toggle_pedestrian_crossing_main)
-        self.main_layout.addWidget(self.pedestrian_crossing_button, 2, 0, 1, 2)  # Initially spans two columns
+        self.main_layout.addWidget(self.pedestrian_crossing_button, 2, 0, 1, 4)  # Initially spans two columns
 
         self.alt_pedestrian_crossing_button = QPushButton("Toggle Pedestrian Crossing (Alternate Configuration)")
         self.alt_pedestrian_crossing_button.clicked.connect(self.toggle_pedestrian_crossing_alt)
@@ -186,6 +186,7 @@ class InputAndParameterWidget(QWidget):
         self.alt_east_group.setVisible(True)
         self.alt_west_group.setVisible(True)
         self.alt_pedestrian_crossing_button.setVisible(True)
+        self.main_layout.addWidget(self.pedestrian_crossing_button, 2, 0, 1, 2)
         
         self.layout().removeWidget(self.show_alt_inputs_button)
         # Button to hide alt road inputs
@@ -203,6 +204,8 @@ class InputAndParameterWidget(QWidget):
         self.alt_east_group.setVisible(False)
         self.alt_west_group.setVisible(False)
         self.alt_pedestrian_crossing_button.setVisible(False)
+
+        self.main_layout.addWidget(self.pedestrian_crossing_button, 2, 0, 1, 4)
         
         self.layout().removeWidget(self.hide_alt_inputs_button)
         # Button to show alt road inputs

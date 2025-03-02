@@ -75,6 +75,14 @@ class ResultsWidget(QWidget):
         self.generate_report_button.clicked.connect(self.get_report)
         main_layout.addWidget(self.generate_report_button, 2, 1)  # Bottom-right
 
+        self.go_inputs_button = QPushButton("Run Simulation Again")
+        main_layout.addWidget(self.go_inputs_button, 3, 0, 1, 2)  # Bottom
+
+        self.exit_button = QPushButton("Exit")
+        self.exit_button.setObjectName("exitButton")
+        main_layout.addWidget(self.exit_button, 4, 0, 1, 2)  # Bottom
+
+
         # Set the layout of the main widget
         layout = QVBoxLayout()
         layout.addLayout(overall_scores_layout)

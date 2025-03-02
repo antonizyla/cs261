@@ -1,5 +1,5 @@
 import sys
-from PyQt5.QtWidgets import QWidget, QPushButton, QGraphicsItem, QApplication, QMainWindow, QGraphicsScene, QGraphicsView, QGraphicsPixmapItem, QGraphicsItemGroup
+from PyQt5.QtWidgets import QWidget, QPushButton, QGraphicsItem, QApplication, QMainWindow, QGraphicsScene, QGraphicsView, QGraphicsPixmapItem, QGraphicsItemGroup, QVBoxLayout, QHBoxLayout
 from PyQt5.QtGui import QPixmap, QBrush, QColor, QTransform
 from PyQt5.QtCore import QRectF, QObject
 from enum import Enum, Flag, auto, unique
@@ -545,11 +545,21 @@ class ImageViewer(QWidget):
         # self.setWindowTitle("Visualisation")
         # self.setGeometry(100, 100, 600, 500)
 
-        self.button = QPushButton("Randomise", self)
-        self.button.clicked.connect(self.randomise_junction)
+        layout = QVBoxLayout(self)
 
         self.junction_view = JunctionView(self)
-        self.junction_view.move(0, self.button.height())
+        layout.addWidget(self.junction_view)
+
+        button_layout = QHBoxLayout()
+        self.button = QPushButton("Randomise", self)
+        self.button.clicked.connect(self.randomise_junction)
+        button_layout.addWidget(self.button)
+
+        self.go_results_button = QPushButton("Go to Results", self)
+        button_layout.addWidget(self.go_results_button)
+
+        layout.addLayout(button_layout)
+        self.setLayout(layout)
 
         self.randomise_junction()
     
@@ -569,12 +579,15 @@ class ImageViewer(QWidget):
         
         self.junction_view.set_junction(JunctionData(data[0], data[1], data[2]))
 
-        junction_width = self.junction_view.width()
-        junction_height = self.junction_view.height()
-        button_height = self.button.height()
+        # junction_width = self.junction_view.width()
+        # junction_height = self.junction_view.height()
+        # button_height = self.button.height()
 
-        self.button.resize(junction_width, button_height)
-        self.resize(junction_width, junction_height + button_height)
+        # self.button.resize(junction_width, button_height)
+        # self.resize(junction_width, junction_height + button_height)
+
+        self.junction_view.updateGeometry()
+        self.layout().update()
 
 
     def apply_stylesheet(self):
