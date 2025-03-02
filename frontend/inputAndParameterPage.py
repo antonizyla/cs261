@@ -32,14 +32,14 @@ class InputAndParameterWidget(QWidget):
         super().__init__(parent)
         
         # Button to show alt road inputs
-        self.add_junction_button = QPushButton("Add Alternate Road Inputs")
+        self.add_junction_button = QPushButton("Add Alternative Configuration")
         self.add_junction_button.clicked.connect(self.add_junction)
         
         self.junctions_list = JunctionList()
         self.junctions_list.setWidgetResizable(True)
         
         # Button to show alt road inputs
-        self.remove_junction_button = QPushButton("Remove Alternate Road Inputs")
+        self.remove_junction_button = QPushButton("Remove Alternative Configuration")
         self.remove_junction_button.clicked.connect(self.remove_junction)
 
         # Submit button centered below the grid
@@ -63,7 +63,6 @@ class InputAndParameterWidget(QWidget):
         except FileNotFoundError:
             print("Stylesheet file not found. Using default styles.")
         
-    
     def update_layout(self):
         layout = QGridLayout()
         layout.addWidget(self.junctions_list, 0, 0, 1, -1)
@@ -177,7 +176,7 @@ class JunctionInputAndParameterWidget(QGroupBox):
         for i in range(4):
             layout.addWidget(self.road_groups[i], 0, i, 1, 1) # direction could have been used as an int here, but i think this is clearer
             
-        self.pedestrian_crossing_checkbox = QCheckBox("Toggle Pedestrian Crossing (Main Roads)")
+        self.pedestrian_crossing_checkbox = QCheckBox("Toggle Pedestrian Crossing")
         layout.addWidget(self.pedestrian_crossing_checkbox, 1, 0, 1, 1)
     
         self.setLayout(layout)
