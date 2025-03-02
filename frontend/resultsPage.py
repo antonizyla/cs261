@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from PyQt5.QtWidgets import (QWidget, QPushButton, QVBoxLayout, QLabel, QLineEdit, 
                              QSpinBox, QCheckBox, QGroupBox, QFormLayout, QToolButton, 
-                             QHBoxLayout, QGridLayout, QSizePolicy, QFileDialog)
+                             QHBoxLayout, QGridLayout, QSizePolicy, QFileDialog, QScrollArea)
 from PyQt5.QtCore import Qt
 import os
 from pylatex import Document, Figure, NoEscape, Section, Itemize
@@ -33,6 +33,9 @@ alt_road_results = {
     "alt_north_traffic_flow": {}
 }
 
+overallScore = 66
+alt_overallScore = 80
+
 class ResultsWidget(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -40,11 +43,22 @@ class ResultsWidget(QWidget):
         # Load and apply the stylesheet
         self.apply_stylesheet()
 
-        # Use a grid layout instead of a vertical layout
+        # Overall scores
+        overall_scores_layout = QHBoxLayout()
+        overall_label = QLabel(f"Main Configuration Overall Score: {overallScore}")
+        overall_label.setObjectName("overallScoreLabel")
+        overall_label.setAlignment(Qt.AlignCenter)
+        overall_scores_layout.addWidget(overall_label)
+
+        alt_overall_label = QLabel(f"Alternate Configuration Overall Score: {alt_overallScore}")
+        alt_overall_label.setObjectName("overallScoreLabel")
+        alt_overall_label.setAlignment(Qt.AlignCenter)
+        overall_scores_layout.addWidget(alt_overall_label)
+
+        # Use a grid layout for the road groups
         main_layout = QGridLayout()
         main_layout.setSpacing(5)  # Reduce spacing for a more compact layout
 
-        
         # Create road result groups in a 2x2 grid
         self.create_road_group(main_layout, "South Traffic Flow", 0, 0)  # Top-left
         self.create_road_group(main_layout, "North Traffic Flow", 0, 1)  # Top-right
@@ -61,9 +75,11 @@ class ResultsWidget(QWidget):
         self.generate_report_button.clicked.connect(self.get_report)
         main_layout.addWidget(self.generate_report_button, 2, 1)  # Bottom-right
 
-        self.setLayout(main_layout)
-
-        # Table and Bar Chart
+        # Set the layout of the main widget
+        layout = QVBoxLayout()
+        layout.addLayout(overall_scores_layout)
+        layout.addLayout(main_layout)
+        self.setLayout(layout)
 
     def apply_stylesheet(self):
         """Loads and applies the stylesheet."""
@@ -266,7 +282,6 @@ class ResultsWidget(QWidget):
         ax.bar(x, input_values, width=0.4, label='Main Configuration')
         ax.bar(x2, alt_values, width=0.4, label='Alternative Configuration')
 
-        ax.set_xlabel('Categories')
         ax.set_ylabel('Values')
         ax.set_title(f'{road_name.replace("_", " ").title()} Comparison')
         ax.set_xticks(x)

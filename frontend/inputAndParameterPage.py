@@ -65,17 +65,17 @@ class InputAndParameterWidget(QWidget):
         self.main_layout.addWidget(self.alt_west_group, 1, 3)
 
         # Pedestrian crossing buttons
-        self.pedestrian_crossing_button = QPushButton("Toggle Pedestrian Crossing (Main Roads)")
+        self.pedestrian_crossing_button = QPushButton("Toggle Pedestrian Crossing (Main Configuration)")
         self.pedestrian_crossing_button.clicked.connect(self.toggle_pedestrian_crossing_main)
         self.main_layout.addWidget(self.pedestrian_crossing_button, 2, 0, 1, 2)  # Initially spans two columns
 
-        self.alt_pedestrian_crossing_button = QPushButton("Toggle Pedestrian Crossing (Alt Roads)")
+        self.alt_pedestrian_crossing_button = QPushButton("Toggle Pedestrian Crossing (Alternate Configuration)")
         self.alt_pedestrian_crossing_button.clicked.connect(self.toggle_pedestrian_crossing_alt)
         self.alt_pedestrian_crossing_button.hide()  # Initially hide
         self.main_layout.addWidget(self.alt_pedestrian_crossing_button, 2, 2, 1, 2)
 
         # Button to show alt road inputs
-        self.show_alt_inputs_button = QPushButton("Add Alternate Road Inputs")
+        self.show_alt_inputs_button = QPushButton("Add Alternate Configurations")
         self.show_alt_inputs_button.clicked.connect(self.show_alt_inputs)
         self.main_layout.addWidget(self.show_alt_inputs_button, 3, 0, 1, 4)  # Spans four columns
 
@@ -189,7 +189,7 @@ class InputAndParameterWidget(QWidget):
         
         self.layout().removeWidget(self.show_alt_inputs_button)
         # Button to hide alt road inputs
-        self.hide_alt_inputs_button = QPushButton("Hide Alternate Road Inputs")
+        self.hide_alt_inputs_button = QPushButton("Hide Alternate Conigurations")
         self.hide_alt_inputs_button.clicked.connect(self.hide_alt_inputs)
         self.main_layout.addWidget(self.hide_alt_inputs_button, 3, 0, 1, 4)  # Spans four columns
 
@@ -206,7 +206,7 @@ class InputAndParameterWidget(QWidget):
         
         self.layout().removeWidget(self.hide_alt_inputs_button)
         # Button to show alt road inputs
-        self.show_alt_inputs_button = QPushButton("Add Alternate Road Inputs")
+        self.show_alt_inputs_button = QPushButton("Add Alternate Configurations")
         self.show_alt_inputs_button.clicked.connect(self.show_alt_inputs)
         self.main_layout.addWidget(self.show_alt_inputs_button, 3, 0, 1, 4)  # Spans four columns
 

@@ -60,3 +60,13 @@ QPushButton:disabled {
     background-color: #AAB2BD;  
     color: white;
 }
+
+#overallScoreLabel {
+    font-size: 27px;
+    border: none;
+    border-radius: 10px;
+    background-color: #06402B;
+    padding: 8px 8px;
+    text-align: center;
+    font-weight: bold;
+}
