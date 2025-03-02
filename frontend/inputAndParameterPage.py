@@ -32,7 +32,7 @@ class InputAndParameterWidget(QWidget):
         self.apply_stylesheet()
 
         # Main grid layout (2x2)
-        main_layout = QGridLayout()
+        self.main_layout = QGridLayout()
 
         # Create road groups and assign them to grid
         self.north_group = self.create_road_group("South Traffic Flow", ["North", "East", "West"])
@@ -47,51 +47,45 @@ class InputAndParameterWidget(QWidget):
         self.alt_east_group = self.create_road_group("Alt East Traffic Flow", ["West", "North", "South"])
 
         # Arrange in a 4x2 grid
-        main_layout.addWidget(self.north_group, 0, 0)
-        main_layout.addWidget(self.south_group, 0, 1)
-        main_layout.addWidget(self.east_group, 0, 2)
-        main_layout.addWidget(self.west_group, 0, 3)
+        self.main_layout.addWidget(self.north_group, 0, 0)
+        self.main_layout.addWidget(self.south_group, 0, 1)
+        self.main_layout.addWidget(self.east_group, 0, 2)
+        self.main_layout.addWidget(self.west_group, 0, 3)
 
         # Initially hide alt road groups
-        self.alt_north_group.hide()
-        self.alt_south_group.hide()
-        self.alt_east_group.hide()
-        self.alt_west_group.hide()
+        self.alt_north_group.setVisible(False)
+        self.alt_south_group.setVisible(False)
+        self.alt_east_group.setVisible(False)
+        self.alt_west_group.setVisible(False)
 
         # Add alt road groups to the layout but keep them hidden
-        main_layout.addWidget(self.alt_north_group, 1, 0)
-        main_layout.addWidget(self.alt_south_group, 1, 1)
-        main_layout.addWidget(self.alt_east_group, 1, 2)
-        main_layout.addWidget(self.alt_west_group, 1, 3)
+        self.main_layout.addWidget(self.alt_north_group, 1, 0)
+        self.main_layout.addWidget(self.alt_south_group, 1, 1)
+        self.main_layout.addWidget(self.alt_east_group, 1, 2)
+        self.main_layout.addWidget(self.alt_west_group, 1, 3)
 
         # Pedestrian crossing buttons
         self.pedestrian_crossing_button = QPushButton("Toggle Pedestrian Crossing (Main Roads)")
         self.pedestrian_crossing_button.clicked.connect(self.toggle_pedestrian_crossing_main)
-        main_layout.addWidget(self.pedestrian_crossing_button, 2, 0, 1, 2)
+        self.main_layout.addWidget(self.pedestrian_crossing_button, 2, 0, 1, 2)
 
         self.alt_pedestrian_crossing_button = QPushButton("Toggle Pedestrian Crossing (Alt Roads)")
         self.alt_pedestrian_crossing_button.clicked.connect(self.toggle_pedestrian_crossing_alt)
         self.alt_pedestrian_crossing_button.hide()  # Initially hide
-        main_layout.addWidget(self.alt_pedestrian_crossing_button, 2, 2, 1, 2)
+        self.main_layout.addWidget(self.alt_pedestrian_crossing_button, 2, 0, 1, 2)
 
         # Button to show alt road inputs
         self.show_alt_inputs_button = QPushButton("Add Alternate Road Inputs")
         self.show_alt_inputs_button.clicked.connect(self.show_alt_inputs)
-        main_layout.addWidget(self.show_alt_inputs_button, 3, 0, 1, 4)  # Spans four columns
-
-        # Button to hide alt road inputs
-        self.hide_alt_inputs_button = QPushButton("Hide Alternate Road Inputs")
-        self.hide_alt_inputs_button.clicked.connect(self.hide_alt_inputs)
-        self.hide_alt_inputs_button.hide()  # Initially hide
-        main_layout.addWidget(self.hide_alt_inputs_button, 3, 0, 1, 4)  # Spans four columns
+        self.main_layout.addWidget(self.show_alt_inputs_button, 3, 0, 1, 4)  # Spans four columns
 
         # Submit button centered below the grid
         self.submit_button = QPushButton("Start Simulation")
         self.submit_button.setObjectName("submit_button")
         self.submit_button.clicked.connect(self.update_global_inputs)
-        main_layout.addWidget(self.submit_button, 4, 0, 1, 4)  # Spans four columns
+        self.main_layout.addWidget(self.submit_button, 4, 0, 1, 4)  # Spans four columns
 
-        self.setLayout(main_layout)
+        self.setLayout(self.main_layout)
 
     def apply_stylesheet(self):
         """Loads and applies the stylesheet."""
@@ -187,23 +181,39 @@ class InputAndParameterWidget(QWidget):
 
     def show_alt_inputs(self):
         """ Shows the alternate road input configurations. """
-        self.alt_north_group.show()
-        self.alt_south_group.show()
-        self.alt_east_group.show()
-        self.alt_west_group.show()
-        self.alt_pedestrian_crossing_button.show()
-        self.show_alt_inputs_button.hide()
-        self.hide_alt_inputs_button.show()
+        self.alt_north_group.setVisible(True)
+        self.alt_south_group.setVisible(True)
+        self.alt_east_group.setVisible(True)
+        self.alt_west_group.setVisible(True)
+        self.alt_pedestrian_crossing_button.setVisible(True)
+        self.pedestrian_crossing_button.setVisible(False)
+        
+        self.layout().removeWidget(self.show_alt_inputs_button)
+        # Button to hide alt road inputs
+        self.hide_alt_inputs_button = QPushButton("Hide Alternate Road Inputs")
+        self.hide_alt_inputs_button.clicked.connect(self.hide_alt_inputs)
+        self.main_layout.addWidget(self.hide_alt_inputs_button, 3, 0, 1, 4)  # Spans four columns
+
+        # Ensuring the layout updates properly
+        self.layout().invalidate()
 
     def hide_alt_inputs(self):
         """ Hides the alternate road input configurations. """
-        self.alt_north_group.hide()
-        self.alt_south_group.hide()
-        self.alt_east_group.hide()
-        self.alt_west_group.hide()
-        self.alt_pedestrian_crossing_button.hide()
-        self.hide_alt_inputs_button.hide()
-        self.show_alt_inputs_button.show()
+        self.alt_north_group.setVisible(False)
+        self.alt_south_group.setVisible(False)
+        self.alt_east_group.setVisible(False)
+        self.alt_west_group.setVisible(False)
+        self.alt_pedestrian_crossing_button.setVisible(False)
+        self.pedestrian_crossing_button.setVisible(True)
+        
+        self.layout().removeWidget(self.hide_alt_inputs_button)
+        # Button to show alt road inputs
+        self.show_alt_inputs_button = QPushButton("Add Alternate Road Inputs")
+        self.show_alt_inputs_button.clicked.connect(self.show_alt_inputs)
+        self.main_layout.addWidget(self.show_alt_inputs_button, 3, 0, 1, 4)  # Spans four columns
+
+        # Ensuring the layout updates properly
+        self.layout().invalidate()
 
     def validate_inputs(self):
         invalid_inputs = []
