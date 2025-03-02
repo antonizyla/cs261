@@ -1,32 +1,22 @@
-QPushButton {
-    background-color: #324ca8;  /* iOS Blue */
-    color: white;
-    border-radius: 6px;
-    padding: 8px 16px;
-    font-size: 16px;
-    font-weight: bold;
-    font-family: -apple-system, "SF Pro Text", "Helvetica Neue", "Arial", sans-serif;
-    border: none;
-}
-
-QPushButton:hover {
-    background-color: #005EC5;  /* Slightly darker blue */
-}
-
-QPushButton:pressed {
-    background-color: #0047A0;  /* Even darker blue */
-}
-
-QPushButton:disabled {
-    background-color: #AAB2BD;  /* iOS disabled grey */
-    color: white;
+QWidget {
+    background-color: #3D3D3D
 }
 
 QLabel {
-    font-family: -apple-system, "SF Pro Text", "Helvetica Neue", "Arial", sans-serif;
+    font-family: "Helvetica Neue", Arial, sans-serif;
     font-size: 16px;
-    color: #272727;
+    color: white;
     font-weight: medium;
+    background-color: rgb(66, 66, 66);
+}
+
+QCheckBox {
+    background-color: rgb(66, 66, 66);
+}
+
+QLineEdit {
+    background-color:rgb(112, 111, 111);
+    border-radius: 6px;
 }
 
 #submit_button {
@@ -40,9 +30,33 @@ QLabel {
     }
     
 #submit_button:hover {
-    background-color: #28B463; /* Slightly darker green on hover */
+    background-color: #28B463; 
 }
 
 #submit_button:pressed {
-    background-color: #239B56; /* Even darker when clicked */
+    background-color: #239B56; 
+}
+
+QPushButton {
+    background-color: #324ca8;  
+    color: white;
+    border-radius: 6px;
+    padding: 8px 16px;
+    font-size: 16px;
+    font-weight: bold;
+    font-family: "San Francisco", sans-serif;
+    border: none;
+}
+
+QPushButton:hover {
+    background-color: #005EC5;  
+}
+
+QPushButton:pressed {
+    background-color: #0047A0;  
+}
+
+QPushButton:disabled {
+    background-color: #AAB2BD;  
+    color: white;
 }
