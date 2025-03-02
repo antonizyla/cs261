@@ -44,7 +44,13 @@ class Junction:
             elif (trafficLightTiming[i] == EWO) and (TrafficLights.EAST_WEST_OTHER not in trafficLightOrder):
                 trafficLightOrder.append(TrafficLights.EAST_WEST_OTHER)
 
-        for i in range(0, 200): #Value to change during development 
+        for i in range(0, 240): #Value to change during development 
+            if i % 60 == 0:
+                self.northerly_lanes.simulate_hourly()
+                self.easterly_lanes.simulate_hourly()
+                self.southerly_lanes.simulate_hourly()
+                self.westerly_lanes.simulate_hourly()
+            
             self.northerly_lanes.simulateUpdate(trafficLightOrder[i%4], trafficLightTiming[i%4]/60) #Need to further multiply by some constant - currently is number of cars per minute, 
             self.easterly_lanes.simulateUpdate(trafficLightOrder[i%4], trafficLightTiming[i%4]/60)
             self.southerly_lanes.simulateUpdate(trafficLightOrder[i%4], trafficLightTiming[i%4]/60)

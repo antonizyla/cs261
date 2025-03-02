@@ -63,6 +63,9 @@ class Lane:
                         timer -= 1
 
                 self.current_vehicles[0].pop(0)
+                
+                if self.current_vehicles == []:
+                    break
             else:
                 break
             

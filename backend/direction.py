@@ -16,16 +16,16 @@ class Direction:
         self.avg_wait = None
         self.lanes = []
         if num_lanes == 1:
-            self.lanes.append(Lane(5, flows.direction_from, [left_of(flows.direction_from), right_of(flows.direction_from), opposite_of(flows.direction_from)]))
+            self.lanes.append(Lane(60, flows.direction_from, [left_of(flows.direction_from), right_of(flows.direction_from), opposite_of(flows.direction_from)]))
         else:
             if flows.dedicated_left:
-                self.lanes.append(Lane(5, flows.direction_from, [left_of(flows.direction_from)]))
+                self.lanes.append(Lane(60, flows.direction_from, [left_of(flows.direction_from)]))
                 num_lanes -= 1
             elif flows.dedicated_right:
-                self.lanes.append(Lane(5, flows.direction_from, [right_of(flows.direction_from)]))
+                self.lanes.append(Lane(60, flows.direction_from, [right_of(flows.direction_from)]))
                 num_lanes -= 1
             for i in range(num_lanes - len(self.lanes)):
-                self.lanes.append(Lane(5, flows.direction_from, [opposite_of(flows.direction_from)]))
+                self.lanes.append(Lane(60, flows.direction_from, [opposite_of(flows.direction_from)]))
 
     # hourly/longer period update
     def simulate_hourly(self):
@@ -45,13 +45,13 @@ class Direction:
         spaces = []
         for lane in self.lanes:
             if (trafficLights in TrafficLights.NORTH_SOUTH_RIGHT) and (self.flows.get_direction_from() in Dir.NORTH | Dir.SOUTH):
-                lane.simulate_update(right_of(self.flows.get_direction_from()), trafficlight_timing)
+                lane.simulate_update(right_of(self.flows.get_direction_from()), 60)
             elif (trafficLights in TrafficLights.NORTH_SOUTH_OTHER) and (self.flows.get_direction_from() in Dir.NORTH | Dir.SOUTH):
-                lane.simulate_update(left_of(self.flows.get_direction_from()) | opposite_of(self.flows.get_direction_from()), trafficlight_timing)
+                lane.simulate_update(left_of(self.flows.get_direction_from()) | opposite_of(self.flows.get_direction_from()), 60)
             elif (trafficLights in TrafficLights.EAST_WEST_RIGHT) and (self.flows.get_direction_from() in Dir.EAST | Dir.WEST):
-                lane.simulate_update(right_of(self.flows.get_direction_from()), trafficlight_timing)
+                lane.simulate_update(right_of(self.flows.get_direction_from()), 60)
             elif (trafficLights in TrafficLights.EAST_WEST_OTHER) and (self.flows.get_direction_from() in Dir.EAST | Dir.WEST):
-                lane.simulate_update(left_of(self.flows.get_direction_from()) | opposite_of(self.flows.get_direction_from()), trafficlight_timing)
+                lane.simulate_update(left_of(self.flows.get_direction_from()) | opposite_of(self.flows.get_direction_from()), 60)
             
             spaces.append(lane.get_queue_limit() - lane.get_no_vehicle_present()) #How many free spaces are there
 
