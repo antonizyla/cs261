@@ -1,4 +1,3 @@
-from junction import Junction
 from lane import Dir, Lane
 
 
