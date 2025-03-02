@@ -20,10 +20,17 @@ alt_max_length = 50
 
 # Global variables to store results
 road_results = {
-    "northbound_traffic_flow": {},
-    "eastbound_traffic_flow": {},
-    "westbound_traffic_flow": {},
-    "southbound_traffic_flow": {}
+    "south_traffic_flow": {},
+    "west_traffic_flow": {},
+    "east_traffic_flow": {},
+    "north_traffic_flow": {}
+}
+
+alt_road_results = {
+    "alt_south_traffic_flow": {},
+    "alt_west_traffic_flow": {},
+    "alt_east_traffic_flow": {},
+    "alt_north_traffic_flow": {}
 }
 
 class ResultsWidget(QWidget):
@@ -37,21 +44,22 @@ class ResultsWidget(QWidget):
         main_layout = QGridLayout()
         main_layout.setSpacing(5)  # Reduce spacing for a more compact layout
 
+        
+        # Create road result groups in a 2x2 grid
+        self.create_road_group(main_layout, "South Traffic Flow", 0, 0)  # Top-left
+        self.create_road_group(main_layout, "North Traffic Flow", 0, 1)  # Top-right
+        self.create_road_group(main_layout, "West Traffic Flow", 1, 0)   # Bottom-left
+        self.create_road_group(main_layout, "East Traffic Flow", 1, 1)   # Bottom-right
+
         # Button to generate results
         self.generate_results_button = QPushButton("Generate Results")
         self.generate_results_button.clicked.connect(self.get_results)
-        main_layout.addWidget(self.generate_results_button, 0, 0, 1, 2)  # Span two columns
-
-        # Create road result groups in a 2x2 grid
-        self.create_road_group(main_layout, "Northbound Traffic Flow", 1, 0)  # Top-left
-        self.create_road_group(main_layout, "Southbound Traffic Flow", 1, 1)  # Top-right
-        self.create_road_group(main_layout, "Eastbound Traffic Flow", 2, 0)   # Bottom-left
-        self.create_road_group(main_layout, "Westbound Traffic Flow", 2, 1)   # Bottom-right
+        main_layout.addWidget(self.generate_results_button, 2, 0)  # Bottom-left
 
         # Button to get report
         self.generate_report_button = QPushButton("Download Report as PDF") 
         self.generate_report_button.clicked.connect(self.get_report)
-        main_layout.addWidget(self.generate_report_button, 3, 0, 1, 2)  # Span two columns
+        main_layout.addWidget(self.generate_report_button, 2, 1)  # Bottom-right
 
         self.setLayout(main_layout)
 
@@ -91,9 +99,24 @@ class ResultsWidget(QWidget):
         max_wait_label = QLabel("Max Wait Time: -")
         max_queue_label = QLabel("Max Queue Length: -")
 
-        form_layout.addRow(avg_wait_label)
-        form_layout.addRow(max_wait_label)
-        form_layout.addRow(max_queue_label)
+        alt_avg_wait_label = QLabel("Alternate Average Wait Time: -")
+        alt_max_wait_label = QLabel("Alternate Max Wait Time: -")
+        alt_max_queue_label = QLabel("AlternateMax Queue Length: -")
+
+        # Create a grid layout for the labels
+        labels_layout = QGridLayout()
+
+        # Add the labels to the grid layout
+        labels_layout.addWidget(avg_wait_label, 0, 0)
+        labels_layout.addWidget(max_wait_label, 1, 0)
+        labels_layout.addWidget(max_queue_label, 2, 0)
+
+        labels_layout.addWidget(alt_avg_wait_label, 0, 1)
+        labels_layout.addWidget(alt_max_wait_label, 1, 1)
+        labels_layout.addWidget(alt_max_queue_label, 2, 1)
+
+        # Add the grid layout to the form layout
+        form_layout.addRow(labels_layout)
 
         # Store reference for updating results later
         base_name = road_name.lower().replace(' ', '_')
@@ -101,6 +124,11 @@ class ResultsWidget(QWidget):
         setattr(self, f"{base_name}_avg_wait_label", avg_wait_label)
         setattr(self, f"{base_name}_max_wait_label", max_wait_label)
         setattr(self, f"{base_name}_max_queue_label", max_queue_label)
+        setattr(self, f"{base_name}_form_layout", form_layout)
+
+        setattr(self, f"{base_name}_alt_avg_wait_label", alt_avg_wait_label)
+        setattr(self, f"{base_name}_alt_max_wait_label", alt_max_wait_label)
+        setattr(self, f"{base_name}_alt_max_queue_label", alt_max_queue_label)
         setattr(self, f"{base_name}_form_layout", form_layout)
 
         # Set layout for the group box
@@ -134,9 +162,13 @@ class ResultsWidget(QWidget):
         self.max_wait_time = [40, 50, 35, 20]
         self.max_queue_length = [10, 15, 12, 8]
 
+        self.alt_avg_wait = [30, 40, 35, 25]
+        self.alt_max_wait_time = [60, 70, 55, 40]
+        self.alt_max_queue_length = [20, 25, 22, 18]
+
         counter = 0
-        for road_name in ["northbound_traffic_flow", "southbound_traffic_flow", 
-                          "eastbound_traffic_flow", "westbound_traffic_flow"]:
+        for road_name in ["south_traffic_flow", "north_traffic_flow", 
+                          "west_traffic_flow", "east_traffic_flow"]:
 
             road_results[road_name] = {
                 "average_wait": self.average_wait[counter],
@@ -153,6 +185,24 @@ class ResultsWidget(QWidget):
             self.update_chart(road_name, counter)
             counter += 1
 
+        counter2 = 0
+        for alt_road_name in ["south_traffic_flow", "north_traffic_flow", 
+                              "west_traffic_flow", "east_traffic_flow"]:
+            
+            alt_road_results[alt_road_name] = {
+                "average_wait": self.alt_avg_wait[counter2],
+                "max_wait_times": self.alt_max_wait_time[counter2],
+                "max_queue_length": self.alt_max_queue_length[counter2],
+            }
+
+            base_name = alt_road_name.lower().replace(' ', '_')
+            getattr(self, f"{base_name}_alt_avg_wait_label").setText(f"Alternate Average Wait Time: {self.alt_avg_wait[counter2]} sec")
+            getattr(self, f"{base_name}_alt_max_wait_label").setText(f"Alternate Max Wait Time: {self.alt_max_wait_time[counter2]} sec")
+            getattr(self, f"{base_name}_alt_max_queue_label").setText(f"Alternate Max Queue Length: {self.alt_max_queue_length[counter2]} cars")
+            
+            self.update_chart(alt_road_name, counter2)
+            counter2 += 1
+
     def get_report(self):
         """Generates a PDF report with the results and bar charts."""
 
@@ -168,18 +218,28 @@ class ResultsWidget(QWidget):
 
         doc.append("Below are the results of the simulation.")
 
-        for road_name in ["northbound_traffic_flow", "southbound_traffic_flow", 
-                          "eastbound_traffic_flow", "westbound_traffic_flow"]:
+        for road_name in ["south_traffic_flow", "north_traffic_flow", 
+                  "west_traffic_flow", "east_traffic_flow"]:
             
             base_name = road_name.lower().replace('_', '_')
             
             with doc.create(Section(f"{road_name.replace('_', ' ').title()} Results")):
-                doc.append(f"Here are the overall results for {road_name.replace('_', ' ').title()}")
+                doc.append(f"Here are the results for {road_name.replace('_', ' ').title()}")
 
+                # Main Configuration
+                doc.append(NoEscape(r'\newline'))
+                doc.append("Main Configuration:")
                 with doc.create(Itemize()) as itemize:
                     itemize.add_item(f"Average Wait Time: {road_results[road_name]['average_wait']} sec")
                     itemize.add_item(f"Max Wait Time: {road_results[road_name]['max_wait_times']} sec")
                     itemize.add_item(f"Max Queue Length: {road_results[road_name]['max_queue_length']} cars")
+
+                # Alternative Configuration
+                doc.append("Alternative Configuration:")
+                with doc.create(Itemize()) as itemize:
+                    itemize.add_item(f"Average Wait Time: {alt_road_results[road_name]['average_wait']} sec")
+                    itemize.add_item(f"Max Wait Time: {alt_road_results[road_name]['max_wait_times']} sec")
+                    itemize.add_item(f"Max Queue Length: {alt_road_results[road_name]['max_queue_length']} cars")
 
                 # Add the chart directly to the PDF
                 chart = getattr(self, f"{base_name}_chart")
@@ -197,14 +257,14 @@ class ResultsWidget(QWidget):
 
         categories = ['Average Wait Time', 'Max Wait Time', 'Max Queue Length']
         input_values = [self.average_wait[index], self.max_wait_time[index], self.max_queue_length[index]]
-        alt_values = [alt_avg_wait, alt_max_wait, alt_max_length]
+        alt_values = [self.alt_avg_wait[index], self.alt_max_wait_time[index], self.alt_max_queue_length[index]]
 
         x = range(len(categories))
         x2 = [val + 0.4 for val in x]
 
         fig, ax = plt.subplots()
-        ax.bar(x, input_values, width=0.4, label='Input Simulation')
-        ax.bar(x2, alt_values, width=0.4, label='Alternative Simulation')
+        ax.bar(x, input_values, width=0.4, label='Main Configuration')
+        ax.bar(x2, alt_values, width=0.4, label='Alternative Configuration')
 
         ax.set_xlabel('Categories')
         ax.set_ylabel('Values')

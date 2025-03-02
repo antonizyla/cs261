@@ -1,17 +1,17 @@
 QWidget {
-    background-color: #3D3D3D
+    
 }
 
 QLabel {
-    font-family: "Helvetica Neue", Arial, sans-serif;
+    font-family: "Helvetica Neue", sans-serif;
     font-size: 16px;
     color: white;
     font-weight: medium;
-    background-color: rgb(66, 66, 66);
+    background-color: rgb(63, 63, 63);
 }
 
 QCheckBox {
-    background-color: rgb(66, 66, 66);
+    background-color: rgb(63, 63, 63);
 }
 
 QLineEdit {
