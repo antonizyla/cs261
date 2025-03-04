@@ -108,6 +108,7 @@ class JunctionList(QScrollArea):
     def __init__(self, parent = None):
         super().__init__(parent)
         
+
         junction = JunctionInputAndParameterWidget(1)        
         self.junctions = [junction]
         
@@ -117,6 +118,16 @@ class JunctionList(QScrollArea):
         self.inner_widget = QWidget(self)
         self.inner_widget.setLayout(layout)
         self.setWidget(self.inner_widget)
+
+        self.setStyleSheet("background-color: #D3D3D3; border-radius: 10px;")
+
+        try:
+            stylesheet_path = os.path.join(os.path.dirname(__file__), 'inputAndParameterPageStyleSheet.qss')
+            with open(stylesheet_path, 'r') as f:
+                stylesheet = f.read()
+                self.setStyleSheet(stylesheet)
+        except FileNotFoundError:
+            print("Stylesheet file not found. Using default styles.")
     
     
     def add_junction(self):
@@ -146,6 +157,16 @@ class JunctionList(QScrollArea):
             return False
 
         return True
+    
+    def apply_stylesheet(self):
+        """Loads and applies the stylesheet."""
+        try:
+            stylesheet_path = os.path.join(os.path.dirname(__file__), 'inputAndParameterPageStyleSheet.qss')
+            with open(stylesheet_path, 'r') as f:
+                stylesheet = f.read()
+                self.setStyleSheet(stylesheet)
+        except FileNotFoundError:
+            print("Stylesheet file not found. Using default styles.")
 
 
 class JunctionInputAndParameterWidget(QGroupBox):
@@ -239,6 +260,16 @@ class JunctionInputAndParameterWidget(QGroupBox):
         self.layout().addWidget(self.visualisation, 0, 2, 4, 2)
         self.visualisation.show()
     
+    def apply_stylesheet(self):
+        """Loads and applies the stylesheet."""
+        try:
+            stylesheet_path = os.path.join(os.path.dirname(__file__), 'inputAndParameterPageStyleSheet.qss')
+            with open(stylesheet_path, 'r') as f:
+                stylesheet = f.read()
+                self.setStyleSheet(stylesheet)
+        except FileNotFoundError:
+            print("Stylesheet file not found. Using default styles.")
+    
     
 class RoadGroupWidget(QGroupBox):
     def __init__(self, road_source: CardinalDirection, update_visualisation: Callable[None, None], parent: Optional[QWidget] = None) -> None:
@@ -247,6 +278,7 @@ class RoadGroupWidget(QGroupBox):
         super().__init__(road_name, parent)
         
         self.road_direction = road_source
+        self.setObjectName("road_group")
         
         """Creates a group box for each road section with input fields."""
         form_layout = QFormLayout()
@@ -335,3 +367,13 @@ class RoadGroupWidget(QGroupBox):
             error_messages.append(f"{self.title()} requires a dedicated right lane, or at least one undedicated lane.")
             
         return error_messages
+    
+    def apply_stylesheet(self):
+        """Loads and applies the stylesheet."""
+        try:
+            stylesheet_path = os.path.join(os.path.dirname(__file__), 'inputAndParameterPageStyleSheet.qss')
+            with open(stylesheet_path, 'r') as f:
+                stylesheet = f.read()
+                self.setStyleSheet(stylesheet)
+        except FileNotFoundError:
+            print("Stylesheet file not found. Using default styles.")
