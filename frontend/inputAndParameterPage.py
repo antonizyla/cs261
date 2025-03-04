@@ -5,13 +5,13 @@ from PyQt5.QtGui import QIntValidator
 from PyQt5.QtCore import Qt
 import os
 from directions import CardinalDirection, Turn
-from typing import Optional
+from typing import Optional, Callable
 import sys
 from pathlib import Path
 sys.path.append((Path(__file__).parent.parent / 'backend').resolve().__str__())
 from flowrates import FlowRates
 from params import Parameters
-from visualisation import JunctionData
+from visualisation import JunctionData, JunctionView
 
 # Global variables to store inputs, Note that the direction is the direction traffic comes from
 
@@ -157,16 +157,24 @@ class JunctionInputAndParameterWidget(QGroupBox):
         
         self.road_groups = []
         for direction in CardinalDirection:
-            self.road_groups.append(RoadGroupWidget(direction, self))
+            self.road_groups.append(RoadGroupWidget(direction, self.update_visualisation, self))
         for i in range(4):
             layout.addWidget(self.road_groups[i], 0, i, 1, 1) # direction could have been used as an int here, but i think this is clearer
             
         self.pedestrian_crossing_checkbox = QCheckBox("Toggle Pedestrian Crossing")
-        layout.addWidget(self.pedestrian_crossing_checkbox, 1, 0, 1, 1)
+        layout.addWidget(self.pedestrian_crossing_checkbox, 1, 0, 1, -1)
+
+        self.visualisation_checkbox = QCheckBox("Show Visualisation")
+        self.visualisation_checkbox.stateChanged.connect(self.toggle_visualisation)
+        layout.addWidget(self.visualisation_checkbox, 2, 0, 1, -1)
+
+        self.visualisation = JunctionView()
     
         self.setLayout(layout)
         
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+
+        self.visualisation_hidden = True
                 
     
     def validate_inputs(self):
@@ -186,17 +194,54 @@ class JunctionInputAndParameterWidget(QGroupBox):
             junction_data[0].append(self.road_groups[direction.index].lanes_input.value())
             junction_data[1].append(
                 [
-                    road_group.left_turn_lane_checkbox.isChecked(),
-                    road_group.bus_lane_checkbox.isChecked(),
-                    road_group.right_turn_lane_checkbox.isChecked()
+                    self.road_groups[direction.index].left_turn_lane_checkbox.isChecked(),
+                    self.road_groups[direction.index].bus_lane_checkbox.isChecked(),
+                    self.road_groups[direction.index].right_turn_lane_checkbox.isChecked()
                 ]
             )
-        junction_data[2] = junction.pedestrian_crossing_checkbox.isChecked()
-        return JunctionData(junction_data)
+        junction_data[2] = self.pedestrian_crossing_checkbox.isChecked()
+        return JunctionData(lane_counts = junction_data[0], dedicated_lanes = junction_data[1], has_crosswalk = junction_data[2])
+    
+    def update_visualisation(self):
+        if self.visualisation_hidden:
+            return
+        self.visualisation.set_junction(self.update_global_inputs_frontend())
+        
+    def toggle_visualisation(self):
+        self.visualisation_hidden = not self.visualisation_hidden
+
+        if self.visualisation_hidden:
+            for i in range(4):
+                self.layout().removeWidget(self.road_groups[i])
+                self.layout().addWidget(self.road_groups[i], 0, i, 1, 1)
+                
+            self.layout().removeWidget(self.pedestrian_crossing_checkbox)
+            self.layout().addWidget(self.pedestrian_crossing_checkbox, 1, 0, 1, -1)
+
+            self.layout().removeWidget(self.visualisation_checkbox)
+            self.layout().addWidget(self.visualisation_checkbox, 2, 0, 1, -1)
+
+            self.layout().removeWidget(self.visualisation)
+            self.visualisation.hide()
+            return
+        
+        for i in range(4):
+            self.layout().removeWidget(self.road_groups[i])
+            self.layout().addWidget(self.road_groups[i], i/2, i%2, 1, 1)
+            
+        self.layout().removeWidget(self.pedestrian_crossing_checkbox)
+        self.layout().addWidget(self.pedestrian_crossing_checkbox, 2, 0, 1, 2)
+
+        self.layout().removeWidget(self.visualisation_checkbox)
+        self.layout().addWidget(self.visualisation_checkbox, 3, 0, 1, 2)
+
+        self.visualisation.set_junction(self.update_global_inputs_frontend())
+        self.layout().addWidget(self.visualisation, 0, 2, 4, 2)
+        self.visualisation.show()
     
     
 class RoadGroupWidget(QGroupBox):
-    def __init__(self, road_source: CardinalDirection, parent: Optional[QWidget] = None) -> None:
+    def __init__(self, road_source: CardinalDirection, update_visualisation: Callable[None, None], parent: Optional[QWidget] = None) -> None:
         road_name = road_source.simple_string().capitalize() + " Traffic Flow"
         
         super().__init__(road_name, parent)
@@ -227,16 +272,20 @@ class RoadGroupWidget(QGroupBox):
         self.lanes_label = QLabel("Number of Lanes:")
         self.lanes_input = QSpinBox()
         self.lanes_input.setRange(1, 5)
+        self.lanes_input.valueChanged.connect(update_visualisation)
         form_layout.addRow(self.lanes_label, self.lanes_input)
 
         # Checkboxes for lane types
         self.bus_lane_checkbox = QCheckBox("Bus Lane")
+        self.bus_lane_checkbox.stateChanged.connect(update_visualisation)
         form_layout.addRow(self.bus_lane_checkbox)
         
         self.left_turn_lane_checkbox = QCheckBox("Left Turn Lane")
+        self.left_turn_lane_checkbox.stateChanged.connect(update_visualisation)
         form_layout.addRow(self.left_turn_lane_checkbox)
         
         self.right_turn_lane_checkbox = QCheckBox("Right Turn Lane")
+        self.right_turn_lane_checkbox.stateChanged.connect(update_visualisation)
         form_layout.addRow(self.right_turn_lane_checkbox)
         self.setLayout(form_layout)
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)  
