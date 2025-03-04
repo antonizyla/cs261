@@ -513,12 +513,14 @@ class JunctionView(QGraphicsView):
     The object which will be used by the rest of the application to show the junction
     """
 
-    def __init__(self, parent):
+    def __init__(self, parent=None):
         super().__init__(parent)
         self.scene = QGraphicsScene(0, 0, 100, 100)
         self.scene.setBackgroundBrush(QBrush(QColor(70, 70, 70)))  # Set background to grey
         self.setScene(self.scene)
         self.setStyleSheet("border: 2px solid black;")
+        maxSize = (70*2) + (6*2) + (31*12) + (1*10) + 4
+        self.setFixedSize(maxSize, maxSize)
     
     def set_junction(self, junction_data):
         # Updates the display to show the junction represented by junction_data
@@ -526,12 +528,12 @@ class JunctionView(QGraphicsView):
 
         junction = Junction(junction_data)
         junction.setPos(0,0)
+        
         self.scene.addItem(junction)
 
         # Resize self
         width = int(junction.width())
         height = int(junction.height())
-        self.resize(width + 4, height + 4)
         self.scene.setSceneRect(QRectF(0, 0, width, height))
 
 
