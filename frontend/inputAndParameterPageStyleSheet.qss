@@ -117,3 +117,14 @@ QCheckBox {
 #road_group::title {
     border-bottom: 50px;
 }
+
+QCheckBox::indicator:checked {
+    image: url(check.png);
+}
+
+QCheckBox::indicator {
+    border: 1px solid white;
+    height: 13px;
+    width: 13px;
+
+}
