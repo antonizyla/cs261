@@ -119,12 +119,7 @@ class JunctionList(QScrollArea):
         self.inner_widget.setLayout(layout)
         self.setWidget(self.inner_widget)
 
-
-        
-
-
         self.setStyleSheet("background-color: #D3D3D3; border-radius: 10px;")
-
 
         try:
             stylesheet_path = os.path.join(os.path.dirname(__file__), 'inputAndParameterPageStyleSheet.qss')
