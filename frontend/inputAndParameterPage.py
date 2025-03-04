@@ -175,6 +175,7 @@ class JunctionInputAndParameterWidget(QGroupBox):
         super().__init__(name, parent)
         
         layout = QGridLayout()
+        self.setObjectName("junctiongroup")
         
         self.road_groups = []
         for direction in CardinalDirection:
@@ -183,9 +184,11 @@ class JunctionInputAndParameterWidget(QGroupBox):
             layout.addWidget(self.road_groups[i], 0, i, 1, 1) # direction could have been used as an int here, but i think this is clearer
             
         self.pedestrian_crossing_checkbox = QCheckBox("Toggle Pedestrian Crossing")
+        self.pedestrian_crossing_checkbox.setObjectName("pedestrian_crossing_checkbox")
         layout.addWidget(self.pedestrian_crossing_checkbox, 1, 0, 1, -1)
 
         self.visualisation_checkbox = QCheckBox("Show Visualisation")
+        self.visualisation_checkbox.setObjectName("vis_checkbox")
         self.visualisation_checkbox.stateChanged.connect(self.toggle_visualisation)
         layout.addWidget(self.visualisation_checkbox, 2, 0, 1, -1)
 
