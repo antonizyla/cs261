@@ -25,13 +25,13 @@ class CardinalDirection(Enum):
         return [Dir.NORTH, Dir.EAST, Dir.SOUTH, Dir.WEST][self.index]
     
     def __add__(self, other: Turn):
-        # Turn as if heading in cardinal direction
+        # Turn as if heading in cardinal direction (right turns clockwise)
         if not isinstance(other, Turn):
             raise ValueError("Second argument of + must be an instance of Direction")
         return CardinalDirection((self.value + other.value) % 4)
     
     def __sub__(self, other: Turn):
-        # Turn as if coming from cardinal direction
+        # Turn as if coming from cardinal direction (right turns anticlockwise)
         if not isinstance(other, Turn):
             raise ValueError("Second argument of - must be an instance of Direction")
         return CardinalDirection((self.value - other.value) % 4)

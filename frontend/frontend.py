@@ -50,7 +50,7 @@ class MainApplication(QMainWindow):
 
         self.setWindowTitle("Simulation Application")
         #self.setGeometry(100, 100, 1400, 850)
-        self.showFullScreen()
+        self.showMaximized()
 
         self.tab_widget = QTabWidget()
         self.setCentralWidget(self.tab_widget)
