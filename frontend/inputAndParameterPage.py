@@ -11,21 +11,9 @@ from pathlib import Path
 sys.path.append((Path(__file__).parent.parent / 'backend').resolve().__str__())
 from flowrates import FlowRates
 from params import Parameters
+from visualisation import JunctionData
 
 # Global variables to store inputs, Note that the direction is the direction traffic comes from
-road_inputs = {
-    "south_traffic_flow": {},
-    "west_traffic_flow": {},
-    "east_traffic_flow": {},
-    "north_traffic_flow": {}
-}
-
-alt_road_inputs = {
-    "alt_south_traffic_flow": {},
-    "alt_west_traffic_flow": {},
-    "alt_east_traffic_flow": {},
-    "alt_north_traffic_flow": {}
-}
 
 class InputAndParameterWidget(QWidget):
     def __init__(self, parent=None):
@@ -45,7 +33,7 @@ class InputAndParameterWidget(QWidget):
         # Submit button centered below the grid
         self.submit_button = QPushButton("Start Simulation")
         self.submit_button.setObjectName("submit_button")
-        self.submit_button.clicked.connect(self.update_global_inputs)
+        self.submit_button.clicked.connect(self.update_global_inputs_backend)
         
         self.update_layout()
         
@@ -77,9 +65,8 @@ class InputAndParameterWidget(QWidget):
     def remove_junction(self):
         self.junctions_list.remove_junction()
         
-    def update_global_inputs(self):
-        """ Stores user inputs into the global dictionary for use in simulations. """
-
+    def update_global_inputs_backend(self):
+        # Generates data objects for backend
         if not self.junctions_list.validate_inputs():
             return
         
@@ -103,8 +90,6 @@ class InputAndParameterWidget(QWidget):
                         seq_priority = int(road_group.priority_input.value())
                     )
                 )
-                
-            
             parameters = Parameters(
                 no_lanes = [junction.road_groups[direction.index].lanes_input.value() for direction in CardinalDirection], 
                 dedicated_lane = None, # Not sure whats wanted here 
@@ -191,6 +176,23 @@ class JunctionInputAndParameterWidget(QGroupBox):
             error_messages += self.road_groups[direction.index].validate_inputs()
         
         return [self.title() + ": " + error_message for error_message in error_messages]
+    
+
+    def update_global_inputs_frontend(self):
+        # Generates data object for visualisation
+        junction_data = [[], [], None]
+        
+        for direction in CardinalDirection:
+            junction_data[0].append(self.road_groups[direction.index].lanes_input.value())
+            junction_data[1].append(
+                [
+                    road_group.left_turn_lane_checkbox.isChecked(),
+                    road_group.bus_lane_checkbox.isChecked(),
+                    road_group.right_turn_lane_checkbox.isChecked()
+                ]
+            )
+        junction_data[2] = junction.pedestrian_crossing_checkbox.isChecked()
+        return JunctionData(junction_data)
     
     
 class RoadGroupWidget(QGroupBox):
