@@ -253,7 +253,7 @@ class JunctionInputAndParameterWidget(QGroupBox):
         
         for i in range(4):
             self.layout().removeWidget(self.road_groups[i])
-            self.layout().addWidget(self.road_groups[i], i/2, i%2, 1, 1)
+            self.layout().addWidget(self.road_groups[i], int(i/2), i%2, 1, 1)
             
         self.layout().removeWidget(self.pedestrian_crossing_checkbox)
         self.layout().addWidget(self.pedestrian_crossing_checkbox, 2, 0, 1, 2)
