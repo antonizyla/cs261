@@ -6,6 +6,8 @@ from PyQt5.QtWidgets import (QWidget, QPushButton, QVBoxLayout, QLabel, QLineEdi
 from PyQt5.QtCore import Qt
 import os
 from pylatex import Document, Figure, NoEscape, Section, Itemize
+import tempfile
+import shutil
 
 # Sample results
 overall = 50
@@ -232,21 +234,26 @@ class ResultsWidget(QWidget):
 
         # Ask the user where to save the PDF
         options = QFileDialog.Options()
-        file_path, _ = QFileDialog.getSaveFileName(self, options=options)
-        if not file_path:
+        user_pdf_path, _ = QFileDialog.getSaveFileName(self, "Save Report", "", "PDF Files (*.pdf)", options=options)
+        if not user_pdf_path:
             return  # User canceled the save dialog
 
-        # Generate the PDF
+        # Ensure the file has a .pdf extension
+        if not user_pdf_path.lower().endswith(".pdf"):
+            user_pdf_path += ".pdf"
+
+        # Step 1: Create a temporary directory
+        temp_dir = tempfile.mkdtemp()
+        temp_pdf_path = os.path.join(temp_dir, "temp_report")
+
+        # Step 2: Generate the PDF in the temp directory
         geometry_options = {"top": "3cm", "bottom": "3cm", "right": "2cm", "left": "2cm"}
         doc = Document(geometry_options=geometry_options)
-
         doc.append("Below are the results of the simulation.")
 
-        for road_name in ["south_traffic_flow", "north_traffic_flow", 
-                  "west_traffic_flow", "east_traffic_flow"]:
-            
+        for road_name in ["south_traffic_flow", "north_traffic_flow", "west_traffic_flow", "east_traffic_flow"]:
             base_name = road_name.lower().replace('_', '_')
-            
+
             with doc.create(Section(f"{road_name.replace('_', ' ').title()} Results")):
                 doc.append(f"Here are the results for {road_name.replace('_', ' ').title()}")
 
@@ -268,9 +275,8 @@ class ResultsWidget(QWidget):
                 # Add the chart directly to the PDF
                 chart = getattr(self, f"{base_name}_chart")
                 if chart:
-
-                    # Save the chart as an image file
-                    chart_path = os.path.join(os.path.dirname(file_path), f"{road_name}_chart.png")
+                    # Save the chart as an image file in the temp directory
+                    chart_path = os.path.join(temp_dir, f"{road_name}_chart.png")
                     chart.figure.savefig(chart_path, dpi=300)
 
                     # Add the chart to the PDF
@@ -278,7 +284,13 @@ class ResultsWidget(QWidget):
                         plot.add_image(chart_path, width=NoEscape(r'0.8\textwidth'))
                         plot.add_caption(f'{road_name.replace("_", " ").title()} Comparison Chart')
 
-        doc.generate_pdf(file_path, clean_tex=True, clean=True)
+        # Step 3: Generate the PDF in the temp directory
+        doc.generate_pdf(temp_pdf_path, clean_tex=True, clean=True)
+
+        # Step 4: Move only the final PDF to the user's preferred location
+        shutil.move(temp_pdf_path + ".pdf", user_pdf_path)
+
+        print(f"PDF saved to: {user_pdf_path}")
        
     def update_chart(self, road_name, index):
         base_name = road_name.lower().replace(' ', '_')
