@@ -95,3 +95,7 @@ QGroupBox::title {
 #exitButton:pressed {
     background-color: #C5281C; 
 }
+
+QCheckBox {
+    background-color: rgb(57,57,57);
+}

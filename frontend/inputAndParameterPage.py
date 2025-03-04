@@ -132,6 +132,7 @@ class JunctionList(QScrollArea):
         self.inner_widget = QWidget(self)
         self.inner_widget.setLayout(layout)
         self.setWidget(self.inner_widget)
+        self.setStyleSheet("background-color: rgb(50, 50, 50);")
     
     
     def add_junction(self):

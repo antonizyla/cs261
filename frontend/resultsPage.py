@@ -268,8 +268,14 @@ class ResultsWidget(QWidget):
                 # Add the chart directly to the PDF
                 chart = getattr(self, f"{base_name}_chart")
                 if chart:
+
+                    # Save the chart as an image file
+                    chart_path = os.path.join(os.path.dirname(file_path), f"{road_name}_chart.png")
+                    chart.figure.savefig(chart_path, dpi=300)
+
+                    # Add the chart to the PDF
                     with doc.create(Figure(position="htbp")) as plot:
-                        plot.add_plot(width=NoEscape(r'0.8\textwidth'), dpi=300)
+                        plot.add_image(chart_path, width=NoEscape(r'0.8\textwidth'))
                         plot.add_caption(f'{road_name.replace("_", " ").title()} Comparison Chart')
 
         doc.generate_pdf(file_path, clean_tex=True, clean=True)
