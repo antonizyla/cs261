@@ -50,12 +50,13 @@ class MainApplication(QMainWindow):
 
         self.setWindowTitle("Simulation Application")
         #self.setGeometry(100, 100, 1400, 850)
-        self.showMaximized()
 
         self.tab_widget = QTabWidget()
         self.setCentralWidget(self.tab_widget)
 
         self.add_tabs()
+
+        self.showMaximized()
 
     def add_tabs(self):
         # Tab 1: Input and Parameters
@@ -109,5 +110,6 @@ if __name__ == "__main__":
     if home_window.exec_() == QDialog.Accepted:
         main_app = MainApplication()
         main_app.show()
+        main_app.showMaximized()
 
     sys.exit(app.exec_())

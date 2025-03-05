@@ -248,8 +248,9 @@ class ResultsWidget(QWidget):
 
         # Ask the user where to save the PDF
         options = QFileDialog.Options()
-        options |= QFileDialog.DontUseNativeDialog  
+        #options |= QFileDialog.DontUseNativeDialog  UNCOMMENT THIS LINE IF SAVE DOESNT WORK ON WINDOWS/LINUX
         file_path, _ = QFileDialog.getSaveFileName(self, "Save Report", "", "PDF Files (*.pdf);;All Files (*)", options=options)
+
         if not file_path:
             return  # User canceled the save dialog
         
@@ -313,7 +314,7 @@ class ResultsWidget(QWidget):
                 scale_factor = 0.35  # Scale down to 35% of the original size
                 scaled_width = img_width * scale_factor
                 scaled_height = img_height * scale_factor
-                c.drawImage(ImageReader(img_buffer), 50, y_position - scaled_height, width=scaled_width, height=scaled_height)
+                c.drawImage(ImageReader(img_buffer), 15, y_position - scaled_height, width=scaled_width, height=scaled_height)
                 y_position -= scaled_height + 35  #Increased spacing below the image
 
             y_position -= 15  # Extra space between sections
@@ -379,7 +380,7 @@ class ResultsWidget(QWidget):
         x = range(len(categories))
         x2 = [val + 0.4 for val in x]
 
-        fig, ax = plt.subplots()
+        fig, ax = plt.subplots(figsize=(4, 3))
         ax.bar(x, input_values, width=0.4, label='Main Configuration')
         ax.bar(x2, alt_values, width=0.4, label='Alternative Configuration')
 
