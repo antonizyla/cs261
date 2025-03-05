@@ -5,9 +5,13 @@ from PyQt5.QtWidgets import (QWidget, QPushButton, QVBoxLayout, QLabel, QLineEdi
                              QHBoxLayout, QGridLayout, QSizePolicy, QFileDialog, QScrollArea)
 from PyQt5.QtCore import Qt
 import os
-from pylatex import Document, Figure, NoEscape, Section, Itemize
-import tempfile
-import shutil
+from reportlab.lib.pagesizes import A4
+from reportlab.pdfgen import canvas
+from reportlab.lib.utils import ImageReader
+from io import BytesIO
+import os
+import sqlite3
+
 
 # Sample results
 overall = 50
@@ -77,12 +81,22 @@ class ResultsWidget(QWidget):
         self.generate_report_button.clicked.connect(self.get_report)
         main_layout.addWidget(self.generate_report_button, 2, 1)  # Bottom-right
 
+        # Button to save results to database
+        self.save_to_db_button = QPushButton("Save Results to Database")
+        self.save_to_db_button.clicked.connect(self.save_results_to_db)
+        main_layout.addWidget(self.save_to_db_button, 3, 0)  # Bottom-right
+
+        # Add the button to view the database
+        self.view_db_button = QPushButton("View Database")
+        self.view_db_button.clicked.connect(self.view_database)
+        main_layout.addWidget(self.view_db_button, 3, 1)  # Bottom-right
+
         self.go_inputs_button = QPushButton("Run Simulation Again")
-        main_layout.addWidget(self.go_inputs_button, 3, 0, 1, 2)  # Bottom
+        main_layout.addWidget(self.go_inputs_button, 4, 0, 1, 2)  # Bottom
 
         self.exit_button = QPushButton("Exit")
         self.exit_button.setObjectName("exitButton")
-        main_layout.addWidget(self.exit_button, 4, 0, 1, 2)  # Bottom
+        main_layout.addWidget(self.exit_button, 5, 0, 1, 2)  # Bottom
 
 
         # Set the layout of the main widget
@@ -230,57 +244,127 @@ class ResultsWidget(QWidget):
             counter2 += 1
 
     def get_report(self):
-        """Generates a PDF report with the results and bar charts."""
+        """Generates a PDF report with the results and bar charts using ReportLab."""
 
         # Ask the user where to save the PDF
         options = QFileDialog.Options()
-        file_path, _ = QFileDialog.getSaveFileName(self, options=options)
+        file_path, _ = QFileDialog.getSaveFileName(self, "Save Report", "", "PDF Files (*.pdf);;All Files (*)", options=options)
         if not file_path:
             return  # User canceled the save dialog
+        
+        if not file_path.endswith(".pdf"):
+            file_path += ".pdf"
 
-        # Generate the PDF
-        geometry_options = {"top": "3cm", "bottom": "3cm", "right": "2cm", "left": "2cm"}
-        doc = Document(geometry_options=geometry_options)
+        # Create a PDF canvas
+        c = canvas.Canvas(file_path, pagesize=A4)
+        width, height = A4
 
-        doc.append("Below are the results of the simulation.")
+        # Title
+        c.setFont("Helvetica-Bold", 14)
+        c.drawString(40, height - 36, "Simulation Results Report")
+        c.setFont("Helvetica", 12)
+        c.drawString(40, height - 80, "Below are the results of the simulation.")
+        y_position = height - 120
 
-        for road_name in ["south_traffic_flow", "north_traffic_flow", 
-                  "west_traffic_flow", "east_traffic_flow"]:
-            
+        for road_name in ["south_traffic_flow", "north_traffic_flow", "west_traffic_flow", "east_traffic_flow"]:
+        
             base_name = road_name.lower().replace('_', '_')
-            
-            with doc.create(Section(f"{road_name.replace('_', ' ').title()} Results")):
-                doc.append(f"Here are the results for {road_name.replace('_', ' ').title()}")
+            section_title = road_name.replace('_', ' ').title() + " Results"
 
-                # Main Configuration
-                doc.append(NoEscape(r'\newline'))
-                doc.append("Main Configuration:")
-                with doc.create(Itemize()) as itemize:
-                    itemize.add_item(f"Average Wait Time: {road_results[road_name]['average_wait']} sec")
-                    itemize.add_item(f"Max Wait Time: {road_results[road_name]['max_wait_times']} sec")
-                    itemize.add_item(f"Max Queue Length: {road_results[road_name]['max_queue_length']} cars")
+            # Section Title
+            c.setFont("Helvetica-Bold", 14)
+            c.drawString(40, y_position, section_title)
+            y_position -= 30  # Increased spacing
 
-                # Alternative Configuration
-                doc.append("Alternative Configuration:")
-                with doc.create(Itemize()) as itemize:
-                    itemize.add_item(f"Average Wait Time: {alt_road_results[road_name]['average_wait']} sec")
-                    itemize.add_item(f"Max Wait Time: {alt_road_results[road_name]['max_wait_times']} sec")
-                    itemize.add_item(f"Max Queue Length: {alt_road_results[road_name]['max_queue_length']} cars")
+            # Main and Alternative Configuration in two columns
+            c.setFont("Helvetica-Bold", 12)
+            c.drawString(40, y_position, "Main Configuration:")
+            c.drawString(300, y_position, "Alternative Configuration:")
+            y_position -= 20
 
-                # Add the chart directly to the PDF
-                chart = getattr(self, f"{base_name}_chart")
-                if chart:
+            c.setFont("Helvetica", 11)
+            c.drawString(60, y_position, f"- Average Wait Time: {road_results[road_name]['average_wait']} sec")
+            c.drawString(320, y_position, f"- Average Wait Time: {alt_road_results[road_name]['average_wait']} sec")
+            y_position -= 20
 
-                    # Save the chart as an image file
-                    chart_path = os.path.join(os.path.dirname(file_path), f"{road_name}_chart.png")
-                    chart.figure.savefig(chart_path, dpi=300)
+            c.drawString(60, y_position, f"- Max Wait Time: {road_results[road_name]['max_wait_times']} sec")
+            c.drawString(320, y_position, f"- Max Wait Time: {alt_road_results[road_name]['max_wait_times']} sec")
+            y_position -= 20
 
-                    # Add the chart to the PDF
-                    with doc.create(Figure(position="htbp")) as plot:
-                        plot.add_image(chart_path, width=NoEscape(r'0.8\textwidth'))
-                        plot.add_caption(f'{road_name.replace("_", " ").title()} Comparison Chart')
+            c.drawString(60, y_position, f"- Max Queue Length: {road_results[road_name]['max_queue_length']} cars")
+            c.drawString(320, y_position, f"- Max Queue Length: {alt_road_results[road_name]['max_queue_length']} cars")
+            y_position -= 30  # Extra spacing before chart
 
-        doc.generate_pdf(file_path, clean_tex=True, clean=True)
+            # Add the chart directly to the PDF without saving it
+            chart = getattr(self, f"{base_name}_chart", None)
+            if chart:
+                img_buffer = BytesIO()
+                chart.figure.savefig(img_buffer, format='png', dpi=300)
+                img_buffer.seek(0)
+                
+                # Ensure enough space before adding an image
+                if y_position < 250:
+                    c.showPage()
+                    y_position = height - 100
+
+                # Maintain original size of the chart but scale it down
+                img_width, img_height = chart.figure.get_size_inches() * chart.figure.dpi
+                scale_factor = 0.35  # Scale down to 35% of the original size
+                scaled_width = img_width * scale_factor
+                scaled_height = img_height * scale_factor
+                c.drawImage(ImageReader(img_buffer), 50, y_position - scaled_height, width=scaled_width, height=scaled_height)
+                y_position -= scaled_height + 35  #Increased spacing below the image
+
+            y_position -= 15  # Extra space between sections
+
+            # Start new page if space is running out
+            if y_position < 100:
+                c.showPage()
+                y_position = height - 100
+
+        # Save the PDF
+        c.save()
+
+    def save_results_to_db(self):
+        """Saves the results to a SQLite database."""
+        # Connect to the database (or create it if it doesn't exist)
+        conn = sqlite3.connect('simulation_results.db')
+        cursor = conn.cursor()
+
+        # Create tables if they don't exist
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS results (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                road_name TEXT,
+                average_wait INTEGER,
+                max_wait_times INTEGER,
+                max_queue_length INTEGER,
+                alt_average_wait INTEGER,
+                alt_max_wait_times INTEGER,
+                alt_max_queue_length INTEGER
+            )
+        ''')
+
+        # Insert results into the database
+        for road_name in ["south_traffic_flow", "north_traffic_flow", "west_traffic_flow", "east_traffic_flow"]:
+            cursor.execute('''
+                INSERT INTO results (road_name, average_wait, max_wait_times, max_queue_length, alt_average_wait, alt_max_wait_times, alt_max_queue_length)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+            ''', (
+                road_name,
+                road_results[road_name]['average_wait'],
+                road_results[road_name]['max_wait_times'],
+                road_results[road_name]['max_queue_length'],
+                alt_road_results[road_name]['average_wait'],
+                alt_road_results[road_name]['max_wait_times'],
+                alt_road_results[road_name]['max_queue_length']
+            ))
+
+        # Commit the transaction and close the connection
+        conn.commit()
+        conn.close()
+
+        print("Results saved to database successfully.")
        
     def update_chart(self, road_name, index):
         base_name = road_name.lower().replace(' ', '_')
@@ -307,3 +391,40 @@ class ResultsWidget(QWidget):
         canvas = FigureCanvas(fig)
         setattr(self, f"{base_name}_chart", canvas)
         getattr(self, f"{base_name}_form_layout").addRow(canvas)
+
+    def view_database(self):
+        """Displays the contents of the database in a new window."""
+        conn = sqlite3.connect('simulation_results.db')
+        cursor = conn.cursor()
+
+        cursor.execute('SELECT * FROM results')
+        results = cursor.fetchall()
+
+        conn.close()
+
+        # Create a new window to display the results
+        db_window = QWidget()
+        db_window.setWindowTitle("Database Results")
+        layout = QVBoxLayout()
+
+        # Create a scroll area to handle large number of results
+        scroll_area = QScrollArea()
+        scroll_widget = QWidget()
+        scroll_layout = QVBoxLayout()
+
+        for row in results:
+            row_label = QLabel(str(row))
+            scroll_layout.addWidget(row_label)
+
+        scroll_widget.setLayout(scroll_layout)
+        scroll_area.setWidget(scroll_widget)
+        scroll_area.setWidgetResizable(True)
+
+        layout.addWidget(scroll_area)
+        db_window.setLayout(layout)
+        db_window.resize(600, 400)
+        db_window.show()
+
+        self.db_window = db_window  # Keep a reference to prevent garbage collection
+
+    
