@@ -248,6 +248,7 @@ class ResultsWidget(QWidget):
 
         # Ask the user where to save the PDF
         options = QFileDialog.Options()
+        options |= QFileDialog.DontUseNativeDialog  
         file_path, _ = QFileDialog.getSaveFileName(self, "Save Report", "", "PDF Files (*.pdf);;All Files (*)", options=options)
         if not file_path:
             return  # User canceled the save dialog
