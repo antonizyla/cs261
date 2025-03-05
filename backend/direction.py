@@ -45,13 +45,13 @@ class Direction:
         spaces = []
         for lane in self.lanes:
             if (trafficLights in TrafficLights.NORTH_SOUTH_RIGHT) and (self.flows.get_direction_from() in Dir.NORTH | Dir.SOUTH):
-                lane.simulate_update(right_of(self.flows.get_direction_from()), 60)
+                lane.simulate_update(right_of(self.flows.get_direction_from()), trafficlight_timing)
             elif (trafficLights in TrafficLights.NORTH_SOUTH_OTHER) and (self.flows.get_direction_from() in Dir.NORTH | Dir.SOUTH):
-                lane.simulate_update(left_of(self.flows.get_direction_from()) | opposite_of(self.flows.get_direction_from()), 60)
+                lane.simulate_update(left_of(self.flows.get_direction_from()) | opposite_of(self.flows.get_direction_from()), trafficlight_timing)
             elif (trafficLights in TrafficLights.EAST_WEST_RIGHT) and (self.flows.get_direction_from() in Dir.EAST | Dir.WEST):
-                lane.simulate_update(right_of(self.flows.get_direction_from()), 60)
+                lane.simulate_update(right_of(self.flows.get_direction_from()), trafficlight_timing)
             elif (trafficLights in TrafficLights.EAST_WEST_OTHER) and (self.flows.get_direction_from() in Dir.EAST | Dir.WEST):
-                lane.simulate_update(left_of(self.flows.get_direction_from()) | opposite_of(self.flows.get_direction_from()), 60)
+                lane.simulate_update(left_of(self.flows.get_direction_from()) | opposite_of(self.flows.get_direction_from()), trafficlight_timing)
             
             spaces.append(lane.get_queue_limit() - lane.get_no_vehicle_present()) #How many free spaces are there
 
@@ -156,3 +156,28 @@ class Direction:
         return self.max_wait
     def get_avg_wait(self) -> float:
         return self.avg_wait
+
+    def add_to_pools(self, seconds):
+        self.residuals[0] += (seconds * self.flows.get_flow_left() / 3600)
+        self.pools[0] += math.floor(self.residuals[0])
+        self.residuals[0] -= math.floor(self.residuals[0])
+    
+        self.residuals[1] += (seconds * self.flows.get_flow_ahead() / 3600)
+        self.pools[1] += math.floor(self.residuals[1])
+        self.residuals[1] -= math.floor(self.residuals[1])
+    
+        self.residuals[2] += (seconds * self.flows.get_flow_right() / 3600)
+        self.pools[2] += math.floor(self.residuals[2])
+        self.residuals[2] -= math.floor(self.residuals[2])
+    
+        self.bus_residuals[0] += (seconds * self.flows.get_flow_bus_left() / 3600)
+        self.pools[0] += math.floor(self.bus_residuals[0])
+        self.bus_residuals[0] -= math.floor(self.bus_residuals[0])
+    
+        self.bus_residuals[1] += (seconds * self.flows.get_flow_bus_ahead() / 3600)
+        self.pools[1] += math.floor(self.bus_residuals[1])
+        self.bus_residuals[1] -= math.floor(self.bus_residuals[1])
+    
+        self.bus_residuals[2] += (seconds * self.flows.get_flow_bus_right() / 3600)
+        self.pools[2] += math.floor(self.bus_residuals[2])
+        self.bus_residuals[2] -= math.floor(self.bus_residuals[2])
