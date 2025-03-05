@@ -44,19 +44,20 @@ class Junction:
             elif (trafficLightTiming[i] == EWO) and (TrafficLights.EAST_WEST_OTHER not in trafficLightOrder):
                 trafficLightOrder.append(TrafficLights.EAST_WEST_OTHER)
 
-        for i in range(0, 240): #Value to change during development 
-            if i % 60 == 0:
-                self.northerly_lanes.simulate_hourly()
-                self.easterly_lanes.simulate_hourly()
-                self.southerly_lanes.simulate_hourly()
-                self.westerly_lanes.simulate_hourly()
+        for i in range(0, 200): #Value to change during development 
+            if trafficLightTiming[i%4] == NSR or trafficLightTiming[i%4] == NSO:
+                seconds_spent = (max(self.params.get_sequencing_priority()[0], self.params.get_sequencing_priority()[2]) + 1) * 10
+            else:
+                seconds_spent = (max(self.params.get_sequencing_priority()[1], self.params.get_sequencing_priority()[3]) + 1) * 10
             
-            self.northerly_lanes.simulateUpdate(trafficLightOrder[i%4], trafficLightTiming[i%4]/60) #Need to further multiply by some constant - currently is number of cars per minute, 
-            self.easterly_lanes.simulateUpdate(trafficLightOrder[i%4], trafficLightTiming[i%4]/60)
-            self.southerly_lanes.simulateUpdate(trafficLightOrder[i%4], trafficLightTiming[i%4]/60)
-            self.westerly_lanes.simulateUpdate(trafficLightOrder[i%4], trafficLightTiming[i%4]/60)
+            for dir in [self.northerly_lanes, self.easterly_lanes, self.southerly_lanes, self.westerly_lanes]:
+                dir.simulateUpdate(trafficLightOrder[i%4], seconds_spent) #Need to further multiply by some constant - currently is number of cars per minute, 
+
+            add_vehicles(seconds_spent)
 
         #Generate and Return ResultSet
         #return ResultSet(n, e, s, w, )
 
-        
+    def add_vehicles(self, seconds_spent):
+        for dir in [self.northerly_lanes, self.easterly_lanes, self.southerly_lanes, self.westerly_lanes]:
+            dir.add_to_pools(seconds_spent)
