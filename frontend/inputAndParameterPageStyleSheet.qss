@@ -140,3 +140,8 @@ QCheckBox::indicator {
     width: 13px;
 
 }
+
+QMessageBox {
+    background-color: rgb(63,63,63);
+    font-size:50px;
+}
