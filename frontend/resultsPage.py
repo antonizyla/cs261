@@ -334,7 +334,7 @@ class ResultsWidget(QWidget):
             # Save the PDF
             c.save()
         else:
-            QMessageBox.critical(self, "Results Yet to be Generated", "Please generate the results by pressing the Generate Results Button")
+            QMessageBox.critical(self, "Results Yet to be Generated", "Please generate the results by pressing the Generate Results button")
             return False
 
 
