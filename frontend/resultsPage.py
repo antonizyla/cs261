@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from PyQt5.QtWidgets import (QWidget, QPushButton, QVBoxLayout, QLabel, QLineEdit, 
                              QSpinBox, QCheckBox, QGroupBox, QFormLayout, QToolButton, 
-                             QHBoxLayout, QGridLayout, QSizePolicy, QFileDialog, QScrollArea)
+                             QHBoxLayout, QMessageBox, QGridLayout, QSizePolicy, QFileDialog, QScrollArea)
 from PyQt5.QtCore import Qt
 import os
 from reportlab.lib.pagesizes import A4
@@ -45,6 +45,9 @@ alt_overallScore = 80
 class ResultsWidget(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
+
+        # Checks if the results have been generated
+        self.results_generated = False
 
         # Load and apply the stylesheet
         self.apply_stylesheet()
@@ -197,6 +200,9 @@ class ResultsWidget(QWidget):
             group_box.setVisible(False)
 
     def get_results(self):
+        # Set generated results bool to true
+        self.results_generated = True
+
         # Placeholder result values
         self.average_wait = [20, 30, 25, 15]
         self.max_wait_time = [40, 50, 35, 20]
@@ -246,86 +252,91 @@ class ResultsWidget(QWidget):
     def get_report(self):
         """Generates a PDF report with the results and bar charts using ReportLab."""
 
-        # Ask the user where to save the PDF
-        options = QFileDialog.Options()
-        #options |= QFileDialog.DontUseNativeDialog  UNCOMMENT THIS LINE IF SAVE DOESNT WORK ON WINDOWS/LINUX
-        file_path, _ = QFileDialog.getSaveFileName(self, "Save Report", "", "PDF Files (*.pdf);;All Files (*)", options=options)
+        if self.results_generated:
+            # Ask the user where to save the PDF
+            options = QFileDialog.Options()
+            #options |= QFileDialog.DontUseNativeDialog  UNCOMMENT THIS LINE IF SAVE DOESNT WORK ON WINDOWS/LINUX
+            file_path, _ = QFileDialog.getSaveFileName(self, "Save Report", "", "PDF Files (*.pdf);;All Files (*)", options=options)
 
-        if not file_path:
-            return  # User canceled the save dialog
-        
-        if not file_path.endswith(".pdf"):
-            file_path += ".pdf"
+            if not file_path:
+                return  # User canceled the save dialog
+            
+            if not file_path.endswith(".pdf"):
+                file_path += ".pdf"
 
-        # Create a PDF canvas
-        c = canvas.Canvas(file_path, pagesize=A4)
-        width, height = A4
+            # Create a PDF canvas
+            c = canvas.Canvas(file_path, pagesize=A4)
+            width, height = A4
 
-        # Title
-        c.setFont("Helvetica-Bold", 14)
-        c.drawString(40, height - 36, "Simulation Results Report")
-        c.setFont("Helvetica", 12)
-        c.drawString(40, height - 80, "Below are the results of the simulation.")
-        y_position = height - 120
-
-        for road_name in ["south_traffic_flow", "north_traffic_flow", "west_traffic_flow", "east_traffic_flow"]:
-        
-            base_name = road_name.lower().replace('_', '_')
-            section_title = road_name.replace('_', ' ').title() + " Results"
-
-            # Section Title
+            # Title
             c.setFont("Helvetica-Bold", 14)
-            c.drawString(40, y_position, section_title)
-            y_position -= 30  # Increased spacing
+            c.drawString(40, height - 36, "Simulation Results Report")
+            c.setFont("Helvetica", 12)
+            c.drawString(40, height - 80, "Below are the results of the simulation.")
+            y_position = height - 120
 
-            # Main and Alternative Configuration in two columns
-            c.setFont("Helvetica-Bold", 12)
-            c.drawString(40, y_position, "Main Configuration:")
-            c.drawString(300, y_position, "Alternative Configuration:")
-            y_position -= 20
+            for road_name in ["south_traffic_flow", "north_traffic_flow", "west_traffic_flow", "east_traffic_flow"]:
+            
+                base_name = road_name.lower().replace('_', '_')
+                section_title = road_name.replace('_', ' ').title() + " Results"
 
-            c.setFont("Helvetica", 11)
-            c.drawString(60, y_position, f"- Average Wait Time: {road_results[road_name]['average_wait']} sec")
-            c.drawString(320, y_position, f"- Average Wait Time: {alt_road_results[road_name]['average_wait']} sec")
-            y_position -= 20
+                # Section Title
+                c.setFont("Helvetica-Bold", 14)
+                c.drawString(40, y_position, section_title)
+                y_position -= 30  # Increased spacing
 
-            c.drawString(60, y_position, f"- Max Wait Time: {road_results[road_name]['max_wait_times']} sec")
-            c.drawString(320, y_position, f"- Max Wait Time: {alt_road_results[road_name]['max_wait_times']} sec")
-            y_position -= 20
+                # Main and Alternative Configuration in two columns
+                c.setFont("Helvetica-Bold", 12)
+                c.drawString(40, y_position, "Main Configuration:")
+                c.drawString(300, y_position, "Alternative Configuration:")
+                y_position -= 20
 
-            c.drawString(60, y_position, f"- Max Queue Length: {road_results[road_name]['max_queue_length']} cars")
-            c.drawString(320, y_position, f"- Max Queue Length: {alt_road_results[road_name]['max_queue_length']} cars")
-            y_position -= 30  # Extra spacing before chart
+                c.setFont("Helvetica", 11)
+                c.drawString(60, y_position, f"- Average Wait Time: {road_results[road_name]['average_wait']} sec")
+                c.drawString(320, y_position, f"- Average Wait Time: {alt_road_results[road_name]['average_wait']} sec")
+                y_position -= 20
 
-            # Add the chart directly to the PDF without saving it
-            chart = getattr(self, f"{base_name}_chart", None)
-            if chart:
-                img_buffer = BytesIO()
-                chart.figure.savefig(img_buffer, format='png', dpi=300)
-                img_buffer.seek(0)
-                
-                # Ensure enough space before adding an image
-                if y_position < 250:
+                c.drawString(60, y_position, f"- Max Wait Time: {road_results[road_name]['max_wait_times']} sec")
+                c.drawString(320, y_position, f"- Max Wait Time: {alt_road_results[road_name]['max_wait_times']} sec")
+                y_position -= 20
+
+                c.drawString(60, y_position, f"- Max Queue Length: {road_results[road_name]['max_queue_length']} cars")
+                c.drawString(320, y_position, f"- Max Queue Length: {alt_road_results[road_name]['max_queue_length']} cars")
+                y_position -= 30  # Extra spacing before chart
+
+                # Add the chart directly to the PDF without saving it
+                chart = getattr(self, f"{base_name}_chart", None)
+                if chart:
+                    img_buffer = BytesIO()
+                    chart.figure.savefig(img_buffer, format='png', dpi=300)
+                    img_buffer.seek(0)
+                    
+                    # Ensure enough space before adding an image
+                    if y_position < 250:
+                        c.showPage()
+                        y_position = height - 100
+
+                    # Maintain original size of the chart but scale it down
+                    img_width, img_height = chart.figure.get_size_inches() * chart.figure.dpi
+                    scale_factor = 0.35  # Scale down to 35% of the original size
+                    scaled_width = img_width * scale_factor
+                    scaled_height = img_height * scale_factor
+                    c.drawImage(ImageReader(img_buffer), 15, y_position - scaled_height, width=scaled_width, height=scaled_height)
+                    y_position -= scaled_height + 35  #Increased spacing below the image
+
+                y_position -= 15  # Extra space between sections
+
+                # Start new page if space is running out
+                if y_position < 100:
                     c.showPage()
                     y_position = height - 100
 
-                # Maintain original size of the chart but scale it down
-                img_width, img_height = chart.figure.get_size_inches() * chart.figure.dpi
-                scale_factor = 0.35  # Scale down to 35% of the original size
-                scaled_width = img_width * scale_factor
-                scaled_height = img_height * scale_factor
-                c.drawImage(ImageReader(img_buffer), 15, y_position - scaled_height, width=scaled_width, height=scaled_height)
-                y_position -= scaled_height + 35  #Increased spacing below the image
+            # Save the PDF
+            c.save()
+        else:
+            QMessageBox.critical(self, "Results Yet to be Generated", "Please generate the results by pressing the Generate Results Button")
+            return False
 
-            y_position -= 15  # Extra space between sections
-
-            # Start new page if space is running out
-            if y_position < 100:
-                c.showPage()
-                y_position = height - 100
-
-        # Save the PDF
-        c.save()
 
     def save_results_to_db(self):
         """Saves the results to a SQLite database."""
