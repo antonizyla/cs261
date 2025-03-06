@@ -15,6 +15,7 @@ class Direction:
         self.max_length = None
         self.avg_wait = None
         self.lanes = []
+        self.calculating_max_wait = False
         if num_lanes == 1:
             self.lanes.append(Lane(60, flows.direction_from, [left_of(flows.direction_from), right_of(flows.direction_from), opposite_of(flows.direction_from)]))
         else:
@@ -43,6 +44,7 @@ class Direction:
     def simulateUpdate(self, trafficLights, trafficlight_timing):
         #Dequeue cars
         spaces = []
+        vehicles_before = get_total_vehicles()
         for lane in self.lanes:
             if (trafficLights in TrafficLights.NORTH_SOUTH_RIGHT) and (self.flows.get_direction_from() in Dir.NORTH | Dir.SOUTH):
                 lane.simulate_update(right_of(self.flows.get_direction_from()), trafficlight_timing)
@@ -55,6 +57,9 @@ class Direction:
             
             spaces.append(lane.get_queue_limit() - lane.get_no_vehicle_present()) #How many free spaces are there
 
+        if self.calculating_max_wait and vehicles_before != 0:
+            self.max_wait += trafficlight_timing
+        
         #Enqueue cars
         while sum(spaces) != 0: #Include condition for if there aren't any more cars to add
             index = 0
@@ -150,13 +155,6 @@ class Direction:
         if max_lane + math.ceil(sum(self.pools) / len(self.lanes)) > self.max_length:
             self.max_length = max_lane + math.ceil(sum(self.pools) / len(self.lanes))
 
-    def get_max_length(self) -> int:
-        return self.max_length
-    def get_max_wait(self)-> float:
-        return self.max_wait
-    def get_avg_wait(self) -> float:
-        return self.avg_wait
-
     def add_to_pools(self, seconds):
         self.residuals[0] += (seconds * self.flows.get_flow_left() / 3600)
         self.pools[0] += math.floor(self.residuals[0])
@@ -181,3 +179,16 @@ class Direction:
         self.bus_residuals[2] += (seconds * self.flows.get_flow_bus_right() / 3600)
         self.pools[2] += math.floor(self.bus_residuals[2])
         self.bus_residuals[2] -= math.floor(self.bus_residuals[2])
+    
+    def get_total_vehicles(self):
+        return sum(pools) + sum(pools_bus) + sum([lane.get_queue_limit() for lane in self.lanes])
+
+    def set_calculating_max_wait(self, bool):
+        self.calculating_max_wait = bool
+    
+    def get_max_length(self) -> int:
+        return self.max_length
+    def get_max_wait(self)-> float:
+        return self.max_wait
+    def get_avg_wait(self) -> float:
+        return self.avg_wait
