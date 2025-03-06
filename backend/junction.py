@@ -55,6 +55,22 @@ class Junction:
 
             add_vehicles(seconds_spent)
 
+        #Calculating max wait - uses the idea that cars considered later in the simulation will have to wait the same time or longer -> cars at the end of the simulation wait the longest
+        self.northerly_lanes.set_calculating_max_wait(True)
+        self.easterly_lanes.set_calculating_max_wait(True)
+        self.southerly_lanes.set_calculating_max_wait(True)
+        self.westerly_lanes.set_calculating_max_wait(True)
+        totalVehicles = self.northerly_lanes.get_total_vehicles() + self.easterly_lanes.get_total_vehicles() + self.southerly_lanes.get_total_vehicles() + self.westerly_lanes.get_total_vehicles()
+        i = 0
+
+        while (totalVehicles != 0):
+            self.northerly_lanes.simulateUpdate(trafficLightOrder[i%4], trafficLightTiming[i%4]/60) #Need to further multiply by some constant - currently is number of cars per minute, 
+            self.easterly_lanes.simulateUpdate(trafficLightOrder[i%4], trafficLightTiming[i%4]/60)
+            self.southerly_lanes.simulateUpdate(trafficLightOrder[i%4], trafficLightTiming[i%4]/60)
+            self.westerly_lanes.simulateUpdate(trafficLightOrder[i%4], trafficLightTiming[i%4]/60)
+            i += 1
+            totalVehicles = self.northerly_lanes.get_total_vehicles() + self.easterly_lanes.get_total_vehicles() + self.southerly_lanes.get_total_vehicles() + self.westerly_lanes.get_total_vehicles()
+            
         #Generate and Return ResultSet
         #return ResultSet(n, e, s, w, )
 
