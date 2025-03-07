@@ -18,7 +18,7 @@ class Parameters:
         # check that sequencing priortiy is good
         if self.sequencingPriority:
             for x in self.sequencingPriority:
-                if x < 0:
+                if x < 0 or x > 4 or isinstance(x, float):
                     return False
             if len(self.sequencingPriority) != 4:
                 return False
@@ -27,7 +27,7 @@ class Parameters:
         if len(self.noLanes) != 4:
             return False
         for x in self.noLanes:
-            if x < 0 or x > 5:
+            if x < 0 or x > 5 or isinstance(x, float):
                 return False
         #print("Lanes ok")
         # check that pedestrian crossings are good
