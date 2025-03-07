@@ -68,7 +68,7 @@ class MainApplication(QMainWindow):
         self.tab_widget.addTab(self.simulation_tab, "Simulation")
 
         # Tab 3: Simulation Results
-        self.results_tab = ResultsWidget(input_tab)  # or ResultsPage, depending on your class
+        self.results_tab = ResultsWidget(self.input_tab)  # or ResultsPage, depending on your class
         self.tab_widget.addTab(self.results_tab, "Simulation Results")
 
         # Connect the "Start Simulation" button to the method to switch to the Simulation tab
