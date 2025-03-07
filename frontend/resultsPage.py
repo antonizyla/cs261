@@ -54,17 +54,24 @@ class ResultsWidget(QWidget):
         # Load and apply the stylesheet
         self.apply_stylesheet()
 
-        # Overall scores
-        overall_scores_layout = QHBoxLayout()
-        overall_label = QLabel(f"Main Configuration Overall Score: {overallScore}")
-        overall_label.setObjectName("overallScoreLabel")
-        overall_label.setAlignment(Qt.AlignCenter)
-        overall_scores_layout.addWidget(overall_label)
+        # Initialize the number of junctions
+        self.update_num_junctions()
+        # Overall scores layout
+        self.overall_scores_layout = QHBoxLayout()
 
-        alt_overall_label = QLabel(f"Alternate Configuration Overall Score: {alt_overallScore}")
-        alt_overall_label.setObjectName("overallScoreLabel")
-        alt_overall_label.setAlignment(Qt.AlignCenter)
-        overall_scores_layout.addWidget(alt_overall_label)
+        # Create labels dynamically
+        self.overall_labels = []
+        for i in range(self.num_junctions):
+            if i == 0:
+                label_name = "Main Configuration"
+            else:
+                label_name = f"Alternative Configuration {i}"
+
+            overall_label = QLabel(f"{label_name} Overall Score: -")
+            overall_label.setObjectName("overallScoreLabel")
+            overall_label.setAlignment(Qt.AlignCenter)
+            self.overall_scores_layout.addWidget(overall_label)
+            self.overall_labels.append(overall_label)
 
         # Use a grid layout for the road groups
         main_layout = QGridLayout()
@@ -97,12 +104,16 @@ class ResultsWidget(QWidget):
 
         # Set the layout of the main widget
         layout = QVBoxLayout()
-        layout.addLayout(overall_scores_layout)
+        layout.addLayout(self.overall_scores_layout)
         layout.addLayout(main_layout)
         self.setLayout(layout)
 
+    def update_num_junctions(self):
+        """Updates the number of junctions."""
+        self.num_junctions = self.input_tab.junctions_list.count_junctions()
+        print(self.num_junctions)
+
     def apply_stylesheet(self):
-        """Loads and applies the stylesheet."""
         try:
             with open(os.path.join(os.path.dirname(__file__), 'inputAndParameterPageStyleSheet.qss'), 'r') as f:
                 stylesheet = f.read()
@@ -241,6 +252,13 @@ class ResultsWidget(QWidget):
             
             self.update_chart(alt_road_name, counter2)
             counter2 += 1
+
+        # Update overall score labels
+        for i in range(self.num_junctions):
+            if i == 0:
+                self.overall_labels[i].setText(f"Main Configuration Overall Score: {overallScore}")
+            else:
+                self.overall_labels[i].setText(f"Alternative Configuration {i} Overall Score: {alt_overallScore}")
 
     def get_report(self):
         """Generates a PDF report with the results and bar charts using ReportLab."""
