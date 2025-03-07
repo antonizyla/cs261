@@ -14,6 +14,8 @@ from params import Parameters
 from visualisation import JunctionData, JunctionView
 
 # Global variables to store inputs, Note that the direction is the direction traffic comes from
+class CopyPaste():
+    data = None
 
 class InputAndParameterWidget(QWidget):
     def __init__(self, parent=None):
@@ -73,32 +75,9 @@ class InputAndParameterWidget(QWidget):
         junction_outputs = []
 
         for junction in self.junctions_list.junctions:
-            flow_rates = []
+            flow_rates = junction.get_flow_rates()
             
-            for direction in CardinalDirection:
-                road_group = junction.road_groups[direction.index]
-                
-                flow_rates.append(
-                    FlowRates(
-                        dir_from = direction.to_Dir(), 
-                        left = int(road_group.exit_vph_inputs[0].text()),
-                        ahead = int(road_group.exit_vph_inputs[1].text()),  
-                        right = int(road_group.exit_vph_inputs[2].text()), 
-                        dedicated_left = road_group.left_turn_lane_checkbox.isChecked(), 
-                        dedicated_bus = road_group.bus_lane_checkbox.isChecked(), 
-                        dedicated_right = road_group.right_turn_lane_checkbox.isChecked(), 
-                        #seq_priority = int(road_group.priority_input.value())
-                    )
-                )
-            parameters = Parameters(
-                no_lanes = [junction.road_groups[direction.index].lanes_input.value() for direction in CardinalDirection], 
-                # dedicated_lane = None, # Not sure whats wanted here 
-                # dedicated_lane_flow = None, # Not implemented
-                pedestrian_crossing = [junction.pedestrian_crossing_checkbox.isChecked()], # Why is an array wanted? 
-                crossing_time = [int(junction.crossing_time_input.text()) if junction.pedestrian_crossing_checkbox.isChecked() else 0], # Not implemented
-                crossing_rph = [int(junction.crossing_rph_input.text()) if junction.pedestrian_crossing_checkbox.isChecked() else 0], # Not implemented
-                sequencing_priority = [junction.road_groups[direction.index].priority_input.value() for direction in CardinalDirection]
-            )
+            parameters = junction.get_parameters()
             
             junction_outputs.append((parameters, flow_rates))
         return junction_outputs
@@ -131,9 +110,6 @@ class JunctionList(QScrollArea):
     
     
     def add_junction(self):
-        if len(self.junctions) >= 5:
-            QMessageBox.warning(self, "Limit Reached", "You cannot add more than 5 junctions.")
-            return
         new_junction = JunctionInputAndParameterWidget(len(self.junctions) + 1)
         self.inner_widget.layout().addWidget(new_junction, len(self.junctions), 0, 1, -1, Qt.AlignTop)
         self.junctions.append(new_junction)
@@ -242,6 +218,15 @@ class JunctionInputAndParameterWidget(QGroupBox):
         self.visualisation_checkbox.stateChanged.connect(self.toggle_visualisation)
         layout.addWidget(self.visualisation_checkbox, 4, 0, 1, -1)
 
+        self.copy_button = QPushButton("copy")
+        self.copy_button.clicked.connect(self.copy_data)
+        layout.addWidget(self.copy_button, 5, 0)
+
+        self.paste_button = QPushButton("Paste")
+        self.paste_button.clicked.connect(self.paste_data)
+        layout.addWidget(self.paste_button, 5, 1)
+
+
         self.visualisation = JunctionView()
     
         self.setLayout(layout)
@@ -323,6 +308,12 @@ class JunctionInputAndParameterWidget(QGroupBox):
             self.layout().removeWidget(self.visualisation_checkbox)
             self.layout().addWidget(self.visualisation_checkbox, 4, 0, 1, -1)
 
+            self.layout().removeWidget(self.copy_button)
+            self.layout().addWidget(self.copy_button, 5, 0)
+
+            self.layout().removeWidget(self.paste_button)
+            self.layout().addWidget(self.paste_button, 5, 1)
+
             self.layout().removeWidget(self.visualisation)
             self.visualisation.hide()
             return
@@ -359,6 +350,12 @@ class JunctionInputAndParameterWidget(QGroupBox):
         self.layout().removeWidget(self.visualisation_checkbox)
         self.layout().addWidget(self.visualisation_checkbox, 5, 0, 1, 2)
 
+        self.layout().removeWidget(self.copy_button)
+        self.layout().addWidget(self.copy_button, 6, 0)
+
+        self.layout().removeWidget(self.paste_button)
+        self.layout().addWidget(self.paste_button, 6, 1)
+
         self.visualisation.set_junction(self.update_global_inputs_frontend())
         self.layout().addWidget(self.visualisation, 0, 2, 2, 2)
         self.visualisation.show()
@@ -373,6 +370,56 @@ class JunctionInputAndParameterWidget(QGroupBox):
         except FileNotFoundError:
             print("Stylesheet file not found. Using default styles.")
     
+    def copy_data(self):
+        CopyPaste.data = (self.get_flow_rates(), self.get_parameters())
+    
+    def paste_data(self):
+        data = CopyPaste.data
+        if data is None:
+            return
+
+        flow_rates_list = data[0]
+        parameters = data[1]
+        
+        for i in range(4):
+            self.road_groups[i].paste_data(flow_rates[i], parameters.no_lanes[i], parameters.sequencing_priority[i])
+        
+        self.pedestrian_crossing_checkbox.setCheckState(parameters.pedestrian_crossing[0])
+        self.crossing_time_input.setText(parameters.crossing_time[0])
+        self.crossing_rph.setText(parameters.crossing_time[0])
+        
+    
+    def get_flow_rates(self):
+        flow_rates_list = []
+            
+        for direction in CardinalDirection:
+            road_group = self.road_groups[direction.index]
+            
+            flow_rates_list.append(
+                FlowRates(
+                    dir_from = direction.to_Dir(), 
+                    left = int(road_group.exit_vph_inputs[0].text()),
+                    ahead = int(road_group.exit_vph_inputs[1].text()),  
+                    right = int(road_group.exit_vph_inputs[2].text()), 
+                    dedicated_left = road_group.left_turn_lane_checkbox.isChecked(), 
+                    dedicated_bus = road_group.bus_lane_checkbox.isChecked(), 
+                    dedicated_right = road_group.right_turn_lane_checkbox.isChecked()
+                )
+            )
+        return flow_rates_list
+    
+    def get_parameters(self):
+        parameters = Parameters(
+            no_lanes = [self.road_groups[direction.index].lanes_input.value() for direction in CardinalDirection], 
+
+            # Note: backend used to (or still does?) assume that crossings are independent, frontend assumes they are all identical
+            pedestrian_crossing = [self.pedestrian_crossing_checkbox.isChecked()] * 4,
+            crossing_time = [int(self.crossing_time_input.text()) if self.pedestrian_crossing_checkbox.isChecked() else 0] * 4,
+            crossing_rph = [int(self.crossing_rph_input.text()) if self.pedestrian_crossing_checkbox.isChecked() else 0] * 4,
+
+            sequencing_priority = [self.road_groups[direction.index].priority_input.value() for direction in CardinalDirection]
+        )
+        return parameters
     
 class RoadGroupWidget(QGroupBox):
     def __init__(self, road_source: CardinalDirection, update_visualisation: Callable[None, None], parent: Optional[QWidget] = None) -> None:
@@ -485,3 +532,16 @@ class RoadGroupWidget(QGroupBox):
                 self.setStyleSheet(stylesheet)
         except FileNotFoundError:
             print("Stylesheet file not found. Using default styles.")
+
+    def paste_data(self, flow_rates, lane_count, priority):
+        self.lanes_input.setValue(lane_count)
+
+        self.exit_vph_inputs[0].setText(str(flow_rates.left))
+        self.exit_vph_inputs[1].setText(str(flow_rates.ahead))
+        self.exit_vph_inputs[2].setText(str(flow_rates.right))
+
+        self.left_turn_lane_checkbox.setCheckState(flow_rates.dedicated_left)
+        self.bus_lane_checkbox.setCheckState(flow_rates.dedicated_bus)
+        self.right_turn_lane_checkbox.setCheckState(flow_rates.dedicated_right)
+
+        self.priority_input.setValue(priority)
