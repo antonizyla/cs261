@@ -187,10 +187,57 @@ class JunctionInputAndParameterWidget(QGroupBox):
         self.pedestrian_crossing_checkbox.setObjectName("pedestrian_crossing_checkbox")
         layout.addWidget(self.pedestrian_crossing_checkbox, 1, 0, 1, -1)
 
+        crossing_time_layout = QHBoxLayout()
+        self.crossing_time_label = QLabel("Crossing Time (s):")
+        self.crossing_time_label.setObjectName("crossing_stuff")
+        self.crossing_time_label.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
+        self.crossing_time_label.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+
+        self.crossing_time_input = QLineEdit()
+        self.crossing_time_input.setValidator(QIntValidator(0, 999))
+        self.crossing_time_input.setPlaceholderText("0")
+        self.crossing_time_input.setFixedWidth(50)
+
+        self.crossing_time_label.setVisible(False)
+        self.crossing_time_input.setVisible(False)
+
+        crossing_time_layout.addWidget(self.crossing_time_label)
+        crossing_time_layout.addWidget(self.crossing_time_input)
+        crossing_time_layout.addStretch(1)  # Push input closer to label
+
+        # Add the horizontal layout as a single widget in the grid
+        layout.addLayout(crossing_time_layout, 2, 0, 1, 2)  # Spanning two columns
+
+        # Create a horizontal layout for Crossing Requests per Hour
+        crossing_rph_layout = QHBoxLayout()
+        self.crossing_rph_label = QLabel("Crossing Requests per Hour:")
+        self.crossing_rph_label.setObjectName("crossing_stuff")
+        self.crossing_rph_label.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
+        self.crossing_rph_label.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+
+        self.crossing_rph_input = QLineEdit()
+        self.crossing_rph_input.setValidator(QIntValidator(0, 999))
+        self.crossing_rph_input.setPlaceholderText("0")
+        self.crossing_rph_input.setFixedWidth(50)
+
+        self.crossing_rph_label.setVisible(False)
+        self.crossing_rph_input.setVisible(False)
+
+        crossing_rph_layout.addWidget(self.crossing_rph_label)
+        crossing_rph_layout.addWidget(self.crossing_rph_input)
+        crossing_rph_layout.addStretch(1)  # Push input closer to label
+
+        # Add the horizontal layout as a single widget in the grid
+        layout.addLayout(crossing_rph_layout, 3, 0, 1, 2)  # Spanning two columns
+
+        self.pedestrian_crossing_checkbox.stateChanged.connect(self.toggle_crossing_inputs)
+
+        
+
         self.visualisation_checkbox = QCheckBox("Show Visualisation")
         self.visualisation_checkbox.setObjectName("vis_checkbox")
         self.visualisation_checkbox.stateChanged.connect(self.toggle_visualisation)
-        layout.addWidget(self.visualisation_checkbox, 2, 0, 1, -1)
+        layout.addWidget(self.visualisation_checkbox, 4, 0, 1, -1)
 
         self.visualisation = JunctionView()
     
@@ -199,7 +246,13 @@ class JunctionInputAndParameterWidget(QGroupBox):
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
 
         self.visualisation_hidden = True
-                
+    
+    def toggle_crossing_inputs(self, state):
+            is_checked = state == Qt.Checked
+            self.crossing_time_label.setVisible(is_checked)
+            self.crossing_time_input.setVisible(is_checked)
+            self.crossing_rph_label.setVisible(is_checked)
+            self.crossing_rph_input.setVisible(is_checked)
     
     def validate_inputs(self):
         error_messages = []
@@ -235,15 +288,37 @@ class JunctionInputAndParameterWidget(QGroupBox):
         self.visualisation_hidden = not self.visualisation_hidden
 
         if self.visualisation_hidden:
+            # Move road groups to row 0, spreading across columns
             for i in range(4):
                 self.layout().removeWidget(self.road_groups[i])
                 self.layout().addWidget(self.road_groups[i], 0, i, 1, 1)
-                
+
             self.layout().removeWidget(self.pedestrian_crossing_checkbox)
             self.layout().addWidget(self.pedestrian_crossing_checkbox, 1, 0, 1, -1)
 
+            # Remove old label/input widgets
+            self.layout().removeWidget(self.crossing_time_label)
+            self.layout().removeWidget(self.crossing_time_input)
+            self.layout().removeWidget(self.crossing_rph_label)
+            self.layout().removeWidget(self.crossing_rph_input)
+
+            # Re-create compact layouts
+            crossing_time_layout = QHBoxLayout()
+            crossing_time_layout.addWidget(self.crossing_time_label)
+            crossing_time_layout.addWidget(self.crossing_time_input)
+            crossing_time_layout.addStretch(1)  # Push input closer to the label
+
+            crossing_rph_layout = QHBoxLayout()
+            crossing_rph_layout.addWidget(self.crossing_rph_label)
+            crossing_rph_layout.addWidget(self.crossing_rph_input)
+            crossing_rph_layout.addStretch(1)  # Push input closer to the label
+
+            # Add the layouts back, keeping labels and inputs close together
+            self.layout().addLayout(crossing_time_layout, 2, 0, 1, 2)
+            self.layout().addLayout(crossing_rph_layout, 3, 0, 1, 2)
+
             self.layout().removeWidget(self.visualisation_checkbox)
-            self.layout().addWidget(self.visualisation_checkbox, 2, 0, 1, -1)
+            self.layout().addWidget(self.visualisation_checkbox, 4, 0, 1, -1)
 
             self.layout().removeWidget(self.visualisation)
             self.visualisation.hide()
@@ -256,8 +331,30 @@ class JunctionInputAndParameterWidget(QGroupBox):
         self.layout().removeWidget(self.pedestrian_crossing_checkbox)
         self.layout().addWidget(self.pedestrian_crossing_checkbox, 2, 0, 1, 2)
 
+        # Remove widgets from layout
+        self.layout().removeWidget(self.crossing_time_label)
+        self.layout().removeWidget(self.crossing_time_input)
+        self.layout().removeWidget(self.crossing_rph_label)
+        self.layout().removeWidget(self.crossing_rph_input)
+
+        # Create a compact layout for Crossing Time
+        crossing_time_layout = QHBoxLayout()
+        crossing_time_layout.addWidget(self.crossing_time_label)
+        crossing_time_layout.addWidget(self.crossing_time_input)
+        crossing_time_layout.addStretch(1)  # Push input closer to the label
+
+        # Create a compact layout for Crossing Requests per Hour
+        crossing_rph_layout = QHBoxLayout()
+        crossing_rph_layout.addWidget(self.crossing_rph_label)
+        crossing_rph_layout.addWidget(self.crossing_rph_input)
+        crossing_rph_layout.addStretch(1)  # Push input closer to the label
+
+        # Add the layouts back in the new positions
+        self.layout().addLayout(crossing_time_layout, 3, 0, 1, 2)  # Span across two columns
+        self.layout().addLayout(crossing_rph_layout, 4, 0, 1, 2)  # Span across two columns
+
         self.layout().removeWidget(self.visualisation_checkbox)
-        self.layout().addWidget(self.visualisation_checkbox, 3, 0, 1, 2)
+        self.layout().addWidget(self.visualisation_checkbox, 5, 0, 1, 2)
 
         self.visualisation.set_junction(self.update_global_inputs_frontend())
         self.layout().addWidget(self.visualisation, 0, 2, 4, 2)
@@ -346,7 +443,7 @@ class RoadGroupWidget(QGroupBox):
         
         has_left_lane = self.left_turn_lane_checkbox.isChecked()
         has_right_lane = self.right_turn_lane_checkbox.isChecked()
-        undedicated_lanes = self.lanes_input.value() - (has_left_lane + has_right_lane)
+        undedicated_lanes = self.lanes_input.value() - (has_left_lane + has_right_lane)        
 
         has_left_vehicles = (int(self.exit_vph_inputs[0].text()) > 0)
         has_ahead_vehicles = (int(self.exit_vph_inputs[1].text()) > 0)
@@ -368,7 +465,12 @@ class RoadGroupWidget(QGroupBox):
             error_messages.append(f"{self.title()} requires a dedicated left lane, or at least one undedicated lane.")
         elif invalid_right:
             error_messages.append(f"{self.title()} requires a dedicated right lane, or at least one undedicated lane.")
-            
+
+        if self.parent().pedestrian_crossing_checkbox.isChecked():
+            if not self.parent().crossing_time_input.text().isdigit() or not self.parent().crossing_rph_input.text().isdigit():
+                if "Crossing time and Requests per Hour cannot be empty" not in error_messages:
+                    error_messages.append("Crossing time and Requests per Hour cannot be empty")
+
         return error_messages
     
     def apply_stylesheet(self):
