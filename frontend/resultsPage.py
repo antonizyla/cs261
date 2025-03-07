@@ -44,8 +44,9 @@ overallScore = 66
 alt_overallScore = 80
 
 class ResultsWidget(QWidget):
-    def __init__(self, parent=None):
+    def __init__(self, input_tab, parent=None):
         super().__init__(parent)
+        self.input_tab = input_tab
 
         # Checks if the results have been generated
         self.results_generated = False
@@ -85,22 +86,13 @@ class ResultsWidget(QWidget):
         self.generate_report_button.clicked.connect(self.get_report)
         main_layout.addWidget(self.generate_report_button, 2, 1)  # Bottom-right
 
-        # Button to save results to database
-        self.save_to_db_button = QPushButton("Save Results to Database")
-        self.save_to_db_button.clicked.connect(self.save_results_to_db)
-        main_layout.addWidget(self.save_to_db_button, 3, 0)  # Bottom-right
-
-        # Add the button to view the database
-        self.view_db_button = QPushButton("View Database")
-        self.view_db_button.clicked.connect(self.view_database)
-        main_layout.addWidget(self.view_db_button, 3, 1)  # Bottom-right
-
+        
         self.go_inputs_button = QPushButton("Run Simulation Again")
-        main_layout.addWidget(self.go_inputs_button, 4, 0, 1, 2)  # Bottom
+        main_layout.addWidget(self.go_inputs_button, 3, 0, 1, 2)  # Bottom
 
         self.exit_button = QPushButton("Exit")
         self.exit_button.setObjectName("exitButton")
-        main_layout.addWidget(self.exit_button, 5, 0, 1, 2)  # Bottom
+        main_layout.addWidget(self.exit_button, 4, 0, 1, 2)  # Bottom
 
 
         # Set the layout of the main widget
