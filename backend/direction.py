@@ -189,7 +189,7 @@ class Direction:
         self.bus_residuals[2] -= math.floor(self.bus_residuals[2])
     
     def get_total_vehicles(self):
-        return sum(self.pools) + sum(self.pools_bus) + sum([lane.get_queue_limit() for lane in self.lanes])
+        return sum(self.pools) + sum(self.pools_bus) + sum([lane.get_num_vehicles() for lane in self.lanes])
 
     def set_calculating_max_wait(self, bool):
         self.calculating_max_wait = bool
