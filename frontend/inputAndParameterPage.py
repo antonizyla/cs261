@@ -87,16 +87,16 @@ class InputAndParameterWidget(QWidget):
                         dedicated_left = road_group.left_turn_lane_checkbox.isChecked(), 
                         dedicated_bus = road_group.bus_lane_checkbox.isChecked(), 
                         dedicated_right = road_group.right_turn_lane_checkbox.isChecked(), 
-                        seq_priority = int(road_group.priority_input.value())
+                        #seq_priority = int(road_group.priority_input.value())
                     )
                 )
             parameters = Parameters(
                 no_lanes = [junction.road_groups[direction.index].lanes_input.value() for direction in CardinalDirection], 
-                dedicated_lane = None, # Not sure whats wanted here 
-                dedicated_lane_flow = None, # Not implemented
+                # dedicated_lane = None, # Not sure whats wanted here 
+                # dedicated_lane_flow = None, # Not implemented
                 pedestrian_crossing = [junction.pedestrian_crossing_checkbox.isChecked()], # Why is an array wanted? 
-                crossing_time = None, # Not implemented
-                crossing_rph = None, # Not implemented
+                crossing_time = [int(junction.crossing_time_input.text()) if junction.pedestrian_crossing_checkbox.isChecked() else 0], # Not implemented
+                crossing_rph = [int(junction.crossing_rph_input.text()) if junction.pedestrian_crossing_checkbox.isChecked() else 0], # Not implemented
                 sequencing_priority = [junction.road_groups[direction.index].priority_input.value() for direction in CardinalDirection]
             )
             
@@ -389,9 +389,9 @@ class RoadGroupWidget(QGroupBox):
 
         # Exiting VpH inputs
         self.exit_vph_inputs = []
-        for direction in CardinalDirection.all_except_clockwise(road_source - Turn.BACK):
+        for direction in CardinalDirection.all_except_clockwise(road_source):
             exit_label = QLabel(f"Exiting {direction.simple_string()}:")
-            
+
             exit_input = QLineEdit()
             exit_input.setValidator(QIntValidator(0, 999))
             exit_input.setPlaceholderText("0")  
