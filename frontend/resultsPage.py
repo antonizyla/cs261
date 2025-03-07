@@ -362,7 +362,7 @@ class ResultsWidget(QWidget):
         x = range(len(categories))
         x2 = [val + 0.4 for val in x]
 
-        fig, ax = plt.subplots(figsize=(4, 3))
+        fig, ax = plt.subplots(figsize=(4, 6))
         ax.bar(x, input_values, width=0.4, label='Main Configuration')
         ax.bar(x2, alt_values, width=0.4, label='Alternative Configuration')
 

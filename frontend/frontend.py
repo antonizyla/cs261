@@ -28,7 +28,19 @@ class HomeWindow(QDialog):
         self.button.clicked.connect(self.go_to_main_app)
 
         self.exit_button = QPushButton("Exit Application")
-        self.exit_button.setStyleSheet("background-color: #FF3B30; color: white; border: none; border-radius: 6px; font-family: Helvetica Neue, sans-serif; padding: 2px;")
+        self.exit_button.setStyleSheet("""
+                QPushButton {
+                    background-color: #FF3B30;
+                    color: white;
+                    border: none;
+                    border-radius: 6px;
+                    font-family: "Helvetica Neue", sans-serif;
+                    padding: 2px;
+                }
+                QPushButton:hover {
+                    background-color: #E63228; /* Slightly darker red */
+                }
+            """)
         self.exit_button.clicked.connect(self.close)
 
         layout.addWidget(self.label)
