@@ -18,6 +18,9 @@ from visualisation import JunctionData, JunctionView
 class InputAndParameterWidget(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
+        # Check if there are any Alternate configs added
+        # Keeps a count of how many there are
+        self.check_alternate = 0
         
         # Button to show alt road inputs
         self.add_junction_button = QPushButton("Add Alternative Configuration")
@@ -60,10 +63,17 @@ class InputAndParameterWidget(QWidget):
         self.setLayout(layout)
     
     def add_junction(self):
+        self.check_alternate += 1
         self.junctions_list.add_junction()
     
     def remove_junction(self):
-        self.junctions_list.remove_junction()
+        if self.check_alternate:
+            self.junctions_list.remove_junction()
+            self.check_alternate -= 1
+        else:
+            QMessageBox.critical(self, "No Alternate Configurations Set", "Please click the Add Alternate Configuration button to add an alternate configuration")
+            return False
+
         
     def update_global_inputs_backend(self):
         # Generates data objects for backend
