@@ -6,7 +6,20 @@ class Dir(Flag):
     EAST = auto()
     SOUTH = auto()
 
+# left of as if going from direction d
 def left_of(d: Dir):
+    if d is Dir.NORTH:
+        return Dir.EAST
+    elif d is Dir.EAST:
+        return Dir.SOUTH
+    elif d is Dir.SOUTH:
+        return Dir.WEST
+    elif d is Dir.WEST:
+        return Dir.NORTH
+    return None
+
+# left of as if facing that direction
+def left_of_1(d: Dir):
     if d is Dir.NORTH:
         return Dir.WEST
     elif d is Dir.EAST:

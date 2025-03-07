@@ -38,7 +38,7 @@ class Junction:
             elif (traffic_light_timing[i] == EWO) and (TrafficLights.EAST_WEST_OTHER not in traffic_light_order):
                 traffic_light_order.append(TrafficLights.EAST_WEST_OTHER)
 
-        for i in range(0, 200): #Value to change during development 
+        for i in range(0, 4): #Value to change during development
             if traffic_light_timing[i%4] == NSR or traffic_light_timing[i%4] == NSO:
                 seconds_spent = (max(self.params.get_sequencing_priority()[0], self.params.get_sequencing_priority()[2]) + 1) * 10
             else:
