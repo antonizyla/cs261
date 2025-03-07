@@ -23,12 +23,19 @@ def opposite_of(d : Dir):
     return left_of(left_of(d))
 
 
+def contains(l: list[Dir], d: Dir): # weird flag fuckery I have no idea how it works
+    for x in l:
+        if x == d:
+            return True
+    return False
+
+
 class Lane:
     def __init__(self, queue_limit, dir_from, dir_to, bus=False):
         self.current_vehicles = []
         self.queue_limit = queue_limit
         self.flowing = False
-        self.directions_to = dir_to
+        self.directions_to: list[Dir] = dir_to
         self.direction_from = dir_from
         self.is_bus_lane = bus
 
@@ -41,18 +48,19 @@ class Lane:
     def goes_to(self, d: Dir) -> bool:
         return d in self.directions_to
 
-    def simulate_update(self, directions, traffic_light_time): #work in progress, may need to control range upper limit with traffic light duration
+    def simulate_update(self, directions: list[Dir], traffic_light_time: int): #work in progress, may need to control range upper limit with traffic light duration
         timer = traffic_light_time
         first_flag = True
         
-        while (timer > 0): #Choose more appropriate constants/make dependent on number of lanes
-            if self.current_vehicles[0].getDirectionTo in directions:
-                if (first_flag): #First car will take a while to clear, but the cars after it will take less time since they can start moving while the one in front of it is in the junction
-                    if (self.current_vehicles[0].getDirectionTo() == left_of(self.current_vehicles[0].getDirectionFrom())):
+        while timer > 0: #Choose more appropriate constants/make dependent on number of lanes
+            #if len(self.current_vehicles) > 0 and self.current_vehicles[0].getDirectionTo in directions:
+            if len(self.current_vehicles) > 0 and contains(directions, self.current_vehicles[0].getDirectionTo):
+                if first_flag: #First car will take a while to clear, but the cars after it will take less time since they can start moving while the one in front of it is in the junction
+                    if self.current_vehicles[0].getDirectionTo() == left_of(self.current_vehicles[0].getDirectionFrom()):
                         timer -= 4
-                    elif (self.current_vehicles[0].getDirectionTo() == opposite_of(self.current_vehicles[0].getDirectionFrom())):
+                    elif self.current_vehicles[0].getDirectionTo() == opposite_of(self.current_vehicles[0].getDirectionFrom()):
                         timer -= 6
-                    elif (self.current_vehicles[0].getDirectionTo() == right_of(self.current_vehicles[0].getDirectionFrom())):
+                    elif self.current_vehicles[0].getDirectionTo() == right_of(self.current_vehicles[0].getDirectionFrom()):
                         timer -= 10
                     
                     first_flag = False
@@ -64,11 +72,10 @@ class Lane:
 
                 self.current_vehicles[0].pop(0)
                 
-                if self.current_vehicles == []:
+                if not self.current_vehicles:
                     break
             else:
                 break
-            
 
     def get_queue_limit(self):
         return self.queue_limit

@@ -2,18 +2,17 @@
 from lane import Dir
 
 class FlowRates:
-    def __init__(self, dir_from, ahead:int, left:int, right:int, dedicated_left:bool, dedicated_bus: int, dedicated_right: bool, seq_priority: int):
-        self.direction_from: Dir = dir_from
+    def __init__(self, dir_from, ahead:int, left:int, right:int, dedicated_left:bool, dedicated_bus: int, dedicated_right: bool):
+        self.dir_from = dir_from
         self.ahead = ahead
         self.left = left
         self.right = right
         self.dedicated_left = dedicated_left # left dedicated and bus lane are mutually exclusive
         self.dedicated_bus = dedicated_bus
         self.dedicated_right = dedicated_right
-        self.seq_priority = seq_priority # 0-3 index on most-least
 
     def get_direction_from(self):
-        return self.direction_from
+        return self.dir_from
 
     def check(self):
         if self.dedicated_bus > 0 and self.dedicated_left:

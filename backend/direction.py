@@ -1,32 +1,40 @@
+import math
 import random
+from enum import Flag, auto
+
 from flowrates import FlowRates
 from lane import Lane, left_of, right_of, opposite_of, Dir
-from params import Parameters
 from vehicle import Vehicle, VehicleType
-from Junction import TrafficLights
 
+class TrafficLights(Flag):
+    NORTH_SOUTH_RIGHT = auto()
+    NORTH_SOUTH_OTHER = auto()
+    EAST_WEST_RIGHT = auto()
+    EAST_WEST_OTHER = auto()
 
 class Direction:
     def __init__(self, flows: FlowRates, num_lanes: int):
-        self.flows = FlowRates
+        self.bus_residuals =[0, 0,0]
+        self.residuals = [0, 0, 0]
+        self.flows: FlowRates = flows
         self.pools: list[int] = [0, 0, 0]
         self.pools_bus: list[int] = [0,0,0]
-        self.max_wait = None
-        self.max_length = None
-        self.avg_wait = None
+        self.max_wait = 0
+        self.max_length = 0
+        self.avg_wait = 0
         self.lanes = []
         self.calculating_max_wait = False
         if num_lanes == 1:
-            self.lanes.append(Lane(60, flows.direction_from, [left_of(flows.direction_from), right_of(flows.direction_from), opposite_of(flows.direction_from)]))
+            self.lanes.append(Lane(60, flows.dir_from, [left_of(flows.dir_from), right_of(flows.dir_from), opposite_of(flows.dir_from)]))
         else:
             if flows.dedicated_left:
-                self.lanes.append(Lane(60, flows.direction_from, [left_of(flows.direction_from)]))
+                self.lanes.append(Lane(60, flows.dir_from, [left_of(flows.dir_from)]))
                 num_lanes -= 1
             elif flows.dedicated_right:
-                self.lanes.append(Lane(60, flows.direction_from, [right_of(flows.direction_from)]))
+                self.lanes.append(Lane(60, flows.dir_from, [right_of(flows.dir_from)]))
                 num_lanes -= 1
             for i in range(num_lanes - len(self.lanes)):
-                self.lanes.append(Lane(60, flows.direction_from, [opposite_of(flows.direction_from)]))
+                self.lanes.append(Lane(60, flows.dir_from, [opposite_of(flows.dir_from)]))
 
     # hourly/longer period update
     def simulate_hourly(self):
@@ -44,7 +52,7 @@ class Direction:
     def simulateUpdate(self, trafficLights, trafficlight_timing):
         #Dequeue cars
         spaces = []
-        vehicles_before = get_total_vehicles()
+        vehicles_before = self.get_total_vehicles()
         for lane in self.lanes:
             if (trafficLights in TrafficLights.NORTH_SOUTH_RIGHT) and (self.flows.get_direction_from() in Dir.NORTH | Dir.SOUTH):
                 lane.simulate_update(right_of(self.flows.get_direction_from()), trafficlight_timing)
@@ -72,12 +80,12 @@ class Direction:
             #Condition for adding cars
             lane = self.lanes[index]
 
-            if (lane.goes_to(left_of(self.flows.get_direction_from())) and not lane.goes_to(right_of(self.flows.get_direction_from()))): #Lane with left turn but no right turn (might have ahead)
+            if lane.goes_to(left_of(self.flows.get_direction_from())) and not lane.goes_to(right_of(self.flows.get_direction_from())): #Lane with left turn but no right turn (might have ahead)
                 if self.pools[0] > 0 and not lane.is_bus_lane:
                     lane.add_vehicle(Vehicle(self.flows.get_direction_from(), left_of(self.flows.get_direction_from()), VehicleType.CAR))
                     spaces[index] -= 1
                     self.pools[0] -= 1
-                elif (lane.goes_to(opposite_of(self.flows.get_direction_from())) and self.pools[1] > 0 and not lane.is_bus_lane):
+                elif lane.goes_to(opposite_of(self.flows.get_direction_from())) and self.pools[1] > 0 and not lane.is_bus_lane:
                     lane.add_vehicle(Vehicle(self.flows.get_direction_from(), opposite_of(self.flows.get_direction_from()), VehicleType.CAR))
                     spaces[index] -= 1
                     self.pools[1] -= 1
@@ -85,13 +93,13 @@ class Direction:
                     lane.add_vehicle(Vehicle(self.flows.get_direction_from(), left_of(self.flows.get_direction_from()), VehicleType.BUS))
                     spaces[index] -= 1
                     self.pools_bus[0] -= 1
-                elif (lane.goes_to(opposite_of(self.flows.get_direction_from())) and self.pools_bus[1] > 0 and lane.is_bus_lane):
+                elif lane.goes_to(opposite_of(self.flows.get_direction_from())) and self.pools_bus[1] > 0 and lane.is_bus_lane:
                     lane.add_vehicle(Vehicle(self.flows.get_direction_from(), opposite_of(self.flows.get_direction_from()), VehicleType.BUS))
                     spaces[index] -= 1
                     self.pools_bus[1] -= 1
                 else:
                     spaces[index] = 0 #If we couldn't add anything to the lane, pretened the lane is full
-            elif (lane.goes_to(right_of(self.flows.get_direction_from())) and not lane.goes_to(left_of(self.flows.get_direction_from()))): #Lane with right turn but no left turn (might have ahead)
+            elif lane.goes_to(right_of(self.flows.get_direction_from())) and not lane.goes_to(left_of(self.flows.get_direction_from())): #Lane with right turn but no left turn (might have ahead)
                 if self.pools[2] > 0 or self.pools_bus[2] > 0:
                     vehicle = None
                     if self.pools[2] > 0 and self.pools_bus[2] > 0:
@@ -107,18 +115,18 @@ class Direction:
                         self.pools[2] -= 1
                     else:
                         self.pools_bus[2] -= 1
-                elif (lane.goes_to(opposite_of(self.flows.get_direction_from())) and self.pools[1] > 0 and not lane.is_bus_lane): #Don't technically need the third condition since we don't have right turning bus lanes
+                elif lane.goes_to(opposite_of(self.flows.get_direction_from())) and self.pools[1] > 0 and not lane.is_bus_lane: #Don't technically need the third condition since we don't have right turning bus lanes
                     lane.add_vehicle(Vehicle(self.flows.get_direction_from(), opposite_of(self.flows.get_direction_from()), VehicleType.CAR))
                     spaces[index] -= 1
                     self.pools[1] -= 1
                 else:
                     spaces[index] = 0 #If we couldn't add anything to the lane, pretened the lane is full
-            elif (not lane.goes_to(left_of(self.flows.get_direction_from())) and not lane.goes_to(right_of(self.flows.get_direction_from()))): #Lane with only ahead (no left turn nor right turn)
+            elif not lane.goes_to(left_of(self.flows.get_direction_from())) and not lane.goes_to(right_of(self.flows.get_direction_from())): #Lane with only ahead (no left turn nor right turn)
                 if (lane.goes_to(opposite_of(self.flows.get_direction_from())) and self.pools[1] > 0 and not lane.is_bus_lane):
                     lane.add_vehicle(Vehicle(self.flows.get_direction_from(), opposite_of(self.flows.get_direction_from()), VehicleType.CAR))
                     spaces[index] -= 1
                     self.pools[1] -= 1
-                elif (lane.goes_to(opposite_of(self.flows.get_direction_from())) and self.pools_bus[1] > 0 and lane.is_bus_lane):
+                elif lane.goes_to(opposite_of(self.flows.get_direction_from())) and self.pools_bus[1] > 0 and lane.is_bus_lane:
                     lane.add_vehicle(Vehicle(self.flows.get_direction_from(), opposite_of(self.flows.get_direction_from()), VehicleType.BUS))
                     spaces[index] -= 1
                     self.pools_bus[1] -= 1
@@ -133,7 +141,7 @@ class Direction:
                 if self.pools[2] > 0:
                     directions.append(right_of(self.flows.get_direction_from()))
 
-                if directions != []:
+                if directions:
                     direction = random.choice(directions)
                     lane.add_vehicle(Vehicle(self.flows.get_direction_from(), direction, VehicleType.CAR))
                     spaces[index] -= 1
@@ -181,7 +189,7 @@ class Direction:
         self.bus_residuals[2] -= math.floor(self.bus_residuals[2])
     
     def get_total_vehicles(self):
-        return sum(pools) + sum(pools_bus) + sum([lane.get_queue_limit() for lane in self.lanes])
+        return sum(self.pools) + sum(self.pools_bus) + sum([lane.get_queue_limit() for lane in self.lanes])
 
     def set_calculating_max_wait(self, bool):
         self.calculating_max_wait = bool
