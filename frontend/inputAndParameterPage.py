@@ -131,6 +131,9 @@ class JunctionList(QScrollArea):
     
     
     def add_junction(self):
+        if len(self.junctions) >= 5:
+            QMessageBox.warning(self, "Limit Reached", "You cannot add more than 5 junctions.")
+            return
         new_junction = JunctionInputAndParameterWidget(len(self.junctions) + 1)
         self.inner_widget.layout().addWidget(new_junction, len(self.junctions), 0, 1, -1, Qt.AlignTop)
         self.junctions.append(new_junction)
