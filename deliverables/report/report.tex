@@ -82,30 +82,42 @@ it will give an insight into the algorithms and formulas used to calculate the t
         The old layout restricted the ability of add new functionalities due to space constraints as all three segments were on one page. By utilising the tab-based system, 
         we have created for room for additional features such as adding graphs to the results page.
 
-    \subsection(Home Page)
+    \subsection{Home Page}
 
         The user is first greeted with the home page where some general information about the system is displayed. The user can then click the "Go to Input Parameters" button to go to the Inputs Page 
         or click the "Exit" button to exit the application. The image below shows the home page of the system:
 
         \begin{figure}[H]
             \centering
-            \includegraphics[width=\textwidth]{homepage.png}
+            \includegraphics[width=7cm]{img/homepage.png}
             \caption{Home Page of the System}
             \label{fig:homepage}
         \end{figure}
     
     \subsection{Input and Validation}
 
-        The Input Page provides a structured interface for configuring traffic flow conditions. The page initially consists of 4 boxes where the user can input the configurations for each direction. 
-        Each direction has a set of inputs for the number of vehicles exiting to other directions, the number of lanes and checkboxes for the presence of dedicated bus lanes, right turn lanes, left turn lanes 
-        and pedestrian crossings. The image below illustartes the input box for a single direction:
+        The Input Page provides a structured interface for configuring traffic flow conditions. The page intially consists of a parent junction box, labelled "Junction 1", which contains child boxes for 
+        each direction of traffic flow. Each child box contains input fields for the user to input the desired parameters for the simulation. The image below shows the parent junction box and the child boxes for
+        each direction of traffic flow:
         
-        \begin{figure}[H]
+        \begin{figure}[h!]
             \centering
-            \includegraphics[width=\textwidth]{inputBox.png}
-            \caption{Illustration of the Input Box for a Single Direction}
+            \includegraphics[width=\textwidth]{img/inputbox.png}
+            \caption{Illustration of the Input Box}
             \label{fig:inputBox}
         \end{figure}
+
+        The parent box also contains two checkboxes for the user to select whether they want to add pedestrian crossing options and whether they want to see the updates on the junction on real time. A visual representation of the
+        junction is displayed on the right side of the parent box, which updates in real time as the user inputs the parameters. The image below shows the visual representation:
+
+        \begin{figure}[H]
+            \centering
+            \includegraphics[width=\textwidth]{img/inputboxextra.png}
+            \caption{Illustration of the Input Box with additional options}
+            \label{fig:inputBox}
+        \end{figure}
+
+        This layout was achieved by using the PyQT library to create the boxes using QGroupBox widgets.
 
     \subsection{Simulation and Visualisation Page}
 
@@ -114,6 +126,8 @@ it will give an insight into the algorithms and formulas used to calculate the t
     \subsection{PDF genereation}
 
     \subsection{Error Handling}
+
+    \subsection{Styling}
 
 \section{Backend}
 

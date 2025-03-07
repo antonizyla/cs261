@@ -11,6 +11,7 @@ from reportlab.lib.utils import ImageReader
 from io import BytesIO
 import os
 import sqlite3
+from inputAndParameterPage import JunctionList
 
 
 # Sample results
@@ -338,46 +339,6 @@ class ResultsWidget(QWidget):
             return False
 
 
-    def save_results_to_db(self):
-        """Saves the results to a SQLite database."""
-        # Connect to the database (or create it if it doesn't exist)
-        conn = sqlite3.connect('simulation_results.db')
-        cursor = conn.cursor()
-
-        # Create tables if they don't exist
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS results (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                road_name TEXT,
-                average_wait INTEGER,
-                max_wait_times INTEGER,
-                max_queue_length INTEGER,
-                alt_average_wait INTEGER,
-                alt_max_wait_times INTEGER,
-                alt_max_queue_length INTEGER
-            )
-        ''')
-
-        # Insert results into the database
-        for road_name in ["south_traffic_flow", "north_traffic_flow", "west_traffic_flow", "east_traffic_flow"]:
-            cursor.execute('''
-                INSERT INTO results (road_name, average_wait, max_wait_times, max_queue_length, alt_average_wait, alt_max_wait_times, alt_max_queue_length)
-                VALUES (?, ?, ?, ?, ?, ?, ?)
-            ''', (
-                road_name,
-                road_results[road_name]['average_wait'],
-                road_results[road_name]['max_wait_times'],
-                road_results[road_name]['max_queue_length'],
-                alt_road_results[road_name]['average_wait'],
-                alt_road_results[road_name]['max_wait_times'],
-                alt_road_results[road_name]['max_queue_length']
-            ))
-
-        # Commit the transaction and close the connection
-        conn.commit()
-        conn.close()
-
-        print("Results saved to database successfully.")
        
     def update_chart(self, road_name, index):
         base_name = road_name.lower().replace(' ', '_')
@@ -404,40 +365,5 @@ class ResultsWidget(QWidget):
         canvas = FigureCanvas(fig)
         setattr(self, f"{base_name}_chart", canvas)
         getattr(self, f"{base_name}_form_layout").addRow(canvas)
-
-    def view_database(self):
-        """Displays the contents of the database in a new window."""
-        conn = sqlite3.connect('simulation_results.db')
-        cursor = conn.cursor()
-
-        cursor.execute('SELECT * FROM results')
-        results = cursor.fetchall()
-
-        conn.close()
-
-        # Create a new window to display the results
-        db_window = QWidget()
-        db_window.setWindowTitle("Database Results")
-        layout = QVBoxLayout()
-
-        # Create a scroll area to handle large number of results
-        scroll_area = QScrollArea()
-        scroll_widget = QWidget()
-        scroll_layout = QVBoxLayout()
-
-        for row in results:
-            row_label = QLabel(str(row))
-            scroll_layout.addWidget(row_label)
-
-        scroll_widget.setLayout(scroll_layout)
-        scroll_area.setWidget(scroll_widget)
-        scroll_area.setWidgetResizable(True)
-
-        layout.addWidget(scroll_area)
-        db_window.setLayout(layout)
-        db_window.resize(600, 400)
-        db_window.show()
-
-        self.db_window = db_window  # Keep a reference to prevent garbage collection
 
     

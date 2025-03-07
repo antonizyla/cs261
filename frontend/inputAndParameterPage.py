@@ -357,7 +357,7 @@ class JunctionInputAndParameterWidget(QGroupBox):
         self.layout().addWidget(self.visualisation_checkbox, 5, 0, 1, 2)
 
         self.visualisation.set_junction(self.update_global_inputs_frontend())
-        self.layout().addWidget(self.visualisation, 0, 2, 4, 2)
+        self.layout().addWidget(self.visualisation, 0, 2, 2, 2)
         self.visualisation.show()
     
     def apply_stylesheet(self):
