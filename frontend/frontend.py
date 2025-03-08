@@ -28,6 +28,7 @@ class HomeWindow(QDialog):
         self.button.clicked.connect(self.go_to_main_app)
 
         self.exit_button = QPushButton("Exit Application")
+        self.exit_button.setObjectName("exitButton")
         self.exit_button.setStyleSheet("""
                 QPushButton {
                     background-color: #FF3B30;
@@ -80,12 +81,13 @@ class MainApplication(QMainWindow):
         self.tab_widget.addTab(self.simulation_tab, "Simulation")
 
         # Tab 3: Simulation Results
-        self.results_tab = ResultsWidget(self.input_tab)  # or ResultsPage, depending on your class
+        self.results_tab = ResultsWidget(1)  # Initialize with 1 junction
         self.tab_widget.addTab(self.results_tab, "Simulation Results")
 
+
         # Connect the "Start Simulation" button to the method to switch to the Simulation tab
-        self.input_tab.submit_button.clicked.connect(self.go_to_simulation_tab)
-        self.simulation_tab.go_results_button.clicked.connect(self.go_to_results_tab)
+        self.input_tab.submit_button.clicked.connect(self.go_to_results_tab)
+        self.input_tab.submit_button.clicked.connect(self.update_results_tab)
         self.results_tab.go_inputs_button.clicked.connect(self.go_to_input_tab)
         self.results_tab.exit_button.clicked.connect(self.exit_app)
 
@@ -94,7 +96,15 @@ class MainApplication(QMainWindow):
 
     def go_to_results_tab(self):
         self.tab_widget.setCurrentWidget(self.results_tab)
+        
+    def update_results_tab(self):
+        number_junctions = self.get_number()
+        self.results_tab.update_junctions(number_junctions)
+        self.go_to_results_tab()
 
+    def get_number(self):
+        return self.input_tab.junctions_list.count_junctions()
+    
     def go_to_input_tab(self):
         self.tab_widget.setCurrentWidget(self.input_tab)
 

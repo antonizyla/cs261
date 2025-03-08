@@ -10,9 +10,6 @@ from reportlab.pdfgen import canvas
 from reportlab.lib.utils import ImageReader
 from io import BytesIO
 import os
-import sqlite3
-from inputAndParameterPage import JunctionList
-
 
 # Sample results
 overall = 50
@@ -44,34 +41,14 @@ overallScore = 66
 alt_overallScore = 80
 
 class ResultsWidget(QWidget):
-    def __init__(self, input_tab, parent=None):
+    def __init__(self, number, parent=None):
         super().__init__(parent)
-        self.input_tab = input_tab
+        self.number = number
 
         # Checks if the results have been generated
         self.results_generated = False
-
-        # Load and apply the stylesheet
+        
         self.apply_stylesheet()
-
-        # Initialize the number of junctions
-        self.update_num_junctions()
-        # Overall scores layout
-        self.overall_scores_layout = QHBoxLayout()
-
-        # Create labels dynamically
-        self.overall_labels = []
-        for i in range(self.num_junctions):
-            if i == 0:
-                label_name = "Main Configuration"
-            else:
-                label_name = f"Alternative Configuration {i}"
-
-            overall_label = QLabel(f"{label_name} Overall Score: -")
-            overall_label.setObjectName("overallScoreLabel")
-            overall_label.setAlignment(Qt.AlignCenter)
-            self.overall_scores_layout.addWidget(overall_label)
-            self.overall_labels.append(overall_label)
 
         # Use a grid layout for the road groups
         main_layout = QGridLayout()
@@ -104,14 +81,14 @@ class ResultsWidget(QWidget):
 
         # Set the layout of the main widget
         layout = QVBoxLayout()
-        layout.addLayout(self.overall_scores_layout)
+        #layout.addLayout(self.overall_scores_layout)
         layout.addLayout(main_layout)
         self.setLayout(layout)
 
-    def update_num_junctions(self):
-        """Updates the number of junctions."""
-        self.num_junctions = self.input_tab.junctions_list.count_junctions()
-        print(self.num_junctions)
+    def update_junctions(self, number_junctions):
+        self.number = number_junctions
+        print(f"Number of junctions updated to: {number_junctions}")
+
 
     def apply_stylesheet(self):
         try:
@@ -207,6 +184,13 @@ class ResultsWidget(QWidget):
         # Set generated results bool to true
         self.results_generated = True
 
+        print(f"Number of junctions is : {self.number}")
+        # Create overall score labels based on the number of junctions
+        for i in range(self.number):
+            overall_label = QLabel(f"Overall Score (Junction {i+1}): {overallScore}")
+            overall_label.setObjectName("overallScoreLabel")
+            self.layout().addWidget(overall_label, 0,)  # Top
+
         # Placeholder result values
         self.average_wait = [20, 30, 25, 15]
         self.max_wait_time = [40, 50, 35, 20]
@@ -253,12 +237,6 @@ class ResultsWidget(QWidget):
             self.update_chart(alt_road_name, counter2)
             counter2 += 1
 
-        # Update overall score labels
-        for i in range(self.num_junctions):
-            if i == 0:
-                self.overall_labels[i].setText(f"Main Configuration Overall Score: {overallScore}")
-            else:
-                self.overall_labels[i].setText(f"Alternative Configuration {i} Overall Score: {alt_overallScore}")
 
     def get_report(self):
         """Generates a PDF report with the results and bar charts using ReportLab."""
@@ -347,8 +325,6 @@ class ResultsWidget(QWidget):
         else:
             QMessageBox.critical(self, "Results Yet to be Generated", "Please generate the results by pressing the Generate Results button")
             return False
-
-
        
     def update_chart(self, road_name, index):
         base_name = road_name.lower().replace(' ', '_')

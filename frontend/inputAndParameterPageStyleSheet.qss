@@ -132,3 +132,21 @@ QMessageBox {
     margin-right: 5px;
     font-size: 13px;
 }
+
+#exitButton {
+    background-color: #FF3B30;  
+    color: white;               
+    border: none;
+    border-radius: 6px;         
+    padding: 8px 16px;          
+    font-size: 14px;
+    font-weight: bold;
+    }
+    
+#exitButton:hover {
+    background-color: #D32F2F; 
+}
+
+#exitButton:pressed {
+    background-color: #C5281C; 
+}

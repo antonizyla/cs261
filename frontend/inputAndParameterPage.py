@@ -12,6 +12,7 @@ sys.path.append((Path(__file__).parent.parent / 'backend').resolve().__str__())
 from flowrates import FlowRates
 from params import Parameters
 from visualisation import JunctionData, JunctionView
+from resultsPage import ResultsWidget
 
 # Global variables to store inputs, Note that the direction is the direction traffic comes from
 
@@ -37,6 +38,9 @@ class InputAndParameterWidget(QWidget):
         self.submit_button = QPushButton("Start Simulation")
         self.submit_button.setObjectName("submit_button")
         self.submit_button.clicked.connect(self.update_global_inputs_backend)
+
+        self.button = QPushButton("Count Junctions")
+        self.button.clicked.connect(self.junctions_list.count_junctions) #This is temporary, will be removed later
         
         self.update_layout()
         
@@ -60,6 +64,7 @@ class InputAndParameterWidget(QWidget):
         layout.addWidget(self.add_junction_button, 1, 0, 1, 1)
         layout.addWidget(self.remove_junction_button, 1, 1, 1, 1)
         layout.addWidget(self.submit_button, 2, 0, 1, -1)
+        layout.addWidget(self.button, 3, 0, 1, -1)
         self.setLayout(layout)
     
     def add_junction(self):
@@ -157,6 +162,7 @@ class JunctionList(QScrollArea):
         layout.invalidate()
     
     def count_junctions(self):
+        print(len(self.junctions))
         return len(self.junctions)
     
     def validate_inputs(self):
