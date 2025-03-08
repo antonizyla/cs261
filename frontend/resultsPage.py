@@ -258,10 +258,16 @@ class ResultsWidget(QWidget):
         max_wait_label = QLabel("Max Wait Time")
         max_queue_label = QLabel("Max Queue Length")
 
+
+        instruction = QLabel("When the results are generated, hover over the bars to see the exact values."
+        "\nRight-click on the annotation to remove it (Secondary Click on MacOS).")
+        
         # Add the labels to the grid layout
         form_layout.addWidget(avg_wait_label)
         form_layout.addWidget(max_wait_label)
         form_layout.addWidget(max_queue_label)
+
+        form_layout.addWidget(instruction)
 
         # Add the grid layout to the form layout
         form_layout.addRow(form_layout)
@@ -497,12 +503,12 @@ class ResultsWidget(QWidget):
 
         # Categories to display
         categories = ['Avg Wait', 'Max Wait', 'Max Queue']
-        x = np.arange(len(categories))  # Positions for the three categories
-        width = 0.8 / num_configs  # Bar width adjusted for the number of configurations
+        x = np.arange(len(categories))  # Base positions for the three categories
+        width = 0.8 / self.number  # Bar width adjusted for the number of configurations
 
         fig, ax = plt.subplots(figsize=(4, 6))
         configurations = configurations[:self.number]
-        bars = []  # Store bars for cursor interaction
+        bars = []  # Store the BarContainer objects for later use
 
         for i, config in enumerate(configurations):
             # Retrieve values for the given road (using index)
@@ -529,21 +535,34 @@ class ResultsWidget(QWidget):
 
             values = [max_wait_val, avg_wait_val, max_queue_val]
             offset = -0.4 + width / 2 + i * width
-            bars.append(ax.bar(x + offset, values, width=width, label=config))
+            bar_container = ax.bar(x + offset, values, width=width, label=config)
+            bars.append(bar_container)
 
-        # Enable hovering over bars
         cursor = mplcursors.cursor(bars, hover=True)
+
         @cursor.connect("add")
         def on_hover(sel):
             sel.annotation.set_text(f'{sel.artist.get_label()}\n{sel.target[1]:.2f}')
-            sel.annotation.get_bbox_patch().set(fc="white", alpha=0.7)  # Tooltip styling
+            sel.annotation.get_bbox_patch().set(fc="white", alpha=0.7)
 
         ax.set_ylabel('Values')
         ax.set_title(f'{road_name.replace("_", " ").title()} Comparison')
-        ax.set_xticks(x)
-        ax.set_xticklabels(categories)
         ax.legend()
+
+        # Compute group centers from the drawn bars so that category labels sit in the middle of the group
+        group_centers = []
+        for j in range(len(categories)):
+            x_positions = []
+            for bar_container in bars:
+                # Each container holds a Rectangle for the j-th category
+                bar = bar_container[j]
+                x_positions.append(bar.get_x() + bar.get_width() / 2)
+            group_center = np.mean(x_positions)
+            group_centers.append(group_center)
+        ax.set_xticks(group_centers)
+        ax.set_xticklabels(categories)
 
         canvas_obj = FigureCanvas(fig)
         setattr(self, f"{base_name}_chart", canvas_obj)
         getattr(self, f"{base_name}_form_layout").addRow(canvas_obj)
+
