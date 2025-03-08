@@ -35,8 +35,7 @@ class CopyPaste():
 class InputAndParameterWidget(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
-        # Check if there are any Alternate configs added
-        # Keeps a count of how many there are
+        
         self.check_alternate = 0
         
         # Button to show alt road inputs
@@ -54,15 +53,11 @@ class InputAndParameterWidget(QWidget):
         self.submit_button = QPushButton("Start Simulation")
         self.submit_button.setObjectName("submit_button")
         self.submit_button.clicked.connect(self.update_global_inputs_backend)
-
-        self.button = QPushButton("Count Junctions")
-        self.button.clicked.connect(self.junctions_list.count_junctions) #This is temporary, will be removed later
         
         self.update_layout()
         
         # Load and apply the stylesheet
         self.apply_stylesheet()
-        print(self.width())
 
     def apply_stylesheet(self):
         """Loads and applies the stylesheet."""
@@ -80,7 +75,6 @@ class InputAndParameterWidget(QWidget):
         layout.addWidget(self.add_junction_button, 1, 0, 1, 1)
         layout.addWidget(self.remove_junction_button, 1, 1, 1, 1)
         layout.addWidget(self.submit_button, 2, 0, 1, -1)
-        layout.addWidget(self.button, 3, 0, 1, -1)
         self.setLayout(layout)
     
     def add_junction(self):
@@ -152,7 +146,6 @@ class JunctionList(QScrollArea):
         layout.invalidate()
     
     def count_junctions(self):
-        print(len(self.junctions))
         return len(self.junctions)
     
     def validate_inputs(self):

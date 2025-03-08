@@ -73,7 +73,7 @@ class Lane:
 
         while timer > 0:  # Choose more appropriate constants/make dependent on number of lanes
             # if len(self.current_vehicles) > 0 and self.current_vehicles[0].getDirectionTo in directions:
-            if len(self.current_vehicles) > 0 and contains(directions, self.current_vehicles[0].getDirectionTo):
+            if len(self.current_vehicles) > 0 and self.current_vehicles[0].getDirectionTo() in directions:
                 if first_flag:  # First car will take a while to clear, but the cars after it will take less time since they can start moving while the one in front of it is in the junction
                     if self.current_vehicles[0].getDirectionTo() == left_of(
                             self.current_vehicles[0].getDirectionFrom()):

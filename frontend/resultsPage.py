@@ -12,6 +12,10 @@ from io import BytesIO
 import os
 import mplcursors
 import numpy as np
+import numpy as np
+import matplotlib.pyplot as plt
+import mplcursors
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 
 # Sample results
 overall = 50
@@ -39,6 +43,26 @@ alt_road_results = {
     "alt_west_traffic_flow": {},
     "alt_east_traffic_flow": {},
     "alt_north_traffic_flow": {}
+}
+
+alt1_road_results = {
+    "alt1_south_traffic_flow": {},
+    "alt1_west_traffic_flow": {},
+    "alt1_east_traffic_flow": {},
+    "alt1_north_traffic_flow": {}
+}
+
+alt2_road_results = {
+    "alt2_south_traffic_flow": {},
+    "alt2_west_traffic_flow": {},
+    "alt2_east_traffic_flow": {},
+    "alt2_north_traffic_flow": {}
+}
+alt3_road_results = {
+    "alt3_south_traffic_flow": {},
+    "alt3_west_traffic_flow": {},
+    "alt3_east_traffic_flow": {},
+    "alt3_north_traffic_flow": {}
 }
 
 overallScore = 66
@@ -169,7 +193,6 @@ class ResultsWidget(QWidget):
 
         # Set the layout of the main widget
         layout = QVBoxLayout()
-        #layout.addLayout(self.overall_scores_layout)
         layout.addLayout(main_layout)
         self.setLayout(layout)
 
@@ -186,78 +209,6 @@ class ResultsWidget(QWidget):
         except FileNotFoundError:
             print("Stylesheet file not found. Using default styles.")
 
-    # def create_road_group(self, layout, road_name, row, col):
-    #     """Creates a collapsible group box for each road's results and places it in the grid."""
-    #     group_box = QGroupBox()
-    #     group_box.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)  # Makes all groups uniform in height
-    #     form_layout = QFormLayout()
-    #     form_layout.setContentsMargins(5, 5, 5, 5)  # Minimize padding inside groups
-
-    #     # Create a button to toggle visibility of the form layout
-    #     toggle_button = QToolButton()
-    #     toggle_button.setText(road_name + " ▼")  # Default is to show the group
-    #     toggle_button.setCheckable(True)
-    #     toggle_button.setChecked(True)
-    #     toggle_button.clicked.connect(lambda: self.toggle_group(toggle_button, group_box, road_name))
-
-    #     # Add the button to a horizontal layout
-    #     header_layout = QHBoxLayout()
-    #     header_layout.addWidget(toggle_button)
-    #     header_layout.setContentsMargins(0, 0, 0, 0)
-    #     header_layout.addStretch()
-
-    #     # Labels for results (default placeholders)
-    #     avg_wait_label = QLabel("Average Wait Time: -")
-    #     max_wait_label = QLabel("Max Wait Time: -")
-    #     max_queue_label = QLabel("Max Queue Length: -")
-
-    #     alt_avg_wait_label = QLabel("Alternate Average Wait Time: -")
-    #     alt_max_wait_label = QLabel("Alternate Max Wait Time: -")
-    #     alt_max_queue_label = QLabel("AlternateMax Queue Length: -")
-
-    #     # Create a grid layout for the labels
-    #     labels_layout = QGridLayout()
-
-    #     # Add the labels to the grid layout
-    #     labels_layout.addWidget(avg_wait_label, 0, 0)
-    #     labels_layout.addWidget(max_wait_label, 1, 0)
-    #     labels_layout.addWidget(max_queue_label, 2, 0)
-
-    #     labels_layout.addWidget(alt_avg_wait_label, 0, 1)
-    #     labels_layout.addWidget(alt_max_wait_label, 1, 1)
-    #     labels_layout.addWidget(alt_max_queue_label, 2, 1)
-
-    #     # Add the grid layout to the form layout
-    #     form_layout.addRow(labels_layout)
-
-    #     # Store reference for updating results later
-    #     base_name = road_name.lower().replace(' ', '_')
-    #     setattr(self, f"{base_name}_chart", None)
-    #     setattr(self, f"{base_name}_avg_wait_label", avg_wait_label)
-    #     setattr(self, f"{base_name}_max_wait_label", max_wait_label)
-    #     setattr(self, f"{base_name}_max_queue_label", max_queue_label)
-    #     setattr(self, f"{base_name}_form_layout", form_layout)
-
-    #     setattr(self, f"{base_name}_alt_avg_wait_label", alt_avg_wait_label)
-    #     setattr(self, f"{base_name}_alt_max_wait_label", alt_max_wait_label)
-    #     setattr(self, f"{base_name}_alt_max_queue_label", alt_max_queue_label)
-    #     setattr(self, f"{base_name}_form_layout", form_layout)
-
-    #     # Set layout for the group box
-    #     group_box.setLayout(form_layout)
-
-    #     # Set header layout at the top of the group box
-    #     header_widget = QWidget()
-    #     header_widget.setLayout(header_layout)
-
-    #     # Add header layout above the form layout
-    #     group_box_layout = QVBoxLayout()
-    #     group_box_layout.setContentsMargins(0, 0, 0, 0)  # Reduce outer margins
-    #     group_box_layout.addWidget(header_widget)
-    #     group_box_layout.addWidget(group_box)
-
-    #     # Add the group box to the grid layout at the specified position
-    #     layout.addLayout(group_box_layout, row, col)
 
     def create_road_group(self, layout, road_name, row, col):
         # Create the group container with an empty form layout (no result labels)
@@ -297,6 +248,29 @@ class ResultsWidget(QWidget):
         group_box_layout.addWidget(group_box)
         layout.addLayout(group_box_layout, row, col)
 
+        placeholder = QLabel("Results will be displayed here as charts. The three categories will be:")
+        placeholder.setAlignment(Qt.AlignCenter)
+        placeholder.setStyleSheet("font-size: 16px")
+        form_layout.addRow(placeholder)
+
+        # Labels for results (default placeholders)
+        avg_wait_label = QLabel("Average Wait Time")
+        max_wait_label = QLabel("Max Wait Time")
+        max_queue_label = QLabel("Max Queue Length")
+
+        # Add the labels to the grid layout
+        form_layout.addWidget(avg_wait_label)
+        form_layout.addWidget(max_wait_label)
+        form_layout.addWidget(max_queue_label)
+
+        # Add the grid layout to the form layout
+        form_layout.addRow(form_layout)
+
+  
+        setattr(self, f"{base_name}_avg_wait_label", avg_wait_label)
+        setattr(self, f"{base_name}_max_wait_label", max_wait_label)
+        setattr(self, f"{base_name}_max_queue_label", max_queue_label)
+
 
     def toggle_group(self, toggle_button, group_box, road_name):
         """ Toggles the visibility of the group box content. """
@@ -309,6 +283,16 @@ class ResultsWidget(QWidget):
 
     def get_results(self):
         self.results_generated = True
+
+        for road_name in ["south_traffic_flow", "north_traffic_flow", "west_traffic_flow", "east_traffic_flow"]:
+            base_name = road_name.lower().replace(' ', '_')
+            form_layout = getattr(self, f"{base_name}_form_layout")
+            # Remove any QLabel widget (e.g., the placeholder) from the form layout
+            for i in reversed(range(form_layout.count())):
+                widget = form_layout.itemAt(i).widget()
+                if widget and widget.__class__.__name__ == "QLabel":
+                    form_layout.removeWidget(widget)
+                    widget.deleteLater()
 
         print(f"Number of junctions is : {self.number}")
         # Create overall score labels based on the number of junctions
@@ -423,26 +407,51 @@ class ResultsWidget(QWidget):
                 # Section Title
                 c.setFont("Helvetica-Bold", 14)
                 c.drawString(40, y_position, section_title)
-                y_position -= 30  # Increased spacing
+                y_position -= 10  # Increased spacing
 
-                # Main and Alternative Configuration in two columns
+                # Header for Main and Alternative configurations
                 c.setFont("Helvetica-Bold", 12)
-                c.drawString(40, y_position, "Main Configuration:")
-                c.drawString(300, y_position, "Alternative Configuration:")
+                
                 y_position -= 20
 
-                c.setFont("Helvetica", 11)
-                c.drawString(60, y_position, f"- Average Wait Time: {road_results[road_name]['average_wait']} sec")
-                c.drawString(320, y_position, f"- Average Wait Time: {alt_road_results[road_name]['average_wait']} sec")
-                y_position -= 20
+                # Print result sets for each junction
+                for j in range(self.number):
+                    c.setFont("Helvetica", 11)
+                    match j + 1:
+                        case 1:
+                            result = (
+                                f"Avg Wait: {self.average_wait[j]} sec, "
+                                f"Max Wait: {self.max_wait_time[j]} sec, "
+                                f"Max Queue: {self.max_queue_length[j]} cars"
+                            )
+                        case 2:
+                            result = (
+                                f"Avg Wait: {self.alt_avg_wait[j]} sec, "
+                                f"Max Wait: {self.alt_max_wait_time[j]} sec, "
+                                f"Max Queue: {self.alt_max_queue_length[j]} cars"
+                            )
+                        case 3:
+                            result = (
+                                f"Avg Wait: {self.alt1_avg_wait[j]} sec, "
+                                f"Max Wait: {self.alt1_max_wait_time[j]} sec, "
+                                f"Max Queue: {self.alt1_max_queue_length[j]} cars"
+                            )
+                        case 4:
+                            result = (
+                                f"Avg Wait: {self.alt2_avg_wait[j]} sec, "
+                                f"Max Wait: {self.alt2_max_wait_time[j]} sec, "
+                                f"Max Queue: {self.alt2_max_queue_length[j]} cars"
+                            )
+                        case 5:
+                            result = (
+                                f"Avg Wait: {self.alt3_avg_wait[j]} sec, "
+                                f"Max Wait: {self.alt3_max_wait_time[j]} sec, "
+                                f"Max Queue: {self.alt3_max_queue_length[j]} cars"
+                            )
+                    c.drawString(40, y_position, f"Junction {j + 1}: {result}")
+                    y_position -= 20  # Decrement y_position after each result
 
-                c.drawString(60, y_position, f"- Max Wait Time: {road_results[road_name]['max_wait_times']} sec")
-                c.drawString(320, y_position, f"- Max Wait Time: {alt_road_results[road_name]['max_wait_times']} sec")
-                y_position -= 20
-
-                c.drawString(60, y_position, f"- Max Queue Length: {road_results[road_name]['max_queue_length']} cars")
-                c.drawString(320, y_position, f"- Max Queue Length: {alt_road_results[road_name]['max_queue_length']} cars")
-                y_position -= 30  # Extra spacing before chart
+                y_position -= 10  # Adjust spacing after each junction's output
 
                 # Add the chart directly to the PDF without saving it
                 chart = getattr(self, f"{base_name}_chart", None)
@@ -454,7 +463,7 @@ class ResultsWidget(QWidget):
                     # Ensure enough space before adding an image
                     if y_position < 250:
                         c.showPage()
-                        y_position = height - 100
+                        y_position = height - 60
 
                     # Maintain original size of the chart but scale it down
                     img_width, img_height = chart.figure.get_size_inches() * chart.figure.dpi
@@ -462,7 +471,7 @@ class ResultsWidget(QWidget):
                     scaled_width = img_width * scale_factor
                     scaled_height = img_height * scale_factor
                     c.drawImage(ImageReader(img_buffer), 15, y_position - scaled_height, width=scaled_width, height=scaled_height)
-                    y_position -= scaled_height + 35  #Increased spacing below the image
+                    y_position -= scaled_height + 20  #Increased spacing below the image
 
                 y_position -= 15  # Extra space between sections
 
@@ -476,24 +485,25 @@ class ResultsWidget(QWidget):
         else:
             QMessageBox.critical(self, "Results Yet to be Generated", "Please generate the results by pressing the Generate Results button")
             return False
-       
+
     def update_chart(self, road_name, index):
         base_name = road_name.lower().replace(' ', '_')
-        if getattr(self, f"{base_name}_chart"):
+        if getattr(self, f"{base_name}_chart", None):
             getattr(self, f"{base_name}_chart").deleteLater()
 
-        # Configurations: Main, Alt, Alt1, Alt2 and Alt3
+        # Configurations: Main, Alt, Alt1, Alt2, and Alt3
         configurations = ["Main", "Alt", "Alt1", "Alt2", "Alt3"]
         num_configs = len(configurations)
 
         # Categories to display
-        categories = [ 'Avg Wait', 'Max Wait', 'Max Queue']
-        x = np.arange(len(categories))  # positions for the three categories
-        width = 0.8 / num_configs  # bar width adjusted for the number of configurations
+        categories = ['Avg Wait', 'Max Wait', 'Max Queue']
+        x = np.arange(len(categories))  # Positions for the three categories
+        width = 0.8 / num_configs  # Bar width adjusted for the number of configurations
 
         fig, ax = plt.subplots(figsize=(4, 6))
-        all_configurations = ["Main", "Alt", "Alt1", "Alt2", "Alt3"]
-        configurations = all_configurations[:self.number]
+        configurations = configurations[:self.number]
+        bars = []  # Store bars for cursor interaction
+
         for i, config in enumerate(configurations):
             # Retrieve values for the given road (using index)
             if config == "Main":
@@ -518,8 +528,15 @@ class ResultsWidget(QWidget):
                 max_queue_val = self.alt3_max_queue_length[index]
 
             values = [max_wait_val, avg_wait_val, max_queue_val]
-            offset = -0.4 + width/2 + i * width
-            ax.bar(x + offset, values, width=width, label=config)
+            offset = -0.4 + width / 2 + i * width
+            bars.append(ax.bar(x + offset, values, width=width, label=config))
+
+        # Enable hovering over bars
+        cursor = mplcursors.cursor(bars, hover=True)
+        @cursor.connect("add")
+        def on_hover(sel):
+            sel.annotation.set_text(f'{sel.artist.get_label()}\n{sel.target[1]:.2f}')
+            sel.annotation.get_bbox_patch().set(fc="white", alpha=0.7)  # Tooltip styling
 
         ax.set_ylabel('Values')
         ax.set_title(f'{road_name.replace("_", " ").title()} Comparison')
@@ -530,5 +547,3 @@ class ResultsWidget(QWidget):
         canvas_obj = FigureCanvas(fig)
         setattr(self, f"{base_name}_chart", canvas_obj)
         getattr(self, f"{base_name}_form_layout").addRow(canvas_obj)
-
-    

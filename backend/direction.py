@@ -146,6 +146,50 @@ class Direction:
         # print("before sticky loop")
 
         # Enqueue cars / add them into the lanes from each pool
+        self.enqueue_to_lanes(spaces_in_lanes)
+        
+        # print("completed sticky loop")
+        # Calculating max length
+        max_lane = 0
+        for lane in self.lanes:
+            if lane.get_num_vehicles() > max_lane:
+                max_lane = lane.get_num_vehicles()
+
+        if max_lane + math.ceil(sum(self.pools) / len(self.lanes)) > self.max_length:
+            self.max_length = max_lane + math.ceil(sum(self.pools) / len(self.lanes))
+
+    def add_to_pools(self, seconds):
+        self.residuals[0] += (seconds * self.flows.get_flow_left() / 3600)
+        self.pools[0] += math.floor(self.residuals[0])
+        self.residuals[0] -= math.floor(self.residuals[0])
+
+        self.residuals[1] += (seconds * self.flows.get_flow_ahead() / 3600)
+        self.pools[1] += math.floor(self.residuals[1])
+        self.residuals[1] -= math.floor(self.residuals[1])
+
+        self.residuals[2] += (seconds * self.flows.get_flow_right() / 3600)
+        self.pools[2] += math.floor(self.residuals[2])
+        self.residuals[2] -= math.floor(self.residuals[2])
+
+        self.bus_residuals[0] += (seconds * self.flows.get_flow_bus_left() / 3600)
+        self.pools[0] += math.floor(self.bus_residuals[0])
+        self.bus_residuals[0] -= math.floor(self.bus_residuals[0])
+
+        self.bus_residuals[1] += (seconds * self.flows.get_flow_bus_ahead() / 3600)
+        self.pools[1] += math.floor(self.bus_residuals[1])
+        self.bus_residuals[1] -= math.floor(self.bus_residuals[1])
+
+        self.bus_residuals[2] += (seconds * self.flows.get_flow_bus_right() / 3600)
+        self.pools[2] += math.floor(self.bus_residuals[2])
+        self.bus_residuals[2] -= math.floor(self.bus_residuals[2])
+
+        spaces_in_lanes = []
+        for lane in self.lanes:
+            spaces_in_lanes.append(lane.get_no_available_spaces())
+        
+        self.enqueue_to_lanes(spaces_in_lanes)
+
+    def enqueue_to_lanes(self, spaces_in_lanes):
         while sum(spaces_in_lanes) != 0:  # Include condition for if there aren't any more cars to add
             index = 0
             emptiest_lane = spaces_in_lanes[0]  # spaces is the array of number of available spaces in each lane
@@ -277,41 +321,7 @@ class Direction:
                         self.pools[2] -= 1
                 else:
                     spaces_in_lanes[index] = 0
-        # print("completed sticky loop")
-        # Calculating max length
-        max_lane = 0
-        for lane in self.lanes:
-            if lane.get_num_vehicles() > max_lane:
-                max_lane = lane.get_num_vehicles()
-
-        if max_lane + math.ceil(sum(self.pools) / len(self.lanes)) > self.max_length:
-            self.max_length = max_lane + math.ceil(sum(self.pools) / len(self.lanes))
-
-    def add_to_pools(self, seconds):
-        self.residuals[0] += (seconds * self.flows.get_flow_left() / 3600)
-        self.pools[0] += math.floor(self.residuals[0])
-        self.residuals[0] -= math.floor(self.residuals[0])
-
-        self.residuals[1] += (seconds * self.flows.get_flow_ahead() / 3600)
-        self.pools[1] += math.floor(self.residuals[1])
-        self.residuals[1] -= math.floor(self.residuals[1])
-
-        self.residuals[2] += (seconds * self.flows.get_flow_right() / 3600)
-        self.pools[2] += math.floor(self.residuals[2])
-        self.residuals[2] -= math.floor(self.residuals[2])
-
-        self.bus_residuals[0] += (seconds * self.flows.get_flow_bus_left() / 3600)
-        self.pools[0] += math.floor(self.bus_residuals[0])
-        self.bus_residuals[0] -= math.floor(self.bus_residuals[0])
-
-        self.bus_residuals[1] += (seconds * self.flows.get_flow_bus_ahead() / 3600)
-        self.pools[1] += math.floor(self.bus_residuals[1])
-        self.bus_residuals[1] -= math.floor(self.bus_residuals[1])
-
-        self.bus_residuals[2] += (seconds * self.flows.get_flow_bus_right() / 3600)
-        self.pools[2] += math.floor(self.bus_residuals[2])
-        self.bus_residuals[2] -= math.floor(self.bus_residuals[2])
-
+    
     def get_total_vehicles(self):
         return sum(self.pools) + sum(self.pools_bus) + sum([lane.get_num_vehicles() for lane in self.lanes])
 
