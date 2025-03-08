@@ -244,7 +244,7 @@ class JunctionInputAndParameterWidget(QGroupBox):
         self.visualisation_checkbox.stateChanged.connect(self.toggle_visualisation)
         layout.addWidget(self.visualisation_checkbox, 4, 0, 1, -1)
 
-        self.copy_button = QPushButton("copy")
+        self.copy_button = QPushButton("Copy")
         self.copy_button.clicked.connect(self.copy_data)
         layout.addWidget(self.copy_button, 5, 0)
 

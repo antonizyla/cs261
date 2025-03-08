@@ -268,10 +268,6 @@ class ResultsWidget(QWidget):
         form_layout.addWidget(max_queue_label)
 
         form_layout.addWidget(instruction)
-
-        # Add the grid layout to the form layout
-        form_layout.addRow(form_layout)
-
   
         setattr(self, f"{base_name}_avg_wait_label", avg_wait_label)
         setattr(self, f"{base_name}_max_wait_label", max_wait_label)
