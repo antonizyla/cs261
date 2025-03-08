@@ -248,7 +248,8 @@ class ResultsWidget(QWidget):
         group_box_layout.addWidget(group_box)
         layout.addLayout(group_box_layout, row, col)
 
-        placeholder = QLabel("Results will be displayed here as charts. The three categories will be:")
+        placeholder = QLabel("Click the 'Generate Results' button to get results. "
+        "\nResults will be displayed here as charts. The three categories will be:")
         placeholder.setAlignment(Qt.AlignCenter)
         placeholder.setStyleSheet("font-size: 16px")
         form_layout.addRow(placeholder)
@@ -398,12 +399,21 @@ class ResultsWidget(QWidget):
             c.setFont("Helvetica-Bold", 14)
             c.drawString(40, height - 36, "Simulation Results Report")
             c.setFont("Helvetica", 12)
-            c.drawString(40, height - 80, "Below are the results of the simulation.")
-            y_position = height - 120
+            c.drawString(40, height - 55, "Below are the results of the simulation.")
+            y_position = height - 75
 
-            for road_name in ["south_traffic_flow", "north_traffic_flow", "west_traffic_flow", "east_traffic_flow"]:
-            
-                base_name = road_name.lower().replace('_', '_')
+            c.setFont("Helvetica-Bold", 12)
+            c.drawString(40, y_position, "Overall Scores:")
+            y_position -= 20
+            for i in range(self.number):
+                c.setFont("Helvetica", 11)
+                c.drawString(40, y_position, f"Junction {i+1} Overall Score: {overallScore}")
+                y_position -= 15
+            y_position -= 10
+
+            directions = ["south_traffic_flow", "north_traffic_flow", "west_traffic_flow", "east_traffic_flow"]
+            for idx, road_name in enumerate(directions):
+                base_name = road_name  # The direction index corresponds to idx in the result arrays.
                 section_title = road_name.replace('_', ' ').title() + " Results"
 
                 # Section Title
@@ -413,44 +423,45 @@ class ResultsWidget(QWidget):
 
                 # Header for Main and Alternative configurations
                 c.setFont("Helvetica-Bold", 12)
-                
                 y_position -= 20
 
-                # Print result sets for each junction
+                # Print result sets for each junction configuration (using j+1)
                 for j in range(self.number):
+                    config_num = j + 1
                     c.setFont("Helvetica", 11)
-                    match j + 1:
-                        case 1:
-                            result = (
-                                f"Avg Wait: {self.average_wait[j]} sec, "
-                                f"Max Wait: {self.max_wait_time[j]} sec, "
-                                f"Max Queue: {self.max_queue_length[j]} cars"
-                            )
-                        case 2:
-                            result = (
-                                f"Avg Wait: {self.alt_avg_wait[j]} sec, "
-                                f"Max Wait: {self.alt_max_wait_time[j]} sec, "
-                                f"Max Queue: {self.alt_max_queue_length[j]} cars"
-                            )
-                        case 3:
-                            result = (
-                                f"Avg Wait: {self.alt1_avg_wait[j]} sec, "
-                                f"Max Wait: {self.alt1_max_wait_time[j]} sec, "
-                                f"Max Queue: {self.alt1_max_queue_length[j]} cars"
-                            )
-                        case 4:
-                            result = (
-                                f"Avg Wait: {self.alt2_avg_wait[j]} sec, "
-                                f"Max Wait: {self.alt2_max_wait_time[j]} sec, "
-                                f"Max Queue: {self.alt2_max_queue_length[j]} cars"
-                            )
-                        case 5:
-                            result = (
-                                f"Avg Wait: {self.alt3_avg_wait[j]} sec, "
-                                f"Max Wait: {self.alt3_max_wait_time[j]} sec, "
-                                f"Max Queue: {self.alt3_max_queue_length[j]} cars"
-                            )
-                    c.drawString(40, y_position, f"Junction {j + 1}: {result}")
+                    if config_num == 1:
+                        result = (
+                            f"Avg Wait: {self.average_wait[idx]} sec, "
+                            f"Max Wait: {self.max_wait_time[idx]} sec, "
+                            f"Max Queue: {self.max_queue_length[idx]} cars"
+                        )
+                    elif config_num == 2:
+                        result = (
+                            f"Avg Wait: {self.alt_avg_wait[idx]} sec, "
+                            f"Max Wait: {self.alt_max_wait_time[idx]} sec, "
+                            f"Max Queue: {self.alt_max_queue_length[idx]} cars"
+                        )
+                    elif config_num == 3:
+                        result = (
+                            f"Avg Wait: {self.alt1_avg_wait[idx]} sec, "
+                            f"Max Wait: {self.alt1_max_wait_time[idx]} sec, "
+                            f"Max Queue: {self.alt1_max_queue_length[idx]} cars"
+                        )
+                    elif config_num == 4:
+                        result = (
+                            f"Avg Wait: {self.alt2_avg_wait[idx]} sec, "
+                            f"Max Wait: {self.alt2_max_wait_time[idx]} sec, "
+                            f"Max Queue: {self.alt2_max_queue_length[idx]} cars"
+                        )
+                    elif config_num == 5:
+                        result = (
+                            f"Avg Wait: {self.alt3_avg_wait[idx]} sec, "
+                            f"Max Wait: {self.alt3_max_wait_time[idx]} sec, "
+                            f"Max Queue: {self.alt3_max_queue_length[idx]} cars"
+                        )
+                    else:
+                        result = "No data available"
+                    c.drawString(40, y_position, f"Junction {config_num}: {result}")
                     y_position -= 20  # Decrement y_position after each result
 
                 y_position -= 10  # Adjust spacing after each junction's output
@@ -494,7 +505,7 @@ class ResultsWidget(QWidget):
             getattr(self, f"{base_name}_chart").deleteLater()
 
         # Configurations: Main, Alt, Alt1, Alt2, and Alt3
-        configurations = ["Main", "Alt", "Alt1", "Alt2", "Alt3"]
+        configurations = ["Junction 1", "Junction 2", "Junction 3", "Junction 4", "Junction 5"]
         num_configs = len(configurations)
 
         # Categories to display
@@ -508,28 +519,28 @@ class ResultsWidget(QWidget):
 
         for i, config in enumerate(configurations):
             # Retrieve values for the given road (using index)
-            if config == "Main":
+            if config == "Junction 1":
                 avg_wait_val = self.average_wait[index]
                 max_wait_val = self.max_wait_time[index]
                 max_queue_val = self.max_queue_length[index]
-            elif config == "Alt":
+            elif config == "Junction 2":
                 avg_wait_val = self.alt_avg_wait[index]
                 max_wait_val = self.alt_max_wait_time[index]
                 max_queue_val = self.alt_max_queue_length[index]
-            elif config == "Alt1":
+            elif config == "Junction 3":
                 avg_wait_val = self.alt1_avg_wait[index]
                 max_wait_val = self.alt1_max_wait_time[index]
                 max_queue_val = self.alt1_max_queue_length[index]
-            elif config == "Alt2":
+            elif config == "Junction 4":
                 avg_wait_val = self.alt2_avg_wait[index]
                 max_wait_val = self.alt2_max_wait_time[index]
                 max_queue_val = self.alt2_max_queue_length[index]
-            elif config == "Alt3":
+            elif config == "Junction 5":
                 avg_wait_val = self.alt3_avg_wait[index]
                 max_wait_val = self.alt3_max_wait_time[index]
                 max_queue_val = self.alt3_max_queue_length[index]
 
-            values = [max_wait_val, avg_wait_val, max_queue_val]
+            values = [avg_wait_val, max_wait_val, max_queue_val]
             offset = -0.4 + width / 2 + i * width
             bar_container = ax.bar(x + offset, values, width=width, label=config)
             bars.append(bar_container)

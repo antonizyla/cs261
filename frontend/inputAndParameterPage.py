@@ -79,6 +79,9 @@ class InputAndParameterWidget(QWidget):
         self.setLayout(layout)
     
     def add_junction(self):
+        if self.junctions_list.count_junctions() >= 5:
+            QMessageBox.warning(self, "Maximum Reached", "Maximum of 5 junctions reached.")
+            return
         self.check_alternate += 1
         self.junctions_list.add_junction()
     
