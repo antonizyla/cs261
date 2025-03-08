@@ -456,7 +456,6 @@ class RoadGroupWidget(QGroupBox):
         
         self.road_direction = road_source
         self.setObjectName("road_group")
-        self.update_visualisation = update_visualisation
         
         """Creates a group box for each road section with input fields."""
         form_layout = QFormLayout()
