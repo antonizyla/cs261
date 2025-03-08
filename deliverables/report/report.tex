@@ -120,6 +120,8 @@ it will give an insight into the algorithms and formulas used to calculate the t
         This layout was achieved by using the PyQT library to create the boxes using QGroupBox widgets.
 
     \subsection{Results Page}
+        
+        The Results Page initially displays a divided design, a 2x2 grid where each cell is planned to contain result information about the traffic flow for each direction. 
 
     \subsection{PDF genereation}
 
@@ -141,30 +143,24 @@ it will give an insight into the algorithms and formulas used to calculate the t
         \item As the user is setting up their junction configuration, if the user does not set a suitable number of lanes, when starting the simulation an error message will display. The error message will prompt the user to change the number of lanes on the exit that has an inconsistent number of lanes and incoming traffic. The error message should tell the user which junction configuration is causing an issue and which direction of traffic flow needs to be changed.
     \end{itemize}
 
-    \subsubsection{Testing}
-    In order to check whether our input checking and error messages were prompted at the correct situation, we were required to set up some tests.
-    \begin{itemize}
-        \item Input Checking
-        \begin{itemize}
-            \item Boundary Testing
-            \begin{itemize}
-                \item Tested inputs on both the lower and upper bounds for the valid ranges:
-                \begin{itemize}
-                    \item For VpH, tested the range 0-999 to ensure values within this range are accepted.
-                    \item For the number of lanes, tested the range 1-5 to ensure values within this range are accepted.
-                    \item For priority levels, tested the range 0-4 to ensure values within this range are accepted.
-                    \item For pedestrian crossing time and number of requests per hour, tested the range 1-999 to ensure values within this range are accepted.
-                \end{itemize}
-            \end{itemize}
-            \item Erroneous Testing
-            \begin{itemize}
-                \item Tested with non-integer inputs (e.g., strings like "abc" or decimals like 2.5) to ensure only integers are accepted.
-                \item Tested with invalid characters (e.g., special characters like "@\#\$") and blank spaces to ensure they are rejected.
-                \item Tested values just outside the allowed range (e.g., -1 for VpH, 0 for number of lanes, and 6 for priority) to ensure they are not accepted.
-            \end{itemize}
-        \end{itemize}
-    
-        \item Error Messages
+    \subsection{Styling}
+
+\section{Backend}
+
+    \subsection{Data Classes}
+
+    \subsection{Simulation}
+
+    \subsection{Results}
+
+\section{Testing}
+
+    \subsection{Unit Testing}
+
+    \subsection{User Testing}
+
+    \subsection{Error Handling Testing}
+
         \begin{itemize}
             \item Precondition Testing
             \begin{itemize}
@@ -194,25 +190,27 @@ it will give an insight into the algorithms and formulas used to calculate the t
                 \end{itemize}
             \end{itemize}
         \end{itemize}
-    \end{itemize}
 
-    \subsection{Styling}
+    \subsection{Input Checking}
 
-\section{Backend}
-
-    \subsection{Data Classes}
-
-    \subsection{Simulation}
-
-    \subsection{Results}
-
-\section{Testing}
-
-    \subsection{Unit Testing}
-
-    \subsection{User Testing}
-
-    \subsection{Error Handling Testing}
+        \begin{itemize}
+            \item Boundary Testing
+            \begin{itemize}
+                \item Tested inputs on both the lower and upper bounds for the valid ranges:
+                \begin{itemize}
+                    \item For VpH, tested the range 0-999 to ensure values within this range are accepted.
+                    \item For the number of lanes, tested the range 1-5 to ensure values within this range are accepted.
+                    \item For priority levels, tested the range 0-4 to ensure values within this range are accepted.
+                    \item For pedestrian crossing time and number of requests per hour, tested the range 1-999 to ensure values within this range are accepted.
+                \end{itemize}
+            \end{itemize}
+            \item Erroneous Testing
+            \begin{itemize}
+                \item Tested with non-integer inputs (e.g., strings like "abc" or decimals like 2.5) to ensure only integers are accepted.
+                \item Tested with invalid characters (e.g., special characters like "@\#\$") and blank spaces to ensure they are rejected.
+                \item Tested values just outside the allowed range (e.g., -1 for VpH, 0 for number of lanes, and 6 for priority) to ensure they are not accepted.
+            \end{itemize}
+        \end{itemize}    
 
 \section{Product Evaluation}
 
