@@ -94,7 +94,7 @@ it will give an insight into the algorithms and formulas used to calculate the t
             \label{fig:homepage}
         \end{figure}
     
-    \subsection{Input and Validation}
+    \subsection{Input and Validation Page}
 
         The Input Page provides a structured interface for configuring traffic flow conditions. The page intially consists of a parent junction box, labelled "Junction 1", which contains child boxes for 
         each direction of traffic flow. Each child box contains input fields for the user to input the desired parameters for the simulation. The image below shows the parent junction box and the child boxes for
@@ -119,13 +119,82 @@ it will give an insight into the algorithms and formulas used to calculate the t
 
         This layout was achieved by using the PyQT library to create the boxes using QGroupBox widgets.
 
-    \subsection{Simulation and Visualisation Page}
-
     \subsection{Results Page}
 
     \subsection{PDF genereation}
 
     \subsection{Error Handling}
+    Within our application, there are many scenarios which require the user to input certain parameters or complete steps in a specific order. The way we handled these problems as a team were by checking and verifying the user's inputs by setting up certain constraints on the input boxes and by displaying error messages with the necessary steps to fix the issue on them.
+    \subsubsection{Input Checking}
+    On the Input and Parameter page we ensured that the user entered the correct inputs by having certain checks in place:
+    \begin{itemize}
+        \item When the user enters the VpH exiting each exit, we ensured that the input was an integer, greater or equal to 0, and had an upperbound of 999 VpH.
+        \item When the user enters the number of lanes for each exit, the number had to be greater than 0, had an upper bound of 5, and was always an integer.
+        \item For the Priority, we made sure that the user could only have a priority that was greater than or equal to 0, at most 4, and was an integer.
+        \item If the user had chosen to add a pedestrian crossing, we made sure that the time it takes for people to cross and the number of crossing requests per hour were both greater than 0, less than 1000, and always an integer.
+    \end{itemize}
+    \subsubsection{Error Messages}
+    There are features in our application that require the user to complete steps in a certain order. If the prerequirement is not met for a certain feature, an error message will be displayed:
+    \begin{itemize}
+        \item If the user chooses to remove an alternate configuration without creating one in the first place, an error message will be displayed that will tell the user too add an alternate configuration before they are able to remove one.
+        \item In the scenario that the user decides to generate a report PDF without generating any results, an error message would display: telling the user to press the generate results button in order to generate the results of their configuration before pressing the report button again.
+        \item As the user is setting up their junction configuration, if the user does not set a suitable number of lanes, when starting the simulation an error message will display. The error message will prompt the user to change the number of lanes on the exit that has an inconsistent number of lanes and incoming traffic. The error message should tell the user which junction configuration is causing an issue and which direction of traffic flow needs to be changed.
+    \end{itemize}
+
+    \subsubsection{Testing}
+    In order to check whether our input checking and error messages were prompted at the correct situation, we were required to set up some tests.
+    \begin{itemize}
+        \item Input Checking
+        \begin{itemize}
+            \item Boundary Testing
+            \begin{itemize}
+                \item Tested inputs on both the lower and upper bounds for the valid ranges:
+                \begin{itemize}
+                    \item For VpH, tested the range 0-999 to ensure values within this range are accepted.
+                    \item For the number of lanes, tested the range 1-5 to ensure values within this range are accepted.
+                    \item For priority levels, tested the range 0-4 to ensure values within this range are accepted.
+                    \item For pedestrian crossing time and number of requests per hour, tested the range 1-999 to ensure values within this range are accepted.
+                \end{itemize}
+            \end{itemize}
+            \item Erroneous Testing
+            \begin{itemize}
+                \item Tested with non-integer inputs (e.g., strings like "abc" or decimals like 2.5) to ensure only integers are accepted.
+                \item Tested with invalid characters (e.g., special characters like "@\#\$") and blank spaces to ensure they are rejected.
+                \item Tested values just outside the allowed range (e.g., -1 for VpH, 0 for number of lanes, and 6 for priority) to ensure they are not accepted.
+            \end{itemize}
+        \end{itemize}
+    
+        \item Error Messages
+        \begin{itemize}
+            \item Precondition Testing
+            \begin{itemize}
+                \item Ensured that error messages were displayed when prerequisites for actions were not met:
+                \begin{itemize}
+                    \item When attempting to remove an alternate configuration without having created one, an error message is displayed prompting the user to add one first.
+                    \item When attempting to generate a report PDF without first generating results, an error message is displayed informing the user to generate results before generating a report.
+                    \item when Attempting to start the simulation when the lanes arent balanced with the traffic, the error message should always be raised.
+                \end{itemize}
+            \end{itemize}
+            \item Sequence Testing
+            \begin{itemize}
+                \item Validated that the correct error messages were triggered when users followed incorrect sequences of actions:
+                \begin{itemize}
+                    \item Attempting to start the simulation without setting a suitable number of lanes triggers an error message specifying the exit lane inconsistency.
+                    \item Attempting to generate a report without generating results triggers an error message instructing the user to press the generate results button first.
+                    \item Attempting to remove an alternate configuration before generating an alternate configuration should raise the error.
+                \end{itemize}
+            \end{itemize}
+            \item Consistent Testing
+            \begin{itemize}
+                \item Checked that error messages were consistently displayed for the same type of error across different scenarios:
+                \begin{itemize}
+                    \item If an exit lane configuration is inconsistent with incoming traffic, the error message always specifies which direction of traffic and which exit are causing the issue.
+                    \item Made sure the error message when removing an alternate configuration only happened when there were 0 alternate configurations generated.
+                    \item Made sure that the error message was always displayed if the user tried to generate a report before trying to generate any results
+                \end{itemize}
+            \end{itemize}
+        \end{itemize}
+    \end{itemize}
 
     \subsection{Styling}
 
