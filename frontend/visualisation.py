@@ -9,6 +9,7 @@ from typing import TypeVar, Generic, Optional, Callable, Any
 from random import randint
 import os
 from PyQt5.QtCore import Qt
+from directions import CardinalDirection, Turn
 
 
 T = TypeVar("T")
@@ -422,50 +423,51 @@ class ArmData():
         
         # Calculates the number of lanes which exit at each arm
         lane_counts_out = []
-        for i in range(4):
-            straight_data = junction_data.arms[(i + 2) % 4]
+        for direction in CardinalDirection:
+            straight_data = junction_data.arms[(direction + Turn.BACK).index]
             # Number of lanes which can exit here by going straight (excluding bus lane)
-            undedicated_lanes = max(0, straight_data.lane_count_in - straight_data.dedicated_left - straight_data.dedicated_right)
+            straight_undedicated_lanes = max(0, straight_data.lane_count_in - straight_data.dedicated_left - straight_data.dedicated_right)
             # Number of lanes which can exit here by going straight (including bus lane)
             straight_lanes = (
                 straight_data.dedicated_bus
-                + undedicated_lanes
+                + straight_undedicated_lanes
             )
 
-            left_data = junction_data.arms[(i + 3) % 4]
+            left_data = junction_data.arms[(direction + Turn.LEFT).index]
+            left_undedicated_lanes = max(0, left_data.lane_count_in - left_data.dedicated_left - left_data.dedicated_right)
             # Number of lanes which can exit here by going left
             left_lanes = (
                 left_data.dedicated_left
                 + left_data.dedicated_bus
-                + (undedicated_lanes >= 1)
+                + (left_undedicated_lanes >= 1)
             )
             
             # Number of lanes which can exit here by going right
-            right_data = junction_data.arms[(i + 1) % 4]
+            right_data = junction_data.arms[(direction + Turn.RIGHT).index]
+            right_undedicated_lanes = max(0, right_data.lane_count_in - right_data.dedicated_left - right_data.dedicated_right)
             right_lanes = (
                 right_data.dedicated_right
-                + (undedicated_lanes >= 1)
+                + (right_undedicated_lanes >= 1)
             )
-            
             # Only the max of these matters for the number of outgoing lanes
-            lane_counts_out.append(max(left_lanes, straight_lanes, right_lanes))
+            lane_counts_out.append(max(1, left_lanes, straight_lanes, right_lanes))
 
         # Calculates the width of each island based on the difference 
         # between the width of each arm and its opposite arm
         island_widths = []
-        for i in range(4):
+        for direction in CardinalDirection:
+            i = direction.index
             this_arm = junction_data.arms[i]
-            opposite_arm = junction_data.arms[(i + 2) % 4]
+            opposite_arm = junction_data.arms[(direction + Turn.BACK).index]
             
             this_arm_width = this_arm.dedicated_bus + this_arm.lane_count_in + lane_counts_out[i]
-            opposite_arm_width = opposite_arm.dedicated_bus + opposite_arm.lane_count_in + lane_counts_out[(i+2)%4]
+            opposite_arm_width = opposite_arm.dedicated_bus + opposite_arm.lane_count_in + lane_counts_out[(direction + Turn.BACK).index]
             
             island_widths.append(max(0, opposite_arm_width - this_arm_width))
-            arm_data = junction_data.arms[i]
             arms.append(
                 ArmData(
-                    [arm_data.lane_count_in, island_widths[i], lane_counts_out[i]], 
-                    [arm_data.dedicated_left, arm_data.dedicated_bus, arm_data.dedicated_right], 
+                    [this_arm.lane_count_in, island_widths[i], lane_counts_out[i]], 
+                    [this_arm.dedicated_left, this_arm.dedicated_bus, this_arm.dedicated_right], 
                     junction_data.has_crosswalk
                 )
             )
