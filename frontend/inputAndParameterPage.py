@@ -15,7 +15,21 @@ from visualisation import JunctionData, JunctionView
 
 # Global variables to store inputs, Note that the direction is the direction traffic comes from
 class CopyPaste():
-    data = None
+    car_flow_rates: list[list[int]]  = [[0] * 3] * 4
+
+    lane_count: list[int] = [0] * 4
+
+    dedicated_left: list[bool] = [False] * 4
+    dedicated_bus: list[bool] = [False] * 4
+    dedicated_right: list[bool] = [False] * 4
+
+    priority: list[int] = [0] * 4
+
+    pedestrian_crossing: bool = False
+    crossing_rph: int = 0
+    crossing_time: int = 0
+
+    valid_paste: bool = False
 
 class InputAndParameterWidget(QWidget):
     def __init__(self, parent=None):
@@ -250,7 +264,6 @@ class JunctionInputAndParameterWidget(QGroupBox):
         
         return [self.title() + ": " + error_message for error_message in error_messages]
     
-
     def update_global_inputs_frontend(self):
         # Generates data object for visualisation
         junction_data = [[], [], None]
@@ -371,24 +384,28 @@ class JunctionInputAndParameterWidget(QGroupBox):
             print("Stylesheet file not found. Using default styles.")
     
     def copy_data(self):
-        CopyPaste.data = (self.get_flow_rates(), self.get_parameters())
-    
+        # CopyPaste.data = (self.get_flow_rates(), self.get_parameters()) - was going to do this, but wont work for invalid data
+        
+        CopyPaste.pedestrian_crossing = self.pedestrian_crossing_checkbox.isChecked()
+        CopyPaste.crossing_rph = self.crossing_time_input.text()
+        CopyPaste.crossing_time = self.crossing_rph_input.text()
+
+        for i in range(4):
+            self.road_groups[i].copy_data()
+        
+        CopyPaste.valid_paste = True
+
     def paste_data(self):
-        data = CopyPaste.data
-        if data is None:
+        if not CopyPaste.valid_paste:
             return
 
-        flow_rates_list = data[0]
-        parameters = data[1]
-        
+        self.pedestrian_crossing_checkbox.setChecked(CopyPaste.pedestrian_crossing)
+        self.crossing_time_input.setText(CopyPaste.crossing_rph)
+        self.crossing_rph_input.setText(CopyPaste.crossing_time)
+
         for i in range(4):
-            self.road_groups[i].paste_data(flow_rates[i], parameters.no_lanes[i], parameters.sequencing_priority[i])
+            self.road_groups[i].paste_data()
         
-        self.pedestrian_crossing_checkbox.setCheckState(parameters.pedestrian_crossing[0])
-        self.crossing_time_input.setText(parameters.crossing_time[0])
-        self.crossing_rph.setText(parameters.crossing_time[0])
-        
-    
     def get_flow_rates(self):
         flow_rates_list = []
             
@@ -421,6 +438,7 @@ class JunctionInputAndParameterWidget(QGroupBox):
         )
         return parameters
     
+
 class RoadGroupWidget(QGroupBox):
     def __init__(self, road_source: CardinalDirection, update_visualisation: Callable[None, None], parent: Optional[QWidget] = None) -> None:
         road_name = road_source.simple_string().capitalize() + " Traffic Flow"
@@ -533,15 +551,31 @@ class RoadGroupWidget(QGroupBox):
         except FileNotFoundError:
             print("Stylesheet file not found. Using default styles.")
 
-    def paste_data(self, flow_rates, lane_count, priority):
-        self.lanes_input.setValue(lane_count)
 
-        self.exit_vph_inputs[0].setText(str(flow_rates.left))
-        self.exit_vph_inputs[1].setText(str(flow_rates.ahead))
-        self.exit_vph_inputs[2].setText(str(flow_rates.right))
+    def copy_data(self):
+        i = self.road_direction.index
 
-        self.left_turn_lane_checkbox.setCheckState(flow_rates.dedicated_left)
-        self.bus_lane_checkbox.setCheckState(flow_rates.dedicated_bus)
-        self.right_turn_lane_checkbox.setCheckState(flow_rates.dedicated_right)
+        CopyPaste.car_flow_rates[i] = [self.exit_vph_inputs[j].text() for j in range(3)]
 
-        self.priority_input.setValue(priority)
+        CopyPaste.lane_count[i] = self.lanes_input.value()
+
+        CopyPaste.dedicated_left[i] = self.left_turn_lane_checkbox.isChecked()
+        CopyPaste.dedicated_bus[i] = self.bus_lane_checkbox.isChecked()
+        CopyPaste.dedicated_right[i] = self.right_turn_lane_checkbox.isChecked()
+
+        CopyPaste.priority[i] = self.priority_input.value()
+
+    def paste_data(self):
+        i = self.road_direction.index
+        for j in range(3):
+            self.exit_vph_inputs[j].setText(CopyPaste.car_flow_rates[i][j])
+
+        self.lanes_input.setValue(CopyPaste.lane_count[i])
+
+        self.left_turn_lane_checkbox.setChecked(CopyPaste.dedicated_left[i])
+        self.bus_lane_checkbox.setChecked(CopyPaste.dedicated_bus[i])
+        self.right_turn_lane_checkbox.setChecked(CopyPaste.dedicated_right[i])
+
+        self.priority_input.setValue(CopyPaste.priority[i])
+
+
