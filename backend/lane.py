@@ -93,7 +93,7 @@ class Lane:
                     else:
                         timer -= 1
 
-                self.current_vehicles[0].pop(0)
+                self.current_vehicles.pop(0)
 
                 if not self.current_vehicles:
                     break
