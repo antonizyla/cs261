@@ -429,8 +429,7 @@ class ArmData():
             straight_undedicated_lanes = max(0, straight_data.lane_count_in - straight_data.dedicated_left - straight_data.dedicated_right)
             # Number of lanes which can exit here by going straight (including bus lane)
             straight_lanes = (
-                straight_data.dedicated_bus
-                + straight_undedicated_lanes
+                straight_undedicated_lanes
             )
 
             left_data = junction_data.arms[(direction + Turn.LEFT).index]
