@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import (QWidget, QPushButton, QVBoxLayout, QLabel, QLineEdit, 
                              QSpinBox, QCheckBox, QGroupBox, QFormLayout, QToolButton, 
-                             QHBoxLayout, QGridLayout, QMessageBox, QVBoxLayout, QScrollArea, QSizePolicy  )
+                             QHBoxLayout, QGridLayout, QMessageBox, QVBoxLayout, QScrollArea, QSizePolicy, QButtonGroup  )
 from PyQt5.QtGui import QIntValidator
 from PyQt5.QtCore import Qt
 import os
@@ -463,6 +463,7 @@ class RoadGroupWidget(QGroupBox):
         
         self.road_direction = road_source
         self.setObjectName("road_group")
+        self.update_visualisation = update_visualisation
         
         """Creates a group box for each road section with input fields."""
         form_layout = QFormLayout()
@@ -494,10 +495,12 @@ class RoadGroupWidget(QGroupBox):
         # Checkboxes for lane types
         self.bus_lane_checkbox = QCheckBox("Bus Lane")
         self.bus_lane_checkbox.stateChanged.connect(update_visualisation)
+        self.bus_lane_checkbox.stateChanged.connect(self.select_bus)
         form_layout.addRow(self.bus_lane_checkbox)
         
         self.left_turn_lane_checkbox = QCheckBox("Left Turn Lane")
         self.left_turn_lane_checkbox.stateChanged.connect(update_visualisation)
+        self.left_turn_lane_checkbox.stateChanged.connect(self.select_left)
         form_layout.addRow(self.left_turn_lane_checkbox)
         
         self.right_turn_lane_checkbox = QCheckBox("Right Turn Lane")
@@ -511,6 +514,14 @@ class RoadGroupWidget(QGroupBox):
         self.priority_input.setRange(0, 4)
         form_layout.addRow(self.priority_label, self.priority_input)  
     
+    def select_bus(self):
+        if self.bus_lane_checkbox.isChecked():
+            self.left_turn_lane_checkbox.setChecked(False)
+
+    def select_left(self):
+        if self.left_turn_lane_checkbox.isChecked():
+            self.bus_lane_checkbox.setChecked(False)
+
     def update_total_vph(self):
         """ Updates the total VpH label based on the sum of exit values. """
         try:
