@@ -8,15 +8,15 @@ class ResultSet:
 
     def getNorthRoad(self):
         return self.northRoad
-    
+
     def getEastRoad(self):
         return self.eastRoad
-    
+
     def getSouthRoad(self):
         return self.southRoad
-    
+
     def getWestRoad(self):
         return self.westRoad
-    
+
     def getScore(self):
         return self.overallScore
