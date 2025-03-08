@@ -17,6 +17,7 @@ from resultsPage import ResultsWidget
 # Global variables to store inputs, Note that the direction is the direction traffic comes from
 class CopyPaste():
     car_flow_rates: list[list[int]]  = [[0] * 3] * 4
+    bus_flow_rates: list[int] = [0] * 4
 
     lane_count: list[int] = [0] * 4
 
@@ -430,7 +431,7 @@ class JunctionInputAndParameterWidget(QGroupBox):
                     ahead = int(road_group.exit_vph_inputs[1].text()),  
                     right = int(road_group.exit_vph_inputs[2].text()), 
                     dedicated_left = road_group.left_turn_lane_checkbox.isChecked(), 
-                    dedicated_bus = road_group.bus_lane_checkbox.isChecked(), 
+                    dedicated_bus = [int(road_group.exit_vph_bus_input.text()) if road_group.bus_lane_checkbox.isChecked() else 0],
                     dedicated_right = road_group.right_turn_lane_checkbox.isChecked()
                 )
             )
@@ -470,7 +471,6 @@ class RoadGroupWidget(QGroupBox):
         self.exit_vph_inputs = []
         for direction in CardinalDirection.all_except_clockwise(road_source):
             exit_label = QLabel(f"Exiting {direction.simple_string()}:")
-
             exit_input = QLineEdit()
             exit_input.setValidator(QIntValidator(0, 999))
             exit_input.setPlaceholderText("0")  
@@ -486,11 +486,10 @@ class RoadGroupWidget(QGroupBox):
         self.lanes_input.valueChanged.connect(update_visualisation)
         form_layout.addRow(self.lanes_label, self.lanes_input)
 
-        # Checkboxes for lane types
-        self.bus_lane_checkbox = QCheckBox("Bus Lane")
-        self.bus_lane_checkbox.stateChanged.connect(update_visualisation)
-        self.bus_lane_checkbox.stateChanged.connect(self.select_bus)
-        form_layout.addRow(self.bus_lane_checkbox)
+        self.priority_label = QLabel("Priority:")
+        self.priority_input = QSpinBox()
+        self.priority_input.setRange(0, 4)
+        form_layout.addRow(self.priority_label, self.priority_input)  
         
         self.left_turn_lane_checkbox = QCheckBox("Left Turn Lane")
         self.left_turn_lane_checkbox.stateChanged.connect(update_visualisation)
@@ -500,17 +499,33 @@ class RoadGroupWidget(QGroupBox):
         self.right_turn_lane_checkbox = QCheckBox("Right Turn Lane")
         self.right_turn_lane_checkbox.stateChanged.connect(update_visualisation)
         form_layout.addRow(self.right_turn_lane_checkbox)
+
+        # Checkboxes for lane types
+        self.bus_lane_checkbox = QCheckBox("Bus Lane")
+        self.bus_lane_checkbox.stateChanged.connect(update_visualisation)
+        self.bus_lane_checkbox.stateChanged.connect(self.select_bus)
+        form_layout.addRow(self.bus_lane_checkbox)
+
+        self.exit_vph_bus_label = QLabel("Number of buses:")
+        self.exit_vph_bus_label.hide()
+        self.exit_vph_bus_input = QLineEdit()
+        self.exit_vph_bus_input.setValidator(QIntValidator(0, 999))
+        self.exit_vph_bus_input.textChanged.connect(self.update_total_vph)
+        self.exit_vph_bus_input.setPlaceholderText("0")  
+        self.exit_vph_bus_input.hide()
+        form_layout.addRow(self.exit_vph_bus_label, self.exit_vph_bus_input)
+
         self.setLayout(form_layout)
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)  
-        
-        self.priority_label = QLabel("Priority:")
-        self.priority_input = QSpinBox()
-        self.priority_input.setRange(0, 4)
-        form_layout.addRow(self.priority_label, self.priority_input)  
     
     def select_bus(self):
         if self.bus_lane_checkbox.isChecked():
             self.left_turn_lane_checkbox.setChecked(False)
+            self.exit_vph_bus_label.show()
+            self.exit_vph_bus_input.show()
+        else:
+            self.exit_vph_bus_label.hide()
+            self.exit_vph_bus_input.hide()
 
     def select_left(self):
         if self.left_turn_lane_checkbox.isChecked():
@@ -519,8 +534,11 @@ class RoadGroupWidget(QGroupBox):
     def update_total_vph(self):
         """ Updates the total VpH label based on the sum of exit values. """
         try:
-            total_vph = sum(int(input_field.text()) if input_field.text().isdigit() else 0 
+            total_vph = (
+                sum(int(input_field.text()) if input_field.text().isdigit() else 0 
                            for input_field in self.exit_vph_inputs)
+                + int(self.exit_vph_bus_input.text()) if self.bus_lane_checkbox.isChecked() and self.exit_vph_bus_input.text().isdigit() else 0
+            )
         except ValueError:
             total_vph = 0  
 
@@ -529,6 +547,8 @@ class RoadGroupWidget(QGroupBox):
     def validate_inputs(self) -> Optional[list[str]]:      
         if not all([self.exit_vph_inputs[i].text().isdigit() for i in range(3)]):
             return [f"{self.title()} requires valid traffic flows for each direction."]
+        if self.bus_lane_checkbox.isChecked() and not self.exit_vph_bus_input.text().isdigit():
+            return [f"{self.title()} requires valid bus traffic flows for each direction."]
         
         has_left_lane = self.left_turn_lane_checkbox.isChecked()
         has_right_lane = self.right_turn_lane_checkbox.isChecked()
@@ -572,11 +592,11 @@ class RoadGroupWidget(QGroupBox):
         except FileNotFoundError:
             print("Stylesheet file not found. Using default styles.")
 
-
     def copy_data(self):
         i = self.road_direction.index
 
         CopyPaste.car_flow_rates[i] = [self.exit_vph_inputs[j].text() for j in range(3)]
+        CopyPaste.bus_flow_rates[i] = self.exit_vph_bus_input.text()
 
         CopyPaste.lane_count[i] = self.lanes_input.value()
 
@@ -590,6 +610,8 @@ class RoadGroupWidget(QGroupBox):
         i = self.road_direction.index
         for j in range(3):
             self.exit_vph_inputs[j].setText(CopyPaste.car_flow_rates[i][j])
+        
+        self.exit_vph_bus_input.setText(CopyPaste.bus_flow_rates[i])
 
         self.lanes_input.setValue(CopyPaste.lane_count[i])
 
