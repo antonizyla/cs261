@@ -10,6 +10,8 @@ from reportlab.pdfgen import canvas
 from reportlab.lib.utils import ImageReader
 from io import BytesIO
 import os
+import mplcursors
+import numpy as np
 
 # Sample results
 overall = 50
@@ -17,10 +19,12 @@ max_wait = 100
 avg_wait = 75
 max_length = 25
 
-alt_overall = 75
-alt_max_wait = 150
-alt_avg_wait = 125
-alt_max_length = 50
+alt1_overall = 75
+alt1_max_wait = 150
+alt1_avg_wait = 125
+alt1_max_length = 50
+
+
 
 # Global variables to store results
 road_results = {
@@ -39,7 +43,91 @@ alt_road_results = {
 
 overallScore = 66
 alt_overallScore = 80
+def remove_labels(cls):
+    def create_road_group(self, layout, road_name, row, col):
+        # Create the group container with an empty form layout (no result labels)
+        group_box = QGroupBox()
+        group_box.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        form_layout = QFormLayout()
+        form_layout.setContentsMargins(5, 5, 5, 5)
 
+        # Create a toggle button for collapsing/expanding
+        toggle_button = QToolButton()
+        toggle_button.setText(road_name + " ▼")
+        toggle_button.setCheckable(True)
+        toggle_button.setChecked(True)
+        toggle_button.clicked.connect(lambda: self.toggle_group(toggle_button, group_box, road_name))
+
+        header_layout = QHBoxLayout()
+        header_layout.addWidget(toggle_button)
+        header_layout.setContentsMargins(0, 0, 0, 0)
+        header_layout.addStretch()
+
+        # Instead of adding result labels, only add an empty row
+        form_layout.addRow(QWidget())
+
+        # Store the layout and prepare for chart insertion later
+        base_name = road_name.lower().replace(' ', '_')
+        setattr(self, f"{base_name}_chart", None)
+        setattr(self, f"{base_name}_form_layout", form_layout)
+
+        header_widget = QWidget()
+        header_widget.setLayout(header_layout)
+
+        # Assemble the group box and add it to the provided layout grid
+        group_box.setLayout(form_layout)
+        group_box_layout = QVBoxLayout()
+        group_box_layout.setContentsMargins(0, 0, 0, 0)
+        group_box_layout.addWidget(header_widget)
+        group_box_layout.addWidget(group_box)
+        layout.addLayout(group_box_layout, row, col)
+
+    def get_results(self):
+        self.results_generated = True
+
+        # Only placeholder values for charts are needed
+        self.average_wait = [20, 30, 25, 15]
+        self.max_wait_time = [40, 50, 35, 20]
+        self.max_queue_length = [10, 15, 12, 8]
+        self.alt_avg_wait = [30, 40, 35, 25]
+        self.alt_max_wait_time = [60, 70, 55, 40]
+        self.alt_max_queue_length = [20, 25, 22, 18]
+
+        # Update the main configuration charts
+        for idx, road_name in enumerate(["south_traffic_flow", "north_traffic_flow", "west_traffic_flow", "east_traffic_flow"]):
+            base_name = road_name.lower().replace(' ', '_')
+            existing_chart = getattr(self, f"{base_name}_chart", None)
+            if existing_chart:
+                form_layout = getattr(self, f"{base_name}_form_layout")
+                form_layout.removeWidget(existing_chart)
+                existing_chart.deleteLater()
+                setattr(self, f"{base_name}_chart", None)
+            road_results[road_name] = {
+                "average_wait": self.average_wait[idx],
+                "max_wait_times": self.max_wait_time[idx],
+                "max_queue_length": self.max_queue_length[idx],
+            }
+            self.update_chart(road_name, idx)
+
+        # Update the alternative configuration charts
+        for idx, alt_road_name in enumerate(["south_traffic_flow", "north_traffic_flow", "west_traffic_flow", "east_traffic_flow"]):
+            base_name = alt_road_name.lower().replace(' ', '_')
+            existing_chart = getattr(self, f"{base_name}_chart", None)
+            if existing_chart:
+                form_layout = getattr(self, f"{base_name}_form_layout")
+                form_layout.removeWidget(existing_chart)
+                existing_chart.deleteLater()
+                setattr(self, f"{base_name}_chart", None)
+            alt_road_results[alt_road_name] = {
+                "average_wait": self.alt_avg_wait[idx],
+                "max_wait_times": self.alt_max_wait_time[idx],
+                "max_queue_length": self.alt_max_queue_length[idx],
+            }
+            self.update_chart(alt_road_name, idx)
+
+    cls.create_road_group = create_road_group
+    cls.get_results = get_results
+    return cls
 class ResultsWidget(QWidget):
     def __init__(self, number, parent=None):
         super().__init__(parent)
@@ -98,78 +186,117 @@ class ResultsWidget(QWidget):
         except FileNotFoundError:
             print("Stylesheet file not found. Using default styles.")
 
-    def create_road_group(self, layout, road_name, row, col):
-        """Creates a collapsible group box for each road's results and places it in the grid."""
-        group_box = QGroupBox()
-        group_box.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)  # Makes all groups uniform in height
-        form_layout = QFormLayout()
-        form_layout.setContentsMargins(5, 5, 5, 5)  # Minimize padding inside groups
+    # def create_road_group(self, layout, road_name, row, col):
+    #     """Creates a collapsible group box for each road's results and places it in the grid."""
+    #     group_box = QGroupBox()
+    #     group_box.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)  # Makes all groups uniform in height
+    #     form_layout = QFormLayout()
+    #     form_layout.setContentsMargins(5, 5, 5, 5)  # Minimize padding inside groups
 
-        # Create a button to toggle visibility of the form layout
+    #     # Create a button to toggle visibility of the form layout
+    #     toggle_button = QToolButton()
+    #     toggle_button.setText(road_name + " ▼")  # Default is to show the group
+    #     toggle_button.setCheckable(True)
+    #     toggle_button.setChecked(True)
+    #     toggle_button.clicked.connect(lambda: self.toggle_group(toggle_button, group_box, road_name))
+
+    #     # Add the button to a horizontal layout
+    #     header_layout = QHBoxLayout()
+    #     header_layout.addWidget(toggle_button)
+    #     header_layout.setContentsMargins(0, 0, 0, 0)
+    #     header_layout.addStretch()
+
+    #     # Labels for results (default placeholders)
+    #     avg_wait_label = QLabel("Average Wait Time: -")
+    #     max_wait_label = QLabel("Max Wait Time: -")
+    #     max_queue_label = QLabel("Max Queue Length: -")
+
+    #     alt_avg_wait_label = QLabel("Alternate Average Wait Time: -")
+    #     alt_max_wait_label = QLabel("Alternate Max Wait Time: -")
+    #     alt_max_queue_label = QLabel("AlternateMax Queue Length: -")
+
+    #     # Create a grid layout for the labels
+    #     labels_layout = QGridLayout()
+
+    #     # Add the labels to the grid layout
+    #     labels_layout.addWidget(avg_wait_label, 0, 0)
+    #     labels_layout.addWidget(max_wait_label, 1, 0)
+    #     labels_layout.addWidget(max_queue_label, 2, 0)
+
+    #     labels_layout.addWidget(alt_avg_wait_label, 0, 1)
+    #     labels_layout.addWidget(alt_max_wait_label, 1, 1)
+    #     labels_layout.addWidget(alt_max_queue_label, 2, 1)
+
+    #     # Add the grid layout to the form layout
+    #     form_layout.addRow(labels_layout)
+
+    #     # Store reference for updating results later
+    #     base_name = road_name.lower().replace(' ', '_')
+    #     setattr(self, f"{base_name}_chart", None)
+    #     setattr(self, f"{base_name}_avg_wait_label", avg_wait_label)
+    #     setattr(self, f"{base_name}_max_wait_label", max_wait_label)
+    #     setattr(self, f"{base_name}_max_queue_label", max_queue_label)
+    #     setattr(self, f"{base_name}_form_layout", form_layout)
+
+    #     setattr(self, f"{base_name}_alt_avg_wait_label", alt_avg_wait_label)
+    #     setattr(self, f"{base_name}_alt_max_wait_label", alt_max_wait_label)
+    #     setattr(self, f"{base_name}_alt_max_queue_label", alt_max_queue_label)
+    #     setattr(self, f"{base_name}_form_layout", form_layout)
+
+    #     # Set layout for the group box
+    #     group_box.setLayout(form_layout)
+
+    #     # Set header layout at the top of the group box
+    #     header_widget = QWidget()
+    #     header_widget.setLayout(header_layout)
+
+    #     # Add header layout above the form layout
+    #     group_box_layout = QVBoxLayout()
+    #     group_box_layout.setContentsMargins(0, 0, 0, 0)  # Reduce outer margins
+    #     group_box_layout.addWidget(header_widget)
+    #     group_box_layout.addWidget(group_box)
+
+    #     # Add the group box to the grid layout at the specified position
+    #     layout.addLayout(group_box_layout, row, col)
+
+    def create_road_group(self, layout, road_name, row, col):
+        # Create the group container with an empty form layout (no result labels)
+        group_box = QGroupBox()
+        group_box.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        form_layout = QFormLayout()
+        form_layout.setContentsMargins(5, 5, 5, 5)
+
+        # Create a toggle button for collapsing/expanding
         toggle_button = QToolButton()
-        toggle_button.setText(road_name + " ▼")  # Default is to show the group
+        toggle_button.setText(road_name + " ▼")
         toggle_button.setCheckable(True)
         toggle_button.setChecked(True)
         toggle_button.clicked.connect(lambda: self.toggle_group(toggle_button, group_box, road_name))
 
-        # Add the button to a horizontal layout
         header_layout = QHBoxLayout()
         header_layout.addWidget(toggle_button)
         header_layout.setContentsMargins(0, 0, 0, 0)
         header_layout.addStretch()
 
-        # Labels for results (default placeholders)
-        avg_wait_label = QLabel("Average Wait Time: -")
-        max_wait_label = QLabel("Max Wait Time: -")
-        max_queue_label = QLabel("Max Queue Length: -")
+        # Instead of adding result labels, only add an empty row
+        form_layout.addRow(QWidget())
 
-        alt_avg_wait_label = QLabel("Alternate Average Wait Time: -")
-        alt_max_wait_label = QLabel("Alternate Max Wait Time: -")
-        alt_max_queue_label = QLabel("AlternateMax Queue Length: -")
-
-        # Create a grid layout for the labels
-        labels_layout = QGridLayout()
-
-        # Add the labels to the grid layout
-        labels_layout.addWidget(avg_wait_label, 0, 0)
-        labels_layout.addWidget(max_wait_label, 1, 0)
-        labels_layout.addWidget(max_queue_label, 2, 0)
-
-        labels_layout.addWidget(alt_avg_wait_label, 0, 1)
-        labels_layout.addWidget(alt_max_wait_label, 1, 1)
-        labels_layout.addWidget(alt_max_queue_label, 2, 1)
-
-        # Add the grid layout to the form layout
-        form_layout.addRow(labels_layout)
-
-        # Store reference for updating results later
+        # Store the layout and prepare for chart insertion later
         base_name = road_name.lower().replace(' ', '_')
         setattr(self, f"{base_name}_chart", None)
-        setattr(self, f"{base_name}_avg_wait_label", avg_wait_label)
-        setattr(self, f"{base_name}_max_wait_label", max_wait_label)
-        setattr(self, f"{base_name}_max_queue_label", max_queue_label)
         setattr(self, f"{base_name}_form_layout", form_layout)
 
-        setattr(self, f"{base_name}_alt_avg_wait_label", alt_avg_wait_label)
-        setattr(self, f"{base_name}_alt_max_wait_label", alt_max_wait_label)
-        setattr(self, f"{base_name}_alt_max_queue_label", alt_max_queue_label)
-        setattr(self, f"{base_name}_form_layout", form_layout)
-
-        # Set layout for the group box
-        group_box.setLayout(form_layout)
-
-        # Set header layout at the top of the group box
         header_widget = QWidget()
         header_widget.setLayout(header_layout)
 
-        # Add header layout above the form layout
+        # Assemble the group box and add it to the provided layout grid
+        group_box.setLayout(form_layout)
         group_box_layout = QVBoxLayout()
-        group_box_layout.setContentsMargins(0, 0, 0, 0)  # Reduce outer margins
+        group_box_layout.setContentsMargins(0, 0, 0, 0)
         group_box_layout.addWidget(header_widget)
         group_box_layout.addWidget(group_box)
-
-        # Add the group box to the grid layout at the specified position
         layout.addLayout(group_box_layout, row, col)
+
 
     def toggle_group(self, toggle_button, group_box, road_name):
         """ Toggles the visibility of the group box content. """
@@ -181,17 +308,35 @@ class ResultsWidget(QWidget):
             group_box.setVisible(False)
 
     def get_results(self):
-        # Set generated results bool to true
         self.results_generated = True
 
         print(f"Number of junctions is : {self.number}")
         # Create overall score labels based on the number of junctions
+        # Remove old overall scores layout if it exists
+        if hasattr(self, 'overall_layout'):
+            self.layout().removeItem(self.overall_layout)
+            while self.overall_layout.count():
+                item = self.overall_layout.takeAt(0)
+                widget = item.widget()
+                if widget:
+                    widget.deleteLater()
+
+        # Create new overall scores layout with a maximum of two labels per row
+        self.overall_layout = QGridLayout()
         for i in range(self.number):
             overall_label = QLabel(f"Overall Score (Junction {i+1}): {overallScore}")
+            overall_label.setAlignment(Qt.AlignCenter)
             overall_label.setObjectName("overallScoreLabel")
-            self.layout().addWidget(overall_label, 0,)  # Top
+            row = i // 2
+            col = i % 2
+            # If it's the only label in the row, span across both columns
+            if (self.number % 2 != 0) and (i == self.number - 1):
+                self.overall_layout.addWidget(overall_label, row, 0, 1, 2)
+            else:
+                self.overall_layout.addWidget(overall_label, row, col)
+        self.layout().insertLayout(0, self.overall_layout)
 
-        # Placeholder result values
+        # Only placeholder values for charts are needed
         self.average_wait = [20, 30, 25, 15]
         self.max_wait_time = [40, 50, 35, 20]
         self.max_queue_length = [10, 15, 12, 8]
@@ -200,43 +345,49 @@ class ResultsWidget(QWidget):
         self.alt_max_wait_time = [60, 70, 55, 40]
         self.alt_max_queue_length = [20, 25, 22, 18]
 
-        counter = 0
-        for road_name in ["south_traffic_flow", "north_traffic_flow", 
-                          "west_traffic_flow", "east_traffic_flow"]:
+        self.alt1_avg_wait = [32, 42, 37, 27]
+        self.alt1_max_wait_time = [62, 72, 57, 42]
+        self.alt1_max_queue_length = [21, 26, 23, 19]
 
-            road_results[road_name] = {
-                "average_wait": self.average_wait[counter],
-                "max_wait_times": self.max_wait_time[counter],
-                "max_queue_length": self.max_queue_length[counter],
-            }
+        self.alt2_avg_wait = [33, 43, 38, 28]
+        self.alt2_max_wait_time = [63, 73, 58, 43]
+        self.alt2_max_queue_length = [22, 27, 24, 20]
 
-            # Update UI labels
+        self.alt3_avg_wait = [34, 44, 39, 29]
+        self.alt3_max_wait_time = [64, 74, 59, 44]
+        self.alt3_max_queue_length = [23, 28, 25, 21]
+
+        # Update the main configuration charts
+        for idx, road_name in enumerate(["south_traffic_flow", "north_traffic_flow", "west_traffic_flow", "east_traffic_flow"]):
             base_name = road_name.lower().replace(' ', '_')
-            getattr(self, f"{base_name}_avg_wait_label").setText(f"Average Wait Time: {self.average_wait[counter]} sec")
-            getattr(self, f"{base_name}_max_wait_label").setText(f"Max Wait Time: {self.max_wait_time[counter]} sec")
-            getattr(self, f"{base_name}_max_queue_label").setText(f"Max Queue Length: {self.max_queue_length[counter]} cars")
-
-            self.update_chart(road_name, counter)
-            counter += 1
-
-        counter2 = 0
-        for alt_road_name in ["south_traffic_flow", "north_traffic_flow", 
-                              "west_traffic_flow", "east_traffic_flow"]:
-            
-            alt_road_results[alt_road_name] = {
-                "average_wait": self.alt_avg_wait[counter2],
-                "max_wait_times": self.alt_max_wait_time[counter2],
-                "max_queue_length": self.alt_max_queue_length[counter2],
+            existing_chart = getattr(self, f"{base_name}_chart", None)
+            if existing_chart:
+                form_layout = getattr(self, f"{base_name}_form_layout")
+                form_layout.removeWidget(existing_chart)
+                existing_chart.deleteLater()
+                setattr(self, f"{base_name}_chart", None)
+            road_results[road_name] = {
+                "average_wait": self.average_wait[idx],
+                "max_wait_times": self.max_wait_time[idx],
+                "max_queue_length": self.max_queue_length[idx],
             }
+            self.update_chart(road_name, idx)
 
+        # Update the alternative configuration charts
+        for idx, alt_road_name in enumerate(["south_traffic_flow", "north_traffic_flow", "west_traffic_flow", "east_traffic_flow"]):
             base_name = alt_road_name.lower().replace(' ', '_')
-            getattr(self, f"{base_name}_alt_avg_wait_label").setText(f"Alternate Average Wait Time: {self.alt_avg_wait[counter2]} sec")
-            getattr(self, f"{base_name}_alt_max_wait_label").setText(f"Alternate Max Wait Time: {self.alt_max_wait_time[counter2]} sec")
-            getattr(self, f"{base_name}_alt_max_queue_label").setText(f"Alternate Max Queue Length: {self.alt_max_queue_length[counter2]} cars")
-            
-            self.update_chart(alt_road_name, counter2)
-            counter2 += 1
-
+            existing_chart = getattr(self, f"{base_name}_chart", None)
+            if existing_chart:
+                form_layout = getattr(self, f"{base_name}_form_layout")
+                form_layout.removeWidget(existing_chart)
+                existing_chart.deleteLater()
+                setattr(self, f"{base_name}_chart", None)
+            alt_road_results[alt_road_name] = {
+                "average_wait": self.alt_avg_wait[idx],
+                "max_wait_times": self.alt_max_wait_time[idx],
+                "max_queue_length": self.alt_max_queue_length[idx],
+            }
+            self.update_chart(alt_road_name, idx)
 
     def get_report(self):
         """Generates a PDF report with the results and bar charts using ReportLab."""
@@ -331,16 +482,44 @@ class ResultsWidget(QWidget):
         if getattr(self, f"{base_name}_chart"):
             getattr(self, f"{base_name}_chart").deleteLater()
 
-        categories = ['Average Wait Time', 'Max Wait Time', 'Max Queue Length']
-        input_values = [self.average_wait[index], self.max_wait_time[index], self.max_queue_length[index]]
-        alt_values = [self.alt_avg_wait[index], self.alt_max_wait_time[index], self.alt_max_queue_length[index]]
+        # Configurations: Main, Alt, Alt1, Alt2 and Alt3
+        configurations = ["Main", "Alt", "Alt1", "Alt2", "Alt3"]
+        num_configs = len(configurations)
 
-        x = range(len(categories))
-        x2 = [val + 0.4 for val in x]
+        # Categories to display
+        categories = [ 'Avg Wait', 'Max Wait', 'Max Queue']
+        x = np.arange(len(categories))  # positions for the three categories
+        width = 0.8 / num_configs  # bar width adjusted for the number of configurations
 
         fig, ax = plt.subplots(figsize=(4, 6))
-        ax.bar(x, input_values, width=0.4, label='Main Configuration')
-        ax.bar(x2, alt_values, width=0.4, label='Alternative Configuration')
+        all_configurations = ["Main", "Alt", "Alt1", "Alt2", "Alt3"]
+        configurations = all_configurations[:self.number]
+        for i, config in enumerate(configurations):
+            # Retrieve values for the given road (using index)
+            if config == "Main":
+                avg_wait_val = self.average_wait[index]
+                max_wait_val = self.max_wait_time[index]
+                max_queue_val = self.max_queue_length[index]
+            elif config == "Alt":
+                avg_wait_val = self.alt_avg_wait[index]
+                max_wait_val = self.alt_max_wait_time[index]
+                max_queue_val = self.alt_max_queue_length[index]
+            elif config == "Alt1":
+                avg_wait_val = self.alt1_avg_wait[index]
+                max_wait_val = self.alt1_max_wait_time[index]
+                max_queue_val = self.alt1_max_queue_length[index]
+            elif config == "Alt2":
+                avg_wait_val = self.alt2_avg_wait[index]
+                max_wait_val = self.alt2_max_wait_time[index]
+                max_queue_val = self.alt2_max_queue_length[index]
+            elif config == "Alt3":
+                avg_wait_val = self.alt3_avg_wait[index]
+                max_wait_val = self.alt3_max_wait_time[index]
+                max_queue_val = self.alt3_max_queue_length[index]
+
+            values = [max_wait_val, avg_wait_val, max_queue_val]
+            offset = -0.4 + width/2 + i * width
+            ax.bar(x + offset, values, width=width, label=config)
 
         ax.set_ylabel('Values')
         ax.set_title(f'{road_name.replace("_", " ").title()} Comparison')
@@ -348,8 +527,8 @@ class ResultsWidget(QWidget):
         ax.set_xticklabels(categories)
         ax.legend()
 
-        canvas = FigureCanvas(fig)
-        setattr(self, f"{base_name}_chart", canvas)
-        getattr(self, f"{base_name}_form_layout").addRow(canvas)
+        canvas_obj = FigureCanvas(fig)
+        setattr(self, f"{base_name}_chart", canvas_obj)
+        getattr(self, f"{base_name}_form_layout").addRow(canvas_obj)
 
     
