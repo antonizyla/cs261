@@ -95,3 +95,6 @@ class Lane:
 
     def get_no_vehicle_present(self):
         return len(self.current_vehicles)
+
+    def get_no_available_spaces(self):
+        return self.queue_limit - len(self.current_vehicles)

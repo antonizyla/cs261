@@ -32,44 +32,69 @@ class Direction:
         self.p_left_b: list[Vehicle] = []
         self.p_right_c: list[Vehicle] = []
         self.p_right_b: list[Vehicle] = []
-        print(f"Generating Direction with {num_lanes} lanes")
         if num_lanes == 1:
-            self.lanes.append(Lane(1, flows.dir_from, [left_of(flows.dir_from), right_of(flows.dir_from), opposite_of(flows.dir_from)]))
+            self.lanes.append(Lane(3, flows.dir_from, [left_of(flows.dir_from), right_of(flows.dir_from), opposite_of(flows.dir_from)]))
         elif num_lanes == 2:
             if flows.dedicated_bus:
-                self.lanes.append(Lane(1, flows.dir_from, [left_of(flows.dir_from)], bus=True))
-                self.lanes.append(Lane(1, flows.dir_from, [left_of(flows.dir_from), opposite_of(flows.dir_from), right_of(flows.dir_from)]))
+                self.lanes.append(Lane(3, flows.dir_from, [left_of(flows.dir_from)], bus=True))
+                self.lanes.append(Lane(3, flows.dir_from, [left_of(flows.dir_from), opposite_of(flows.dir_from), right_of(flows.dir_from)]))
             else:
                 if (flows.dedicated_left and flows.dedicated_right) or (flows.dedicated_right and not flows.dedicated_left):
                     # create a left+forward lane and a right only lane
-                    self.lanes.append(Lane(1, flows.dir_from, [left_of(flows.dir_from), right_of(flows.dir_from)]))
-                    self.lanes.append(Lane(1, flows.dir_from, [right_of(flows.dir_from)]))
+                    self.lanes.append(Lane(3, flows.dir_from, [left_of(flows.dir_from), right_of(flows.dir_from)]))
+                    self.lanes.append(Lane(3, flows.dir_from, [right_of(flows.dir_from)]))
                 elif flows.dedicated_left:
-                    self.lanes.append(Lane(1, flows.dir_from, [left_of(flows.dir_from)]))
-                    self.lanes.append(Lane(1, flows.dir_from, [opposite_of(flows.dir_from), right_of(flows.dir_from)]))
+                    self.lanes.append(Lane(3, flows.dir_from, [left_of(flows.dir_from)]))
+                    self.lanes.append(Lane(3, flows.dir_from, [opposite_of(flows.dir_from), right_of(flows.dir_from)]))
                 else:
-                    self.lanes.append(Lane(1, flows.dir_from, [left_of(flows.dir_from), opposite_of(flows.dir_from)]))
-                    self.lanes.append(Lane(1, flows.dir_from, [opposite_of(flows.dir_from), right_of(flows.dir_from)]))
+                    self.lanes.append(Lane(3, flows.dir_from, [left_of(flows.dir_from), opposite_of(flows.dir_from)]))
+                    self.lanes.append(Lane(3, flows.dir_from, [opposite_of(flows.dir_from), right_of(flows.dir_from)]))
+        elif num_lanes == 3:
+            if flows.dedicated_bus:
+                self.lanes.append(Lane(3, flows.dir_from, [left_of(flows.dir_from)], bus=True))
+                self.lanes.append(Lane(3, flows.dir_from, [left_of(flows.dir_from), opposite_of(flows.dir_from), right_of(flows.dir_from)]))
+                if flows.dedicated_right:
+                    self.lanes.append(Lane(3, flows.dir_from, [right_of(flows.dir_from)]))
+                else:
+                    self.lanes.append(Lane(3, flows.dir_from, [opposite_of(flows.dir_from), right_of(flows.dir_from)]))
+            else:
+                if flows.dedicated_left and flows.dedicated_right:
+                    self.lanes.append(Lane(3, flows.dir_from, [left_of(flows.dir_from)]))
+                    self.lanes.append(Lane(3, flows.dir_from, [right_of(flows.dir_from)]))
+                    self.lanes.append(Lane(3, flows.dir_from, [right_of(flows.dir_from), left_of(flows.dir_from), opposite_of(flows.dir_from)]))
+                elif flows.dedicated_right:
+                    self.lanes.append(Lane(3, flows.dir_from, [left_of(flows.dir_from), opposite_of(flows.dir_from)]))
+                    self.lanes.append(Lane(3, flows.dir_from, [right_of(flows.dir_from), opposite_of(flows.dir_from)]))
+                    self.lanes.append(Lane(3, flows.dir_from, [right_of(flows.dir_from)]))
+                elif flows.dedicated_left:
+                    self.lanes.append(Lane(3, flows.dir_from, [left_of(flows.dir_from)]))
+                    self.lanes.append(Lane(3, flows.dir_from, [left_of(flows.dir_from), opposite_of(flows.dir_from)]))
+                    self.lanes.append(Lane(3, flows.dir_from, [opposite_of(flows.dir_from), right_of(flows.dir_from)]))
+                else:
+                    self.lanes.append(Lane(3, flows.dir_from, [left_of(flows.dir_from), opposite_of(flows.dir_from)]))
+                    self.lanes.append(Lane(3, flows.dir_from, [opposite_of(flows.dir_from)]))
+                    self.lanes.append(Lane(3, flows.dir_from, [opposite_of(flows.dir_from), right_of(flows.dir_from)]))
         else:
             # TODO - add full fledged junction generation functionality for more lanes and all combos of dedicated bus lanes and shite
             n_generated = 0
             if flows.dedicated_bus:
                 n_generated+=1
-                self.lanes.append(Lane(1, flows.dir_from, [left_of(flows.dir_from)], bus=True))
+                self.lanes.append(Lane(3, flows.dir_from, [left_of(flows.dir_from)], bus=True))
                 if flows.dedicated_right:
-                    self.lanes.append(Lane(1, flows.dir_from, [right_of(flows.dir_from)]))
+                    self.lanes.append(Lane(3, flows.dir_from, [right_of(flows.dir_from)]))
                     n_generated += 1
                 for i in range(num_lanes-n_generated):
-                    self.lanes.append(Lane(1, flows.dir_from, [opposite_of(flows.dir_from)]))
+                    self.lanes.append(Lane(3, flows.dir_from, [opposite_of(flows.dir_from)]))
             else:
                 if flows.dedicated_left:
                     n_generated+=1
-                    self.lanes.append(Lane(1, flows.dir_from, [left_of(flows.dir_from)]))
+                    self.lanes.append(Lane(3, flows.dir_from, [left_of(flows.dir_from)]))
                 elif flows.dedicated_right:
                     n_generated += 1
-                    self.lanes.append(Lane(1, flows.dir_from, [right_of(flows.dir_from)]))
+                    self.lanes.append(Lane(3, flows.dir_from, [right_of(flows.dir_from)]))
                 for i in range(num_lanes-n_generated):
-                    self.lanes.append(Lane(1, flows.dir_from, [opposite_of(flows.dir_from)]))
+                    self.lanes.append(Lane(3, flows.dir_from, [opposite_of(flows.dir_from)]))
+        print(f"generated {len(self.lanes)} lanes")
 
     # hourly/longer period update
     def simulate_hourly(self):
@@ -85,20 +110,20 @@ class Direction:
 
     # tick based update
     def simulateUpdate(self, trafficLights, trafficlight_timing):
-        #Dequeue cars
-        spaces = []
+        #Dequeue cars #TODO SEEMS TO BE AN ISSUE HERE
+        spaces_in_lanes = []
         vehicles_before = self.get_total_vehicles()
         for lane in self.lanes:
             if (trafficLights in TrafficLights.NORTH_SOUTH_RIGHT) and (self.flows.get_direction_from() in Dir.NORTH | Dir.SOUTH):
-                lane.simulate_update(right_of(self.flows.get_direction_from()), trafficlight_timing)
+                lane.simulate_update([right_of(self.flows.get_direction_from())], trafficlight_timing)
             elif (trafficLights in TrafficLights.NORTH_SOUTH_OTHER) and (self.flows.get_direction_from() in Dir.NORTH | Dir.SOUTH):
-                lane.simulate_update(left_of(self.flows.get_direction_from()) | opposite_of(self.flows.get_direction_from()), trafficlight_timing)
+                lane.simulate_update([left_of(self.flows.get_direction_from()),opposite_of(self.flows.get_direction_from())], trafficlight_timing)
             elif (trafficLights in TrafficLights.EAST_WEST_RIGHT) and (self.flows.get_direction_from() in Dir.EAST | Dir.WEST):
-                lane.simulate_update(right_of(self.flows.get_direction_from()), trafficlight_timing)
+                lane.simulate_update([right_of(self.flows.get_direction_from())], trafficlight_timing)
             elif (trafficLights in TrafficLights.EAST_WEST_OTHER) and (self.flows.get_direction_from() in Dir.EAST | Dir.WEST):
-                lane.simulate_update(left_of(self.flows.get_direction_from()) | opposite_of(self.flows.get_direction_from()), trafficlight_timing)
+                lane.simulate_update([left_of(self.flows.get_direction_from()), opposite_of(self.flows.get_direction_from())], trafficlight_timing)
             
-            spaces.append(lane.get_queue_limit() - lane.get_no_vehicle_present()) #How many free spaces are there
+            spaces_in_lanes.append(lane.get_no_available_spaces()) #How many free spaces are there
 
         if self.calculating_max_wait and vehicles_before != 0:
             self.max_wait += trafficlight_timing
@@ -106,15 +131,15 @@ class Direction:
         #print("before sticky loop")
 
         #Enqueue cars / add them into the lanes from each pool
-        while sum(spaces) != 0: #Include condition for if there aren't any more cars to add
+        while sum(spaces_in_lanes) != 0: #Include condition for if there aren't any more cars to add
             index = 0
-            max = spaces[0] # spaces is the array of number of available spaces in each lane
+            emptiest_lane = spaces_in_lanes[0] # spaces is the array of number of available spaces in each lane
 
             #print(f"in sticky loop index:{index}, spaces:{spaces}")
 
-            for i in range(1, len(spaces)): #Get lane with most empty spaces
-                if spaces[i] > max:
-                    max = spaces[i]
+            for i in range(1, len(spaces_in_lanes)): #Get lane with most empty spaces
+                if spaces_in_lanes[i] > emptiest_lane:
+                    emptiest_lane = spaces_in_lanes[i]
                     index = i
             
             #Condition for adding cars
@@ -124,23 +149,22 @@ class Direction:
             if lane.goes_to(left_of(self.flows.get_direction_from())) and not lane.goes_to(right_of(self.flows.get_direction_from())): #Lane with left turn but no right turn (might have ahead)
                 if self.pools[0] > 0 and not lane.is_bus_lane:
                     lane.add_vehicle(Vehicle(self.flows.get_direction_from(), left_of(self.flows.get_direction_from()), VehicleType.CAR))
-                    spaces[index] -= 1
+                    spaces_in_lanes[index] -= 1
                     self.pools[0] -= 1
                 elif lane.goes_to(opposite_of(self.flows.get_direction_from())) and self.pools[1] > 0 and not lane.is_bus_lane:
                     lane.add_vehicle(Vehicle(self.flows.get_direction_from(), opposite_of(self.flows.get_direction_from()), VehicleType.CAR))
-                    spaces[index] -= 1
+                    spaces_in_lanes[index] -= 1
                     self.pools[1] -= 1
                 elif self.pools_bus[0] > 0 and lane.is_bus_lane:
                     lane.add_vehicle(Vehicle(self.flows.get_direction_from(), left_of(self.flows.get_direction_from()), VehicleType.BUS))
-                    spaces[index] -= 1
+                    spaces_in_lanes[index] -= 1
                     self.pools_bus[0] -= 1
                 elif lane.goes_to(opposite_of(self.flows.get_direction_from())) and self.pools_bus[1] > 0 and lane.is_bus_lane:
                     lane.add_vehicle(Vehicle(self.flows.get_direction_from(), opposite_of(self.flows.get_direction_from()), VehicleType.BUS))
-                    spaces[index] -= 1
+                    spaces_in_lanes[index] -= 1
                     self.pools_bus[1] -= 1
                 else:
-                    spaces[index] = 0 #If we couldn't add anything to the lane, pretend the lane is full
-
+                    spaces_in_lanes[index] = 0 #If we couldn't add anything to the lane, pretend the lane is full
                 # if lane.is_bus_lane:
                 #     if self.pools_bus[0] > 0:
                 #         lane.add_vehicle(Vehicle(self.flows.get_direction_from(), left_of(self.flows.get_direction_from()), VehicleType.BUS))
@@ -173,29 +197,29 @@ class Direction:
                         vehicle = VehicleType.BUS
                     
                     lane.add_vehicle(Vehicle(self.flows.get_direction_from(), right_of(self.flows.get_direction_from()), vehicle))
-                    spaces[index] -= 1
+                    spaces_in_lanes[index] -= 1
                     if vehicle == VehicleType.CAR:
                         self.pools[2] -= 1
                     else:
                         self.pools_bus[2] -= 1
                 elif lane.goes_to(opposite_of(self.flows.get_direction_from())) and self.pools[1] > 0 and not lane.is_bus_lane: #Don't technically need the third condition since we don't have right turning bus lanes
                     lane.add_vehicle(Vehicle(self.flows.get_direction_from(), opposite_of(self.flows.get_direction_from()), VehicleType.CAR))
-                    spaces[index] -= 1
+                    spaces_in_lanes[index] -= 1
                     self.pools[1] -= 1
                 else:
-                    spaces[index] = 0 #If we couldn't add anything to the lane, pretend the lane is full
+                    spaces_in_lanes[index] = 0 #If we couldn't add anything to the lane, pretend the lane is full
             # lane goes ahead only
             elif not lane.goes_to(left_of(self.flows.get_direction_from())) and not lane.goes_to(right_of(self.flows.get_direction_from())): #Lane with only ahead (no left turn nor right turn)
                 if lane.goes_to(opposite_of(self.flows.get_direction_from())) and self.pools[1] > 0 and not lane.is_bus_lane:
                     lane.add_vehicle(Vehicle(self.flows.get_direction_from(), opposite_of(self.flows.get_direction_from()), VehicleType.CAR))
-                    spaces[index] -= 1
+                    spaces_in_lanes[index] -= 1
                     self.pools[1] -= 1
                 elif lane.goes_to(opposite_of(self.flows.get_direction_from())) and self.pools_bus[1] > 0 and lane.is_bus_lane:
                     lane.add_vehicle(Vehicle(self.flows.get_direction_from(), opposite_of(self.flows.get_direction_from()), VehicleType.BUS))
-                    spaces[index] -= 1
+                    spaces_in_lanes[index] -= 1
                     self.pools_bus[1] -= 1
                 else:
-                    spaces[index] = 0 #If we couldn't add anything to the lane, pretened the lane is full
+                    spaces_in_lanes[index] = 0 #If we couldn't add anything to the lane, pretened the lane is full
             else: #Lane with left, ahead and right
                 directions = []
                 if self.pools[0] > 0:
@@ -208,7 +232,7 @@ class Direction:
                 if directions:
                     direction = random.choice(directions)
                     lane.add_vehicle(Vehicle(self.flows.get_direction_from(), direction, VehicleType.CAR))
-                    spaces[index] -= 1
+                    spaces_in_lanes[index] -= 1
                     if direction == left_of(self.flows.get_direction_from()):
                         self.pools[0] -= 1
                     elif direction == opposite_of(self.flows.get_direction_from()):
@@ -216,9 +240,8 @@ class Direction:
                     else:
                         self.pools[2] -= 1
                 else:
-                    spaces[index] = 0
+                    spaces_in_lanes[index] = 0
         #print("completed sticky loop")
-
         #Calculating max length
         max_lane = 0
         for lane in self.lanes:

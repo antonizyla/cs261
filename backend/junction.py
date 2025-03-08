@@ -57,7 +57,7 @@ class Junction:
         total_vehicles = self.northerly_lanes.get_total_vehicles() + self.easterly_lanes.get_total_vehicles() + self.southerly_lanes.get_total_vehicles() + self.westerly_lanes.get_total_vehicles()
         i = 0
 
-        while total_vehicles != 0:
+        while total_vehicles > 0 and i < 100:
             self.northerly_lanes.simulateUpdate(traffic_light_order[i%4], traffic_light_timing[i%4]/60) #Need to further multiply by some constant - currently is number of cars per minute,
             self.easterly_lanes.simulateUpdate(traffic_light_order[i%4], traffic_light_timing[i%4]/60)
             self.southerly_lanes.simulateUpdate(traffic_light_order[i%4], traffic_light_timing[i%4]/60)
