@@ -1,8 +1,8 @@
 from PyQt5.QtWidgets import (QWidget, QPushButton, QVBoxLayout, QLabel, QLineEdit, 
                              QSpinBox, QCheckBox, QGroupBox, QFormLayout, QToolButton, 
-                             QHBoxLayout, QGridLayout, QMessageBox, QVBoxLayout, QScrollArea, QSizePolicy, QButtonGroup  )
-from PyQt5.QtGui import QIntValidator
-from PyQt5.QtCore import Qt
+                             QHBoxLayout, QGridLayout, QMessageBox, QVBoxLayout, QScrollArea, QSizePolicy, QButtonGroup)
+from PyQt5.QtGui import QIntValidator, QRegularExpressionValidator
+from PyQt5.QtCore import Qt, QRegularExpression
 import os
 from directions import CardinalDirection, Turn
 from typing import Optional, Callable
@@ -196,8 +196,9 @@ class JunctionInputAndParameterWidget(QGroupBox):
         self.crossing_time_label.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
 
         self.crossing_time_input = QLineEdit()
-        self.crossing_time_input.setValidator(QIntValidator(0, 999))
-        self.crossing_time_input.setPlaceholderText("0")
+        validator = QRegularExpressionValidator(QRegularExpression("^[1-9][0-9]{0,2}$"))  # Allows 1-999, no leading 0
+        self.crossing_time_input.setValidator(validator)
+        self.crossing_time_input.setPlaceholderText("1-999")  # Updated placeholder to reflect the new rule
         self.crossing_time_input.setFixedWidth(50)
 
         self.crossing_time_label.setVisible(False)
@@ -218,8 +219,9 @@ class JunctionInputAndParameterWidget(QGroupBox):
         self.crossing_rph_label.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
 
         self.crossing_rph_input = QLineEdit()
-        self.crossing_rph_input.setValidator(QIntValidator(0, 999))
-        self.crossing_rph_input.setPlaceholderText("0")
+        validator = QRegularExpressionValidator(QRegularExpression("^[1-9][0-9]{0,2}$"))  # Allows 1-999, no leading 0
+        self.crossing_rph_input.setValidator(validator)
+        self.crossing_rph_input.setPlaceholderText("1-999")  # Updated placeholder to reflect the new rule
         self.crossing_rph_input.setFixedWidth(50)
 
         self.crossing_rph_label.setVisible(False)
