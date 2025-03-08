@@ -423,7 +423,6 @@ class ArmData():
         
         # Calculates the number of lanes which exit at each arm
         lane_counts_out = []
-        print("")
         for direction in CardinalDirection:
             straight_data = junction_data.arms[(direction + Turn.BACK).index]
             # Number of lanes which can exit here by going straight (excluding bus lane)
@@ -450,7 +449,6 @@ class ArmData():
                 right_data.dedicated_right
                 + (right_undedicated_lanes >= 1)
             )
-            print(left_lanes, straight_lanes, right_lanes)
             # Only the max of these matters for the number of outgoing lanes
             lane_counts_out.append(max(1, left_lanes, straight_lanes, right_lanes))
 
@@ -466,7 +464,6 @@ class ArmData():
             opposite_arm_width = opposite_arm.dedicated_bus + opposite_arm.lane_count_in + lane_counts_out[(direction + Turn.BACK).index]
             
             island_widths.append(max(0, opposite_arm_width - this_arm_width))
-            print(this_arm.lane_count_in, island_widths[i],  lane_counts_out[i])
             arms.append(
                 ArmData(
                     [this_arm.lane_count_in, island_widths[i], lane_counts_out[i]], 
