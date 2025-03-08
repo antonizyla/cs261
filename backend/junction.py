@@ -12,6 +12,7 @@ class Junction:
         self.easterly_lanes = Direction(self.flow_rates[1], self.params.noLanes[1])
         self.southerly_lanes = Direction(self.flow_rates[2], self.params.noLanes[2])
         self.westerly_lanes = Direction(self.flow_rates[3], self.params.noLanes[3])
+        self.accumulator = 0
 
     def set_flow_rates(self, rates: FlowRates):
         self.flow_rates = rates
@@ -41,18 +42,23 @@ class Junction:
                 traffic_light_order.append(TrafficLights.EAST_WEST_OTHER)
 
         for i in range(0, 4):  # Value to change during development
-            if traffic_light_timing[i % 4] == NSR or traffic_light_timing[i % 4] == NSO:
-                seconds_spent = (max(self.params.get_sequencing_priority()[0],
-                                     self.params.get_sequencing_priority()[2]) + 1) * 10
-            else:
-                seconds_spent = (max(self.params.get_sequencing_priority()[1],
-                                     self.params.get_sequencing_priority()[3]) + 1) * 10
+            if self.accumulator < (3600 / self.params.get_crossing_rph()):
+                if traffic_light_timing[i % 4] == NSR or traffic_light_timing[i % 4] == NSO:
+                    seconds_spent = (max(self.params.get_sequencing_priority()[0],
+                                        self.params.get_sequencing_priority()[2]) + 1) * 10
+                else:
+                    seconds_spent = (max(self.params.get_sequencing_priority()[1],
+                                        self.params.get_sequencing_priority()[3]) + 1) * 10
 
-            for dir in [self.northerly_lanes, self.easterly_lanes, self.southerly_lanes, self.westerly_lanes]:
-                dir.simulateUpdate(traffic_light_order[i % 4],
-                                   seconds_spent)  # Need to further multiply by some constant - currently is number of cars per minute,
+                for dir in [self.northerly_lanes, self.easterly_lanes, self.southerly_lanes, self.westerly_lanes]:
+                    dir.simulateUpdate(traffic_light_order[i % 4],
+                                    seconds_spent)  # Need to further multiply by some constant - currently is number of cars per minute,
+            else:
+                self.accumulator = 0 #NEED TO ACCOUNT FOR INCREASING WAIT TIME AND AVERAGE TIME
+                seconds_spent = self.params.get_crossing_time()
 
             self.add_vehicles(seconds_spent)
+            self.accumulator += seconds_spent
 
         # Calculating max wait - uses the idea that cars considered later in the simulation will have to wait the same time or longer -> cars at the end of the simulation wait the longest
         self.northerly_lanes.set_calculating_max_wait(True)
