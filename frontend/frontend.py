@@ -82,7 +82,6 @@ class MainApplication(QMainWindow):
 
         # Connect the "Start Simulation" button to the method to switch to the Simulation tab
         self.input_tab.submit_button.clicked.connect(self.go_to_results_tab)
-        self.input_tab.submit_button.clicked.connect(self.update_results_tab)
         self.results_tab.go_inputs_button.clicked.connect(self.go_to_input_tab)
         self.results_tab.exit_button.clicked.connect(self.exit_app)
 
@@ -90,12 +89,14 @@ class MainApplication(QMainWindow):
         self.tab_widget.setCurrentWidget(self.simulation_tab)
 
     def go_to_results_tab(self):
+        if not self.input_tab.junctions_list.validate_inputs():
+            return
+        self.update_results_tab()
         self.tab_widget.setCurrentWidget(self.results_tab)
         
     def update_results_tab(self):
         number_junctions = self.get_number()
         self.results_tab.update_junctions(number_junctions)
-        self.go_to_results_tab()
 
     def get_number(self):
         return self.input_tab.junctions_list.count_junctions()

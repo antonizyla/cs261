@@ -33,6 +33,7 @@ class CopyPaste():
 
     valid_paste: bool = False
 
+
 class InputAndParameterWidget(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -53,7 +54,6 @@ class InputAndParameterWidget(QWidget):
         # Submit button centered below the grid
         self.submit_button = QPushButton("Start Simulation")
         self.submit_button.setObjectName("submit_button")
-        self.submit_button.clicked.connect(self.update_global_inputs_backend)
         
         self.update_layout()
         
