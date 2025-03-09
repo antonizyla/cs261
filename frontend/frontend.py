@@ -3,10 +3,7 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QTabWidget, QWidget, QLab
 from inputAndParameterPage import InputAndParameterWidget
 from resultsPage import ResultsWidget
 import os
-from pathlib import Path
-print((Path(__file__).parent.parent / 'backend').resolve().__str__())
-sys.path.append((Path(__file__).parent.parent / 'backend').resolve().__str__())
-from frontend_interface import front_backend_join
+from backend.frontend_interface import front_backend_join
 
 class HomeWindow(QDialog):
     def __init__(self):

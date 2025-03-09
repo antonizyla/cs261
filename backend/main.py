@@ -1,7 +1,7 @@
-from flowrates import FlowRates
-from lane import Lane, Dir
-from params import Parameters
-from junction import Junction
+from backend.flowrates import FlowRates
+from backend.lane import Lane, Dir
+from backend.params import Parameters
+from backend.junction import Junction
 
 # run a basic test configuration
 j_params = Parameters([2, 2, 2, 2])

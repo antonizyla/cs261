@@ -1,8 +1,6 @@
 from enum import IntEnum, Enum
 import sys
-from pathlib import Path
-sys.path.append((Path(__file__).parent.parent / 'backend').resolve().__str__())
-from lane import Dir
+from backend.lane import Dir
 
 
 class Turn(Enum):

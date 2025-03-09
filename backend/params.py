@@ -1,4 +1,4 @@
-from lane import Dir, Lane
+from backend.lane import Dir, Lane
 
 
 class Parameters:
