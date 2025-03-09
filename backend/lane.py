@@ -56,6 +56,7 @@ class Lane:
         self.directions_to: list[Dir] = dir_to
         self.direction_from = dir_from
         self.is_bus_lane = bus
+        self.maximum_vehicle_wait_time = 0
 
     def get_num_vehicles(self):
         return len(self.current_vehicles)
@@ -92,19 +93,15 @@ class Lane:
                     timer -= 1  #Remembered right-turning cars from opposite directions turned before each other rather than after each other 
                     
                 vehicle = self.current_vehicles.pop(0)
-                if earliest_time == -1:
-                    earliest_time = vehicle.get_time_entered()
-                elif vehicle.get_time_entered() < earliest_time:
-                    earliest_time = vehicle.get_time_entered()
-
                 total_for_average += (time_elapsed - vehicle.get_time_entered())
-
+                if (time_elapsed - vehicle.get_time_entered()) > self.maximum_vehicle_wait_time:
+                    self.maximum_vehicle_wait_time = time_elapsed - vehicle.get_time_entered()
                 if not self.current_vehicles:
                     break
             else:
                 break
 
-        return [time_elapsed - earliest_time, total_for_average] # [max time any car had to wait, sum of all cars wait times]
+        return [self.maximum_vehicle_wait_time, total_for_average] # [max time any car had to wait, sum of all cars wait times]
 
     def get_queue_limit(self):
         return self.queue_limit

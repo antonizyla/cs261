@@ -41,7 +41,7 @@ class Junction:
             elif (traffic_light_timing[i] == EWO) and (TrafficLights.EAST_WEST_OTHER not in traffic_light_order):
                 traffic_light_order.append(TrafficLights.EAST_WEST_OTHER)
 
-        for i in range(0, 4):  # Value to change during development
+        for i in range(0, 400):  # Value to change during development
             if self.params.get_crossing_rph() == 0 or self.params.has_pedestrian_crossing() == [False, False, False, False] or self.accumulator < (3600 / self.params.get_crossing_rph()):
                 if traffic_light_timing[i % 4] == NSR or traffic_light_timing[i % 4] == NSO:
                     seconds_spent = (max(self.params.get_sequencing_priority()[0],
@@ -59,26 +59,6 @@ class Junction:
 
             self.add_vehicles(seconds_spent)
             self.accumulator += seconds_spent
-
-        # Calculating max wait - uses the idea that cars considered later in the simulation will have to wait the same time or longer -> cars at the end of the simulation wait the longest
-        #self.northerly_lanes.set_calculating_max_wait(True)
-        #self.easterly_lanes.set_calculating_max_wait(True)
-        #self.southerly_lanes.set_calculating_max_wait(True)
-        #self.westerly_lanes.set_calculating_max_wait(True)
-        #total_vehicles = self.northerly_lanes.get_total_vehicles() + self.easterly_lanes.get_total_vehicles() + self.southerly_lanes.get_total_vehicles() + self.westerly_lanes.get_total_vehicles()
-        #i = 0
-
-        #while total_vehicles > 0 and i < 100:
-        #    self.northerly_lanes.simulateUpdate(traffic_light_order[i % 4], traffic_light_timing[
-        #        i % 4] / 60)  # Need to further multiply by some constant - currently is number of cars per minute,
-        #    self.easterly_lanes.simulateUpdate(traffic_light_order[i % 4], traffic_light_timing[i % 4] / 60)
-        #    self.southerly_lanes.simulateUpdate(traffic_light_order[i % 4], traffic_light_timing[i % 4] / 60)
-        #    self.westerly_lanes.simulateUpdate(traffic_light_order[i % 4], traffic_light_timing[i % 4] / 60)
-        #    i += 1
-        #    total_vehicles = self.northerly_lanes.get_total_vehicles() + self.easterly_lanes.get_total_vehicles() + self.southerly_lanes.get_total_vehicles() + self.westerly_lanes.get_total_vehicles()
-
-        # Generate and Return ResultSet
-        # return ResultSet(n, e, s, w, )
 
     def add_vehicles(self, seconds_spent):
         for dir in [self.northerly_lanes, self.easterly_lanes, self.southerly_lanes, self.westerly_lanes]:

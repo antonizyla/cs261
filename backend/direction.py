@@ -207,6 +207,9 @@ class Direction:
             self.p_left_c) + len(self.p_right_b) + len(self.p_right_c)) / len(self.lanes))
         if max_candidate > self.max_length:
             self.max_length = max_candidate
+        print(f"weird max candidate thingy {max_candidate}")
+        print(f"Number of vehicles in each pool for direction coming from {self.flows.get_direction_from()} is {[len(self.p_left_c), len(self.p_ahead_c), len(self.p_right_c)]}")
+        print(f"Number of vehicles in each lane for direction coming from {self.flows.get_direction_from()} is {[lane.get_num_vehicles() for lane in self.lanes]}")
 
     def add_to_pools(self, seconds):
         self.residuals[0] += (seconds * self.flows.get_flow_left() / 3600)
