@@ -378,32 +378,32 @@ class ResultsWidget(QWidget):
                     c.setFont("Helvetica", 11)
                     if config_num == 1:
                         result = (
-                            f"Avg Wait: {self.average_wait[idx]} sec, "
-                            f"Max Wait: {self.max_wait_time[idx]} sec, "
+                            f"Min Wait: {self.average_wait[idx]:.2f} min, "
+                            f"Min Wait: {self.max_wait_time[idx]:.2f} min, "
                             f"Max Queue: {self.max_queue_length[idx]} cars"
                         )
                     elif config_num == 2:
                         result = (
-                            f"Avg Wait: {self.alt_avg_wait[idx]} sec, "
-                            f"Max Wait: {self.alt_max_wait_time[idx]} sec, "
+                            f"Min Wait: {self.alt_avg_wait[idx]:.2f} min, "
+                            f"Min Wait: {self.alt_max_wait_time[idx]:.2f} min, "
                             f"Max Queue: {self.alt_max_queue_length[idx]} cars"
                         )
                     elif config_num == 3:
                         result = (
-                            f"Avg Wait: {self.alt1_avg_wait[idx]} sec, "
-                            f"Max Wait: {self.alt1_max_wait_time[idx]} sec, "
+                            f"Min Wait: {self.alt1_avg_wait[idx]:.2f} min, "
+                            f"Min Wait: {self.alt1_max_wait_time[idx]:.2f} min, "
                             f"Max Queue: {self.alt1_max_queue_length[idx]} cars"
                         )
                     elif config_num == 4:
                         result = (
-                            f"Avg Wait: {self.alt2_avg_wait[idx]} sec, "
-                            f"Max Wait: {self.alt2_max_wait_time[idx]} sec, "
+                            f"Min Wait: {self.alt2_avg_wait[idx]:.2f} min, "
+                            f"Min Wait: {self.alt2_max_wait_time[idx]:.2f} min, "
                             f"Max Queue: {self.alt2_max_queue_length[idx]} cars"
                         )
                     elif config_num == 5:
                         result = (
-                            f"Avg Wait: {self.alt3_avg_wait[idx]} sec, "
-                            f"Max Wait: {self.alt3_max_wait_time[idx]} sec, "
+                            f"Min Wait: {self.alt3_avg_wait[idx]:.2f} min, "
+                            f"Min Wait: {self.alt3_max_wait_time[idx]:.2f} min, "
                             f"Max Queue: {self.alt3_max_queue_length[idx]} cars"
                         )
                     else:
