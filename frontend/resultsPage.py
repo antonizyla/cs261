@@ -65,18 +65,6 @@ class ResultsWidget(QWidget):
         self.main_layout = QGridLayout()
         self.main_layout.setSpacing(5)  # Reduce spacing for a more compact layout
 
-        # self.minimise_south = QPushButton("Minimise South")
-        # self.main_layout.addWidget(self.minimise_south, 0, 0)  # top
-
-        # self.minimise_west = QPushButton("Minimise West")
-        # self.main_layout.addWidget(self.minimise_west, 0, 1)  # top
-
-        # self.minimise_north = QPushButton("Minimise North")
-        # self.main_layout.addWidget(self.minimise_north, 0, 2)  # top
-
-        # self.minimise_east = QPushButton("Minimise East")
-        # self.main_layout.addWidget(self.minimise_east, 0, 3)  # top
-
         for i in range(4):
             self.main_layout.setColumnStretch(i, 1)
 
@@ -128,13 +116,6 @@ class ResultsWidget(QWidget):
         group_box.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         form_layout = QFormLayout()
         form_layout.setContentsMargins(5, 5, 5, 5)
-
-        # Create a toggle button for collapsing/expanding
-        # toggle_button = QToolButton()
-        # toggle_button.setText(road_name + " ▼")
-        # toggle_button.setCheckable(True)
-        # toggle_button.setChecked(True)
-        # toggle_button.clicked.connect(lambda: self.toggle_group(toggle_button, group_box, road_name))
 
         minimise_button = QPushButton("Minimise "+road_name)
         self.main_layout.addWidget(minimise_button, 0, row+col - 1)  # top
