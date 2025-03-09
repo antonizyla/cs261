@@ -89,39 +89,39 @@ it will give an insight into the algorithms and formulas used to calculate the t
 
         \begin{figure}[H]
             \centering
-            %\includegraphics[width=7cm]{}
+            \includegraphics[width=7cm]{homepage.png}
             \caption{Home Page of the System}
             \label{fig:homepage}
         \end{figure}
     
     \subsection{Input and Validation Page}
 
-        The Input Page provides a structured interface for configuring traffic flow conditions. The page initially consists of a parent junction box, labelled "Junction 1", which contains child boxes for 
-        each direction of traffic flow. Each child box contains input fields for the user to input the desired parameters for the simulation. The image below shows the parent junction box and the child boxes for
-        each direction of traffic flow:
+        The Input Page provides a structured interface for configuring traffic flow conditions. The layout of the Input Parameters page made use of a grid and box layout to organise the input boxes for each junction. The widget uses PyQt's QScrollArea to allow the user to scroll through the multiple junction configurations, where each one of them 
+        is contained in a QGroupBox and stored as JunctionInputAndParameterWidget. Each JunctionInputAndParameterWidget contains 4 QGroupBoxes, one for each direction of traffic flow stored as RoadGroupWidget. Each RoadGroupWidget contains the input fields for the 
+        traffic flow, number of lanes, dedicated lanes, such as bus lanes and bus lane configuration, left turn lane and right turn lane; and also a priority input field. The image below shows the input page of the system:
         
         \begin{figure}[h!]
             \centering
-            \includegraphics[width=\textwidth]{inputExtra.png}
+            \includegraphics[width=\textwidth]{parameter.png}
             \caption{Illustration of the Input Box}
-            \label{fig:inputBox}
+            \label{fig:parameter}
         \end{figure}
 
-        The parent box also contains two checkboxes for the user to select whether they want to add pedestrian crossing options and whether they want to see the updates on the junction on real time. A visual representation of the
-        junction is displayed on the right side of the parent box, which updates in real time as the user inputs the parameters. The image below shows the visual representation:
+        The JunctionInputAndParameterWidget also contains two checkboxes for the user to select whether they want to add pedestrian crossing options and whether they want to see the updates on the junction on real time. A visual representation of the
+        junction is displayed on the right side of the parent box, which updates in real time as the user inputs the parameters. Furthermore, the parent box contains copy and paste buttons, where the user can copy the data entered 
+        in the first junction configuration, and reuse it in the other configurations. The image below shows the visual representation:
 
         \begin{figure}[H]
             \centering
             \includegraphics[width=\textwidth]{inputExtra.png}
             \caption{Illustration of the Input Box with additional options}
-            \label{fig:inputBox}
+            \label{fig:inputExtra}
         \end{figure}
 
-        This layout was achieved by using the PyQT library to create the boxes using QGroupBox widgets.
-    \subsubsection{Visualisation}
-    In the original design, we had the idea to have a Sankey diagram placed on top of the visualisation so that the user could view the flow of traffic into each exit where the size of the arrow would be the VpH going towards that exit. We decided against this as it would overcomplicate the visualisation by including this overlay with the addition of add buttons to choose which exit you would like to view. 
+        Once the user has input the desired parameters, they can click the "Start Simulation" button at the bottom of the page to send the data to the backend and start the simulation. After the user has clicked the "Start Simulation" button, they
+        will be taken to the Results Page where the results of the simulation will be displayed.
 
-    Instead, we chose to have an adapting visualisation where the diagram of the junction would update whenever the user would add an exit or change a parameter, such as adding an extra lane or adding a pedestrian crossing.
+        
     \subsection{Results Page}
         
         The Results Page initially displays a divided design, a 2x2 grid where each cell is planned to contain result information about the traffic flow for each direction, but initially,
@@ -167,6 +167,8 @@ it will give an insight into the algorithms and formulas used to calculate the t
 
     \subsection{PDF generation}
 
+        The PDF 
+
     \subsection{Error Handling}
     Within our application, there are many scenarios which require the user to input certain parameters or complete steps in a specific order. The way we handled these problems as a team were by checking and verifying the user's inputs by setting up certain constraints on the input boxes and by displaying error messages with the necessary steps to fix the issue on them.
     \subsubsection{Input Checking}
@@ -181,6 +183,7 @@ it will give an insight into the algorithms and formulas used to calculate the t
     There are features in our application that require the user to complete steps in a certain order. If the pre-requirement is not met for a certain feature, an error message will be displayed:
     \begin{itemize}
         \item If the user chooses to remove an alternate configuration without creating one in the first place, an error message will be displayed that will tell the user too add an alternate configuration before they are able to remove one.
+        \item In the scenario that the user decides to generate a report PDF without generating any results, an error message would display: telling the user to press the generate results button in order to generate the results of their configuration before pressing the report button again.
         \item As the user is setting up their junction configuration, if the user does not set a suitable number of lanes, when starting the simulation an error message will display. The error message will prompt the user to change the number of lanes on the exit that has an inconsistent number of lanes and incoming traffic. The error message should tell the user which junction configuration is causing an issue and which direction of traffic flow needs to be changed.
     \end{itemize}
 
@@ -197,6 +200,46 @@ it will give an insight into the algorithms and formulas used to calculate the t
 \section{Testing}
 
     \subsection{Unit Testing}
+    \subsection{Unit Testing}
+Unit testing was a crucial step in ensuring the accuracy and reliability of the traffic simulation system. By testing components in isolation before integrating them, we identified and resolved potential issues early. This approach validated the system’s functionality under various traffic conditions, ensured stable performance when handling large datasets, and prevented erroneous behaviours caused by unexpected inputs.
+
+\subsection*{Junction Class}
+The \texttt{Junction} class simulates traffic flow at intersections, managing vehicle movement and traffic light sequencing.  
+\begin{itemize}
+    \item The system dynamically adjusted traffic light sequencing based on real-time traffic demand. Testing confirmed that high-traffic lanes received extended green-light durations, while conflicting signals were never activated simultaneously. The logic correctly prioritised heavy-flow directions while preventing unnecessary delays for lighter-traffic lanes.
+    \item Vehicle movement was simulated to verify congestion patterns, ensuring that throughput calculations reflected realistic travel times. Tests confirmed that vehicle counts decreased appropriately as cars exited the junction and that waiting times increased proportionally with higher traffic density. Data logging ensured accurate tracking of each vehicle’s journey from arrival to departure.
+\end{itemize}
+
+\subsection*{Lane Class}
+The \texttt{Lane} class handles vehicle queues and determines progression based on traffic signals.  
+\begin{itemize}
+    \item Lane capacity constraints were rigorously tested to confirm that vehicles queued in a structured manner, preventing unintended bypasses or unrealistic pile-ups. Simulations verified that vehicles moved forward only when the traffic signal allowed, with proper prioritisation for left, right, and straight movements based on sequencing rules.
+    \item Empty lane optimisation was validated to ensure that the system did not perform unnecessary calculations for lanes with no vehicles. Conversely, in full-capacity scenarios, vehicles were correctly held in place until space became available, preventing system crashes or skipped queue positions.
+\end{itemize}
+
+\subsection*{Parameters Class}
+The \texttt{Parameters} class manages key simulation settings, including lane numbers, pedestrian crossings, and sequencing priorities.  
+\begin{itemize}
+    \item Input validation was tested extensively, rejecting negative lane counts, sequencing priorities outside the expected range (0-4), and unrealistic pedestrian crossing times exceeding safe thresholds. The system consistently returned appropriate error messages for incorrect inputs, ensuring that invalid configurations did not proceed to simulation.
+    \item Dynamic updates to parameters were tested by modifying settings mid-simulation. The system correctly adjusted sequencing priorities, lane capacities, and pedestrian timings in real time without disrupting existing traffic states. This confirmed that parameter modifications seamlessly influenced traffic flow without requiring a system restart.
+\end{itemize}
+
+\subsection*{FlowRates Class}
+The \texttt{FlowRates} class defines vehicle arrival rates and enforces lane-specific traffic rules.  
+\begin{itemize}
+    \item The system correctly rejected negative vehicle flow rates and prevented excessively high values from distorting congestion levels. Tests confirmed that each lane’s turn restrictions were respected, ensuring that right-turn-only lanes did not process straight-traveling vehicles and vice versa.
+    \item Stress testing simulated extreme cases, including intersections with zero traffic and junctions with over 1000 vehicles per hour in a single direction. The system maintained stable performance, ensuring that congestion did not overflow into unrealistic queue lengths and that vehicle processing remained within expected real-world limits.
+\end{itemize}
+
+\subsection*{ResultSet Class}
+The \texttt{ResultSet} class stores final simulation outputs, including traffic efficiency metrics and vehicle throughput.  
+\begin{itemize}
+    \item Tests verified that simulation results, such as total vehicles processed, congestion levels, and average wait times, were logged correctly for each road direction. The system consistently produced structured reports with clear, interpretable metrics, allowing for accurate comparison of different traffic configurations.
+    \item Edge cases such as complete traffic stagnation were tested to confirm that efficiency scores accurately reflected congestion severity. Additionally, extremely high efficiency values were examined to ensure proper formatting and that numerical overflows did not cause incorrect or misleading results.
+\end{itemize}
+
+\subsection*{Conclusion}
+Thorough unit testing ensured that all core components functioned correctly before full integration. By systematically validating sequencing logic, queue management, flow rate handling, and simulation outputs, we eliminated potential inconsistencies and performance issues. Identifying and resolving errors early improved system reliability, minimised unexpected failures, and ensured that edge cases—such as gridlocked intersections, empty roads, and misconfigured parameters—were handled correctly. The results confirmed that the system can adapt to real-world traffic conditions while maintaining stability, accuracy, and efficiency.
 
     \subsection{User Testing}
 
@@ -208,6 +251,7 @@ it will give an insight into the algorithms and formulas used to calculate the t
                 \item Ensured that error messages were displayed when prerequisites for actions were not met:
                 \begin{itemize}
                     \item When attempting to remove an alternate configuration without having created one, an error message is displayed prompting the user to add one first.
+                    \item When attempting to generate a report PDF without first generating results, an error message is displayed informing the user to generate results before generating a report.
                     \item when Attempting to start the simulation when the lanes aren't balanced with the traffic, the error message should always be raised.
                 \end{itemize}
             \end{itemize}
@@ -216,6 +260,7 @@ it will give an insight into the algorithms and formulas used to calculate the t
                 \item Validated that the correct error messages were triggered when users followed incorrect sequences of actions:
                 \begin{itemize}
                     \item Attempting to start the simulation without setting a suitable number of lanes triggers an error message specifying the exit lane inconsistency.
+                    \item Attempting to generate a report without generating results triggers an error message instructing the user to press the generate results button first.
                     \item Attempting to remove an alternate configuration before generating an alternate configuration should raise the error.
                 \end{itemize}
             \end{itemize}
@@ -225,6 +270,7 @@ it will give an insight into the algorithms and formulas used to calculate the t
                 \begin{itemize}
                     \item If an exit lane configuration is inconsistent with incoming traffic, the error message always specifies which direction of traffic and which exit are causing the issue.
                     \item Made sure the error message when removing an alternate configuration only happened when there were 0 alternate configurations generated.
+                    \item Made sure that the error message was always displayed if the user tried to generate a report before trying to generate any results
                 \end{itemize}
             \end{itemize}
         \end{itemize}
@@ -261,7 +307,7 @@ it will give an insight into the algorithms and formulas used to calculate the t
 \section{Process Evaluation}
 
     \subsection{Team Coordination and Communication}
-    As stated in the planning and design document, we met up once a week to discuss what needed to be worked on in the project. We discusses which each person had to do that week and whether and problems came up. While creating the application we met up again each week to work on the application together in the DCS labs where we would walk through what each person worked on so everyone on the team understood what they had written. Furthermore, everyone was active on the discord group we created to discuss any problems that arose.
+    As stated in the planning and design document, we met up once a week to discuss what needed to be worked on in the project. We discusses which each person had to do that week and whether and problems came up. While creating the application we met up again each week to work on the application together in the DCS labs where we would walk through what each person worked on so everyone on the team understood whast they had written. Furthermore, everyone was active on the discord group we created to discuss any problems that arose.
 
     Overall, our team coordination and communication was very good as everyone was able to keep up-to-date with the application, what was needed to be done, and any problems that came up.
 
