@@ -204,7 +204,7 @@ class ResultsWidget(QWidget):
 
     def apply_stylesheet(self):
         try:
-            with open(os.path.join(os.path.dirname(__file__), 'inputAndParameterPageStyleSheet.qss'), 'r') as f:
+            with open(os.path.join(os.path.dirname(__file__), 'stylesheet.qss'), 'r') as f:
                 stylesheet = f.read()
                 self.setStyleSheet(stylesheet)
         except FileNotFoundError:

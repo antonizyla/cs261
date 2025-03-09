@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import (QWidget, QPushButton, QVBoxLayout, QLabel, QLineEdit, 
+from PyQt5.QtWidgets import (QWidget, QPushButton, QVBoxLayout, QLabel, QLineEdit,
                              QSpinBox, QCheckBox, QGroupBox, QFormLayout, QToolButton, 
                              QHBoxLayout, QGridLayout, QMessageBox, QVBoxLayout, QScrollArea, QSizePolicy, QButtonGroup)
 from PyQt5.QtGui import QIntValidator, QRegularExpressionValidator
@@ -63,7 +63,7 @@ class InputAndParameterWidget(QWidget):
     def apply_stylesheet(self):
         """Loads and applies the stylesheet."""
         try:
-            stylesheet_path = os.path.join(os.path.dirname(__file__), 'inputAndParameterPageStyleSheet.qss')
+            stylesheet_path = os.path.join(os.path.dirname(__file__), 'stylesheet.qss')
             with open(stylesheet_path, 'r') as f:
                 stylesheet = f.read()
                 self.setStyleSheet(stylesheet)
@@ -128,7 +128,7 @@ class JunctionList(QScrollArea):
         self.setStyleSheet("background-color: #D3D3D3; border-radius: 10px;")
 
         try:
-            stylesheet_path = os.path.join(os.path.dirname(__file__), 'inputAndParameterPageStyleSheet.qss')
+            stylesheet_path = os.path.join(os.path.dirname(__file__), 'stylesheet.qss')
             with open(stylesheet_path, 'r') as f:
                 stylesheet = f.read()
                 self.setStyleSheet(stylesheet)
@@ -167,7 +167,7 @@ class JunctionList(QScrollArea):
     def apply_stylesheet(self):
         """Loads and applies the stylesheet."""
         try:
-            stylesheet_path = os.path.join(os.path.dirname(__file__), 'inputAndParameterPageStyleSheet.qss')
+            stylesheet_path = os.path.join(os.path.dirname(__file__), 'stylesheet.qss')
             with open(stylesheet_path, 'r') as f:
                 stylesheet = f.read()
                 self.setStyleSheet(stylesheet)
@@ -391,7 +391,7 @@ class JunctionInputAndParameterWidget(QGroupBox):
     def apply_stylesheet(self):
         """Loads and applies the stylesheet."""
         try:
-            stylesheet_path = os.path.join(os.path.dirname(__file__), 'inputAndParameterPageStyleSheet.qss')
+            stylesheet_path = os.path.join(os.path.dirname(__file__), 'stylesheet.qss')
             with open(stylesheet_path, 'r') as f:
                 stylesheet = f.read()
                 self.setStyleSheet(stylesheet)
@@ -593,7 +593,7 @@ class RoadGroupWidget(QGroupBox):
     def apply_stylesheet(self):
         """Loads and applies the stylesheet."""
         try:
-            stylesheet_path = os.path.join(os.path.dirname(__file__), 'inputAndParameterPageStyleSheet.qss')
+            stylesheet_path = os.path.join(os.path.dirname(__file__), 'stylesheet.qss')
             with open(stylesheet_path, 'r') as f:
                 stylesheet = f.read()
                 self.setStyleSheet(stylesheet)

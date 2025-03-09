@@ -126,7 +126,7 @@ if __name__ == "__main__":
     def apply_stylesheet(self):
         """Loads and applies the stylesheet."""
         try:
-            stylesheet_path = os.path.join(os.path.dirname(__file__), 'inputAndParameterPageStyleSheet.qss')
+            stylesheet_path = os.path.join(os.path.dirname(__file__), 'stylesheet.qss')
             with open(stylesheet_path, 'r') as f:
                 stylesheet = f.read()
                 self.setStyleSheet(stylesheet)
