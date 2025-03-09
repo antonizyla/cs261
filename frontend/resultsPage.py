@@ -74,9 +74,6 @@ class ResultsWidget(QWidget):
         self.create_road_group(self.main_layout, "West Traffic Flow", 2, 0, 1, 2)   # Bottom-left (spans 2 columns)
         self.create_road_group(self.main_layout, "East Traffic Flow", 2, 2, 1, 2)   # Bottom-right (spans 2 columns)`
 
-
-        # Button to generate results
-
         # Button to get report
         self.generate_report_button = QPushButton("Download Report as PDF") 
         self.generate_report_button.clicked.connect(self.get_report)
