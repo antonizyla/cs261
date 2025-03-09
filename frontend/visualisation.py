@@ -14,7 +14,6 @@ from directions import CardinalDirection, Turn
 
 T = TypeVar("T")
 
-# Temporary class
 class ExternalArmData():
     def __init__(self, lane_count_in, dedicated_lanes):
         self.lane_count_in = lane_count_in
@@ -24,7 +23,6 @@ class ExternalArmData():
         self.dedicated_right = dedicated_lanes[2]
 
 
-# Temporary class
 class JunctionData():
     def __init__(self, lane_counts, dedicated_lanes, has_crosswalk):
         self.arms = []
@@ -539,7 +537,6 @@ class JunctionView(QGraphicsView):
         self.scene.setSceneRect(QRectF(0, 0, width, height))
 
 
-# The following code is temporary for testing
 class ImageViewer(QWidget):
     def __init__(self, parent = None):
         super().__init__(parent)
@@ -602,10 +599,3 @@ class ImageViewer(QWidget):
                 self.setStyleSheet(stylesheet)
         except FileNotFoundError:
             print("Stylesheet file not found. Using default styles.")
-
-
-# if __name__ == "__main__":
-#     app = QApplication(sys.argv)
-#     viewer = ImageViewer()
-#     viewer.show()
-#     sys.exit(app.exec_())
