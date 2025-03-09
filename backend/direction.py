@@ -16,16 +16,16 @@ class TrafficLights(Flag):
 
 class Direction:
     def __init__(self, flows: FlowRates, num_lanes: int):
-        self.bus_residuals:list[float] = [0, 0, 0]
-        self.residuals:list[float] = [0, 0, 0]
+        self.bus_residuals: list[float] = [0, 0, 0]
+        self.residuals: list[float] = [0, 0, 0]
         self.flows: FlowRates = flows
-        self.max_wait:int = 0
-        self.max_length:int = 0
-        self.avg_wait:int = 0
+        self.max_wait: int = 0
+        self.max_length: int = 0
+        self.avg_wait: int = 0
         self.lanes: list[Lane] = []
-        self.time_elapsed:int = 0
-        self.total_cars_exited:int = 0
-        self.cumulative_time_waited:int = 0
+        self.time_elapsed: int = 0
+        self.total_cars_exited: int = 0
+        self.cumulative_time_waited: int = 0
 
         # the vehicle pools that need to go into lanes
         self.p_ahead_c: list[Vehicle] = []
@@ -81,32 +81,79 @@ class Direction:
                     self.lanes.append(Lane(60, flows.dir_from, [left_of(flows.dir_from), opposite_of(flows.dir_from)]))
                     self.lanes.append(Lane(60, flows.dir_from, [opposite_of(flows.dir_from)]))
                     self.lanes.append(Lane(60, flows.dir_from, [opposite_of(flows.dir_from), right_of(flows.dir_from)]))
-        else:
-            # TODO - add full fledged junction generation functionality for more lanes and all combos of dedicated bus lanes and shite
-            n_generated = 0
+        elif num_lanes == 4:
             if flows.dedicated_bus:
-                n_generated += 1
                 self.lanes.append(Lane(60, flows.dir_from, [left_of(flows.dir_from)], bus=True))
+                self.lanes.append(Lane(60, flows.dir_from, [left_of(flows.dir_from), opposite_of(flows.dir_from)]))
                 if flows.dedicated_right:
                     self.lanes.append(Lane(60, flows.dir_from, [right_of(flows.dir_from)]))
-                    n_generated += 1
-                for i in range(num_lanes - n_generated):
+                    self.lanes.append(Lane(60, flows.dir_from, [right_of(flows.dir_from), opposite_of(flows.dir_from)]))
+                else:
+                    self.lanes.append(Lane(60, flows.dir_from, [opposite_of(flows.dir_from), right_of(flows.dir_from)]))
+                    self.lanes.append(Lane(60, flows.dir_from, [ opposite_of(flows.dir_from)]))
+            else:
+                if flows.dedicated_left and flows.dedicated_right:
+                    self.lanes.append(Lane(60, flows.dir_from, [left_of(flows.dir_from)]))
+                    self.lanes.append(Lane(60, flows.dir_from, [right_of(flows.dir_from)]))
+                    self.lanes.append(Lane(60, flows.dir_from, [left_of(flows.dir_from), opposite_of(flows.dir_from)]))
+                    self.lanes.append(Lane(60, flows.dir_from, [right_of(flows.dir_from), opposite_of(flows.dir_from)]))
+                elif flows.dedicated_right:
+                    self.lanes.append(Lane(60, flows.dir_from, [left_of(flows.dir_from), opposite_of(flows.dir_from)]))
+                    self.lanes.append(Lane(60, flows.dir_from, [opposite_of(flows.dir_from)]))
+                    self.lanes.append(Lane(60, flows.dir_from, [right_of(flows.dir_from), opposite_of(flows.dir_from)]))
+                    self.lanes.append(Lane(60, flows.dir_from, [right_of(flows.dir_from)]))
+                elif flows.dedicated_left:
+                    self.lanes.append(Lane(60, flows.dir_from, [left_of(flows.dir_from)]))
+                    self.lanes.append(Lane(60, flows.dir_from, [left_of(flows.dir_from), opposite_of(flows.dir_from)]))
+                    self.lanes.append(Lane(60, flows.dir_from, [opposite_of(flows.dir_from)]))
+                    self.lanes.append(Lane(60, flows.dir_from, [opposite_of(flows.dir_from), right_of(flows.dir_from)]))
+                else:
+                    self.lanes.append(Lane(60, flows.dir_from, [left_of(flows.dir_from), opposite_of(flows.dir_from)]))
+                    self.lanes.append(Lane(60, flows.dir_from, [opposite_of(flows.dir_from)]))
+                    self.lanes.append(Lane(60, flows.dir_from, [opposite_of(flows.dir_from)]))
+                    self.lanes.append(Lane(60, flows.dir_from, [opposite_of(flows.dir_from), right_of(flows.dir_from)]))
+        elif num_lanes == 5:
+            if flows.dedicated_bus:
+                self.lanes.append(Lane(60, flows.dir_from, [left_of(flows.dir_from)], bus=True))
+                self.lanes.append(Lane(60, flows.dir_from, [left_of(flows.dir_from), opposite_of(flows.dir_from)]))
+                self.lanes.append(Lane(60, flows.dir_from, [ opposite_of(flows.dir_from)]))
+                if flows.dedicated_right:
+                    self.lanes.append(Lane(60, flows.dir_from, [right_of(flows.dir_from)]))
+                    self.lanes.append(Lane(60, flows.dir_from, [right_of(flows.dir_from), opposite_of(flows.dir_from)]))
+                else:
+                    self.lanes.append(Lane(60, flows.dir_from, [opposite_of(flows.dir_from), right_of(flows.dir_from)]))
                     self.lanes.append(Lane(60, flows.dir_from, [opposite_of(flows.dir_from)]))
             else:
-                if flows.dedicated_left:
-                    n_generated += 1
+                if flows.dedicated_left and flows.dedicated_right:
                     self.lanes.append(Lane(60, flows.dir_from, [left_of(flows.dir_from)]))
-                elif flows.dedicated_right:
-                    n_generated += 1
-                    self.lanes.append(Lane(60, flows.dir_from, [right_of(flows.dir_from)]))
-                for i in range(num_lanes - n_generated):
+                    self.lanes.append(Lane(60, flows.dir_from, [left_of(flows.dir_from), opposite_of(flows.dir_from)]))
                     self.lanes.append(Lane(60, flows.dir_from, [opposite_of(flows.dir_from)]))
+                    self.lanes.append(Lane(60, flows.dir_from, [right_of(flows.dir_from), opposite_of(flows.dir_from)]))
+                    self.lanes.append(Lane(60, flows.dir_from, [right_of(flows.dir_from)]))
+                elif flows.dedicated_right:
+                    self.lanes.append(Lane(60, flows.dir_from, [left_of(flows.dir_from), opposite_of(flows.dir_from)]))
+                    self.lanes.append(Lane(60, flows.dir_from, [opposite_of(flows.dir_from)]))
+                    self.lanes.append(Lane(60, flows.dir_from, [opposite_of(flows.dir_from)]))
+                    self.lanes.append(Lane(60, flows.dir_from, [right_of(flows.dir_from), opposite_of(flows.dir_from)]))
+                    self.lanes.append(Lane(60, flows.dir_from, [right_of(flows.dir_from)]))
+                elif flows.dedicated_left:
+                    self.lanes.append(Lane(60, flows.dir_from, [left_of(flows.dir_from)]))
+                    self.lanes.append(Lane(60, flows.dir_from, [left_of(flows.dir_from), opposite_of(flows.dir_from)]))
+                    self.lanes.append(Lane(60, flows.dir_from, [opposite_of(flows.dir_from)]))
+                    self.lanes.append(Lane(60, flows.dir_from, [opposite_of(flows.dir_from)]))
+                    self.lanes.append(Lane(60, flows.dir_from, [opposite_of(flows.dir_from), right_of(flows.dir_from)]))
+                else:
+                    self.lanes.append(Lane(60, flows.dir_from, [left_of(flows.dir_from), opposite_of(flows.dir_from)]))
+                    self.lanes.append(Lane(60, flows.dir_from, [opposite_of(flows.dir_from)]))
+                    self.lanes.append(Lane(60, flows.dir_from, [opposite_of(flows.dir_from)]))
+                    self.lanes.append(Lane(60, flows.dir_from, [opposite_of(flows.dir_from)]))
+                    self.lanes.append(Lane(60, flows.dir_from, [opposite_of(flows.dir_from), right_of(flows.dir_from)]))
 
     # tick based update
     def simulateUpdate(self, trafficLights, trafficlight_timing):
         # Dequeue cars
         spaces_in_lanes = []
-        time_data = [0,0]
+        time_data = [0, 0]
         # vehicles_before = self.get_total_vehicles()
         for lane in self.lanes:
             cars_exited = lane.get_num_vehicles()
