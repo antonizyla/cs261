@@ -6,6 +6,8 @@ def front_backend_join(junc_params, flowrates: list[FlowRates]):
     j = Junction(junc_params, flowrates)
     j.run_simulation()
     results = []
+    k_wait = 1
+    k_len = 1
     overall_score = 0
     i = 0
     for d in [j.northerly_lanes, j.easterly_lanes, j.southerly_lanes, j.westerly_lanes]:
