@@ -62,34 +62,50 @@ class ResultsWidget(QWidget):
         self.apply_stylesheet()
 
         # Use a grid layout for the road groups
-        main_layout = QGridLayout()
-        main_layout.setSpacing(5)  # Reduce spacing for a more compact layout
+        self.main_layout = QGridLayout()
+        self.main_layout.setSpacing(5)  # Reduce spacing for a more compact layout
 
-        # Create road result groups in a 2x2 grid
-        self.create_road_group(main_layout, "South Traffic Flow", 0, 0)  # Top-left
-        self.create_road_group(main_layout, "North Traffic Flow", 0, 1)  # Top-right
-        self.create_road_group(main_layout, "West Traffic Flow", 1, 0)   # Bottom-left
-        self.create_road_group(main_layout, "East Traffic Flow", 1, 1)   # Bottom-right
+        # self.minimise_south = QPushButton("Minimise South")
+        # self.main_layout.addWidget(self.minimise_south, 0, 0)  # top
+
+        # self.minimise_west = QPushButton("Minimise West")
+        # self.main_layout.addWidget(self.minimise_west, 0, 1)  # top
+
+        # self.minimise_north = QPushButton("Minimise North")
+        # self.main_layout.addWidget(self.minimise_north, 0, 2)  # top
+
+        # self.minimise_east = QPushButton("Minimise East")
+        # self.main_layout.addWidget(self.minimise_east, 0, 3)  # top
+
+        for i in range(4):
+            self.main_layout.setColumnStretch(i, 1)
+
+        # Create road result groups in a 2x2 grid within a 4-column-wide layout
+        self.create_road_group(self.main_layout, "South Traffic Flow", 1, 0, 1, 2)  # Top-left (spans 2 columns)
+        self.create_road_group(self.main_layout, "North Traffic Flow", 1, 2, 1, 2)  # Top-right (spans 2 columns)
+        self.create_road_group(self.main_layout, "West Traffic Flow", 2, 0, 1, 2)   # Bottom-left (spans 2 columns)
+        self.create_road_group(self.main_layout, "East Traffic Flow", 2, 2, 1, 2)   # Bottom-right (spans 2 columns)`
+
 
         # Button to generate results
 
         # Button to get report
         self.generate_report_button = QPushButton("Download Report as PDF") 
         self.generate_report_button.clicked.connect(self.get_report)
-        main_layout.addWidget(self.generate_report_button, 2, 0, 1, 2)  # Bottom-right
+        self.main_layout.addWidget(self.generate_report_button, 3, 0, 1, 4)  # Bottom-right
 
         
         self.go_inputs_button = QPushButton("Run Simulation Again")
-        main_layout.addWidget(self.go_inputs_button, 3, 0, 1, 2)  # Bottom
+        self.main_layout.addWidget(self.go_inputs_button, 4, 0, 1, 4)  # Bottom
 
         self.exit_button = QPushButton("Exit")
         self.exit_button.setObjectName("exitButton")
-        main_layout.addWidget(self.exit_button, 4, 0, 1, 2)  # Bottom
+        self.main_layout.addWidget(self.exit_button, 5, 0, 1, 4)  # Bottom
 
 
         # Set the layout of the main widget
         layout = QVBoxLayout()
-        layout.addLayout(main_layout)
+        layout.addLayout(self.main_layout)
         self.setLayout(layout)
 
     def update_junctions(self, number_junctions):
@@ -106,7 +122,7 @@ class ResultsWidget(QWidget):
             print("Stylesheet file not found. Using default styles.")
 
 
-    def create_road_group(self, layout, road_name, row, col):
+    def create_road_group(self, layout, road_name, row, col, row_span=1, col_span=1):
         # Create the group container with an empty form layout (no result labels)
         group_box = QGroupBox()
         group_box.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
@@ -114,14 +130,18 @@ class ResultsWidget(QWidget):
         form_layout.setContentsMargins(5, 5, 5, 5)
 
         # Create a toggle button for collapsing/expanding
-        toggle_button = QToolButton()
-        toggle_button.setText(road_name + " ▼")
-        toggle_button.setCheckable(True)
-        toggle_button.setChecked(True)
-        toggle_button.clicked.connect(lambda: self.toggle_group(toggle_button, group_box, road_name))
+        # toggle_button = QToolButton()
+        # toggle_button.setText(road_name + " ▼")
+        # toggle_button.setCheckable(True)
+        # toggle_button.setChecked(True)
+        # toggle_button.clicked.connect(lambda: self.toggle_group(toggle_button, group_box, road_name))
+
+        minimise_button = QPushButton("Minimise "+road_name)
+        self.main_layout.addWidget(minimise_button, 0, row+col - 1)  # top
+        minimise_button.clicked.connect(lambda: self.toggle_group(minimise_button, group_box, road_name))
 
         header_layout = QHBoxLayout()
-        header_layout.addWidget(toggle_button)
+        #header_layout.addWidget(toggle_button)
         header_layout.setContentsMargins(0, 0, 0, 0)
         header_layout.addStretch()
 
@@ -142,10 +162,12 @@ class ResultsWidget(QWidget):
         group_box_layout.setContentsMargins(0, 0, 0, 0)
         group_box_layout.addWidget(header_widget)
         group_box_layout.addWidget(group_box)
-        layout.addLayout(group_box_layout, row, col)
+        
+        # Apply the row and column span when adding the layout
+        layout.addLayout(group_box_layout, row, col, row_span, col_span)
 
         placeholder = QLabel("Click the 'Generate Results' button to get results. "
-        "\nResults will be displayed here as charts. The three categories will be:")
+                            "\nResults will be displayed here as charts. The three categories will be:")
         placeholder.setAlignment(Qt.AlignCenter)
         placeholder.setStyleSheet("font-size: 16px")
         form_layout.addRow(placeholder)
@@ -155,29 +177,30 @@ class ResultsWidget(QWidget):
         max_wait_label = QLabel("Max Wait Time")
         max_queue_label = QLabel("Max Queue Length")
 
-
         instruction = QLabel("When the results are generated, hover over the bars to see the exact values."
-        "\nRight-click on the annotation to remove it (Secondary Click on MacOS).")
-        
+                            "\nRight-click on the annotation to remove it (Secondary Click on MacOS).")
+
         # Add the labels to the grid layout
         form_layout.addWidget(avg_wait_label)
         form_layout.addWidget(max_wait_label)
         form_layout.addWidget(max_queue_label)
-
         form_layout.addWidget(instruction)
-  
+
         setattr(self, f"{base_name}_avg_wait_label", avg_wait_label)
         setattr(self, f"{base_name}_max_wait_label", max_wait_label)
         setattr(self, f"{base_name}_max_queue_label", max_queue_label)
 
-
     def toggle_group(self, toggle_button, group_box, road_name):
         """ Toggles the visibility of the group box content. """
-        if toggle_button.isChecked():
-            toggle_button.setText(road_name + " ▼")  # Show the content
+        if "Maximise" in toggle_button.objectName():
+            toggle_button.setText("Minimise " + road_name)  # Show the content
+            toggle_button.setObjectName("Minimise")
+            print("opened")
             group_box.setVisible(True)
         else:
-            toggle_button.setText(road_name + " ►")  # Hide the content
+            toggle_button.setText("Maximise " + road_name)  # Hide the content
+            toggle_button.setObjectName("Maximise")
+            print(toggle_button.objectName())
             group_box.setVisible(False)
 
     def get_results(self, results):
