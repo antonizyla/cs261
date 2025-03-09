@@ -1,0 +1,13 @@
+prefix=/dcs/23/u5537195/cs261/cs261/env
+exec_prefix=/dcs/23/u5537195/cs261/cs261/env
+libdir=/dcs/23/u5537195/cs261/cs261/env/lib
+sharedlibdir=/dcs/23/u5537195/cs261/cs261/env/lib
+includedir=/dcs/23/u5537195/cs261/cs261/env/include
+
+Name: zlib
+Description: zlib compression library
+Version: 1.2.13
+
+Requires:
+Libs: -L${libdir} -L${sharedlibdir} -lz
+Cflags: -I${includedir}
