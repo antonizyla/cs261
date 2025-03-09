@@ -1,6 +1,19 @@
 
-Linux and Mac?
+Linux 
 python -m  PyInstaller --add-data "frontend/stylesheet.qss:." --add-data "frontend/tiles:tiles" --add-data "backend:backend" --add-data "frontend/check.png:check.png" --noconsole --onefile frontend/frontend.py
 
 Windows
 python -m  PyInstaller --add-data "frontend/stylesheet.qss;." --add-data "frontend/tiles;tiles" --add-data "backend;backend" --add-data "frontend/check.png;check.png" --noconsole --onefile frontend/frontend.py
+
+
+
+Instructions for Mac:
+create a venv in the cs261 folder.
+    python -m venv venv
+activate the venv and install packages
+    source venv/bin/activate
+    pip install -r frontend/requirements.txt
+    pip install pyinstaller
+Then create the executable
+    python -m  PyInstaller --add-data "frontend/stylesheet.qss:." --add-data "frontend/tiles:tiles" --add-data "backend:backend" --add-data "frontend/check.png:check.png" --noconsole --onefile frontend/frontend.py
+this should create an executable in the dist folder, check that it works, then rename it and move it to the distributions folder
