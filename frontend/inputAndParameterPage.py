@@ -1,16 +1,16 @@
-from PyQt5.QtWidgets import (QWidget, QPushButton, QVBoxLayout, QLabel, QLineEdit,
+from PyQt5.QtWidgets import (QWidget, QPushButton, QVBoxLayout, QLabel, QLineEdit, # type: ignore
                              QSpinBox, QCheckBox, QGroupBox, QFormLayout, QToolButton, 
                              QHBoxLayout, QGridLayout, QMessageBox, QVBoxLayout, QScrollArea, QSizePolicy, QButtonGroup)
-from PyQt5.QtGui import QIntValidator, QRegularExpressionValidator
-from PyQt5.QtCore import Qt, QRegularExpression
+from PyQt5.QtGui import QIntValidator, QRegularExpressionValidator # type: ignore
+from PyQt5.QtCore import Qt, QRegularExpression # type: ignore
 import os
 from directions import CardinalDirection, Turn
 from typing import Optional, Callable
 import sys
 from pathlib import Path
 sys.path.append((Path(__file__).parent.parent / 'backend').resolve().__str__())
-from flowrates import FlowRates
-from params import Parameters
+from flowrates import FlowRates # type: ignore
+from params import Parameters # type: ignore
 from visualisation import JunctionData, JunctionView
 from resultsPage import ResultsWidget
 
