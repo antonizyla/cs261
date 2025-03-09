@@ -67,91 +67,92 @@ alt3_road_results = {
 
 overallScore = 66
 alt_overallScore = 80
-def remove_labels(cls):
-    def create_road_group(self, layout, road_name, row, col):
-        # Create the group container with an empty form layout (no result labels)
-        group_box = QGroupBox()
-        group_box.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        form_layout = QFormLayout()
-        form_layout.setContentsMargins(5, 5, 5, 5)
+# def remove_labels(cls):
+#     def create_road_group(self, layout, road_name, row, col):
+#         # Create the group container with an empty form layout (no result labels)
+#         group_box = QGroupBox()
+#         group_box.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+#         form_layout = QFormLayout()
+#         form_layout.setContentsMargins(5, 5, 5, 5)
 
-        # Create a toggle button for collapsing/expanding
-        toggle_button = QToolButton()
-        toggle_button.setText(road_name + " ▼")
-        toggle_button.setCheckable(True)
-        toggle_button.setChecked(True)
-        toggle_button.clicked.connect(lambda: self.toggle_group(toggle_button, group_box, road_name))
+#         # Create a toggle button for collapsing/expanding
+#         toggle_button = QToolButton()
+#         toggle_button.setText(road_name + " ▼")
+#         toggle_button.setCheckable(True)
+#         toggle_button.setChecked(True)
+#         toggle_button.clicked.connect(lambda: self.toggle_group(toggle_button, group_box, road_name))
 
-        header_layout = QHBoxLayout()
-        header_layout.addWidget(toggle_button)
-        header_layout.setContentsMargins(0, 0, 0, 0)
-        header_layout.addStretch()
+#         header_layout = QHBoxLayout()
+#         header_layout.addWidget(toggle_button)
+#         header_layout.setContentsMargins(0, 0, 0, 0)
+#         header_layout.addStretch()
 
-        # Instead of adding result labels, only add an empty row
-        form_layout.addRow(QWidget())
+#         # Instead of adding result labels, only add an empty row
+#         form_layout.addRow(QWidget())
 
-        # Store the layout and prepare for chart insertion later
-        base_name = road_name.lower().replace(' ', '_')
-        setattr(self, f"{base_name}_chart", None)
-        setattr(self, f"{base_name}_form_layout", form_layout)
+#         # Store the layout and prepare for chart insertion later
+#         base_name = road_name.lower().replace(' ', '_')
+#         setattr(self, f"{base_name}_chart", None)
+#         setattr(self, f"{base_name}_form_layout", form_layout)
 
-        header_widget = QWidget()
-        header_widget.setLayout(header_layout)
+#         header_widget = QWidget()
+#         header_widget.setLayout(header_layout)
 
-        # Assemble the group box and add it to the provided layout grid
-        group_box.setLayout(form_layout)
-        group_box_layout = QVBoxLayout()
-        group_box_layout.setContentsMargins(0, 0, 0, 0)
-        group_box_layout.addWidget(header_widget)
-        group_box_layout.addWidget(group_box)
-        layout.addLayout(group_box_layout, row, col)
+#         # Assemble the group box and add it to the provided layout grid
+#         group_box.setLayout(form_layout)
+#         group_box_layout = QVBoxLayout()
+#         group_box_layout.setContentsMargins(0, 0, 0, 0)
+#         group_box_layout.addWidget(header_widget)
+#         group_box_layout.addWidget(group_box)
+#         layout.addLayout(group_box_layout, row, col)
 
-    def get_results(self):
-        self.results_generated = True
+#     def get_results(self):
+#         self.results_generated = True
 
-        # Only placeholder values for charts are needed
-        self.average_wait = [20, 30, 25, 15]
-        self.max_wait_time = [40, 50, 35, 20]
-        self.max_queue_length = [10, 15, 12, 8]
-        self.alt_avg_wait = [30, 40, 35, 25]
-        self.alt_max_wait_time = [60, 70, 55, 40]
-        self.alt_max_queue_length = [20, 25, 22, 18]
+#         # Only placeholder values for charts are needed
+#         self.average_wait = [20, 30, 25, 15]
+#         self.max_wait_time = [40, 50, 35, 20]
+#         self.max_queue_length = [10, 15, 12, 8]
+#         self.alt_avg_wait = [30, 40, 35, 25]
+#         self.alt_max_wait_time = [60, 70, 55, 40]
+#         self.alt_max_queue_length = [20, 25, 22, 18]
 
-        # Update the main configuration charts
-        for idx, road_name in enumerate(["south_traffic_flow", "north_traffic_flow", "west_traffic_flow", "east_traffic_flow"]):
-            base_name = road_name.lower().replace(' ', '_')
-            existing_chart = getattr(self, f"{base_name}_chart", None)
-            if existing_chart:
-                form_layout = getattr(self, f"{base_name}_form_layout")
-                form_layout.removeWidget(existing_chart)
-                existing_chart.deleteLater()
-                setattr(self, f"{base_name}_chart", None)
-            road_results[road_name] = {
-                "average_wait": self.average_wait[idx],
-                "max_wait_times": self.max_wait_time[idx],
-                "max_queue_length": self.max_queue_length[idx],
-            }
-            self.update_chart(road_name, idx)
+#         # Update the main configuration charts
+#         for idx, road_name in enumerate(["south_traffic_flow", "north_traffic_flow", "west_traffic_flow", "east_traffic_flow"]):
+#             base_name = road_name.lower().replace(' ', '_')
+#             existing_chart = getattr(self, f"{base_name}_chart", None)
+#             if existing_chart:
+#                 form_layout = getattr(self, f"{base_name}_form_layout")
+#                 form_layout.removeWidget(existing_chart)
+#                 existing_chart.deleteLater()
+#                 setattr(self, f"{base_name}_chart", None)
+#             road_results[road_name] = {
+#                 "average_wait": self.average_wait[idx],
+#                 "max_wait_times": self.max_wait_time[idx],
+#                 "max_queue_length": self.max_queue_length[idx],
+#             }
+#             self.update_chart(road_name, idx)
 
-        # Update the alternative configuration charts
-        for idx, alt_road_name in enumerate(["south_traffic_flow", "north_traffic_flow", "west_traffic_flow", "east_traffic_flow"]):
-            base_name = alt_road_name.lower().replace(' ', '_')
-            existing_chart = getattr(self, f"{base_name}_chart", None)
-            if existing_chart:
-                form_layout = getattr(self, f"{base_name}_form_layout")
-                form_layout.removeWidget(existing_chart)
-                existing_chart.deleteLater()
-                setattr(self, f"{base_name}_chart", None)
-            alt_road_results[alt_road_name] = {
-                "average_wait": self.alt_avg_wait[idx],
-                "max_wait_times": self.alt_max_wait_time[idx],
-                "max_queue_length": self.alt_max_queue_length[idx],
-            }
-            self.update_chart(alt_road_name, idx)
+#         # Update the alternative configuration charts
+#         for idx, alt_road_name in enumerate(["south_traffic_flow", "north_traffic_flow", "west_traffic_flow", "east_traffic_flow"]):
+#             base_name = alt_road_name.lower().replace(' ', '_')
+#             existing_chart = getattr(self, f"{base_name}_chart", None)
+#             if existing_chart:
+#                 form_layout = getattr(self, f"{base_name}_form_layout")
+#                 form_layout.removeWidget(existing_chart)
+#                 existing_chart.deleteLater()
+#                 setattr(self, f"{base_name}_chart", None)
+#             alt_road_results[alt_road_name] = {
+#                 "average_wait": self.alt_avg_wait[idx],
+#                 "max_wait_times": self.alt_max_wait_time[idx],
+#                 "max_queue_length": self.alt_max_queue_length[idx],
+#             }
+#             self.update_chart(alt_road_name, idx)
 
-    cls.create_road_group = create_road_group
-    cls.get_results = get_results
-    return cls
+#     cls.create_road_group = create_road_group
+#     cls.get_results = get_results
+#     return cls
+
 class ResultsWidget(QWidget):
     def __init__(self, number, parent=None):
         super().__init__(parent)
