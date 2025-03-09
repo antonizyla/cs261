@@ -7,10 +7,8 @@ import os
 from directions import CardinalDirection, Turn
 from typing import Optional, Callable
 import sys
-from pathlib import Path
-sys.path.append((Path(__file__).parent.parent / 'backend').resolve().__str__())
-from flowrates import FlowRates # type: ignore
-from params import Parameters # type: ignore
+from backend.flowrates import FlowRates # type: ignore
+from backend.params import Parameters # type: ignore
 from visualisation import JunctionData, JunctionView
 from resultsPage import ResultsWidget
 

@@ -2,9 +2,9 @@ import math
 import random
 from enum import Flag, auto
 
-from flowrates import FlowRates
-from lane import Lane, left_of, right_of, opposite_of, Dir
-from vehicle import Vehicle, VehicleType
+from backend.flowrates import FlowRates
+from backend.lane import Lane, left_of, right_of, opposite_of, Dir
+from backend.vehicle import Vehicle, VehicleType
 
 
 class TrafficLights(Flag):

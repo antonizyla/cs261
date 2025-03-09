@@ -1,0 +1,1 @@
+python -m  PyInstaller --add-data "frontend/stylesheet.qss:." --add-data "frontend/tiles:tiles" --add-data "backend:backend" frontend/frontend.py

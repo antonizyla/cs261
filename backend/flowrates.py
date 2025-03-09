@@ -1,5 +1,5 @@
 # for each direction, specify how much traffic goes into each of the other directions
-from lane import Dir
+from backend.lane import Dir
 
 
 class FlowRates:

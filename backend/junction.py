@@ -1,7 +1,7 @@
 from enum import Flag, auto
-from flowrates import FlowRates
-from params import Parameters
-from direction import Direction, TrafficLights
+from backend.flowrates import FlowRates
+from backend.params import Parameters
+from backend.direction import Direction, TrafficLights
 
 
 class Junction:
