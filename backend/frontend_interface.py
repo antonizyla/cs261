@@ -15,5 +15,5 @@ def front_backend_join(junc_params, flowrates: list[FlowRates]):
         results.append([d.get_avg_wait(), d.get_max_length(), d.get_max_wait()])
         overall_score += ((flowrates[i].get_flow_total() + k_pedestrian * junc_params.has_pedestrian_crossing()[i] * junc_params.get_crossing_time()[i] * junc_params.get_crossing_rph()[i]) / (k_wait * (results[i][0] + (results[i][2]**2 / results[i][0])) + results[i][1] * k_len)) 
         i += 1
-    #Calculate Overall Score
+    results.append(overall_score)
     return results
