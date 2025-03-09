@@ -78,6 +78,12 @@ QGroupBox::title {
     background-color: #6A89A7;
 }
 
+JunctionView {
+    margin-top: 5px;
+    border: 2px solid black;
+    border-radius: 5px;
+}
+
 QGroupBox {
     background-color: rgb(63, 63, 63);
     margin-top: 5px;
