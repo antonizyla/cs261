@@ -1,5 +1,5 @@
 import sys
-from PyQt5.QtWidgets import QWidget, QPushButton, QGraphicsItem, QApplication, QMainWindow, QGraphicsScene, QGraphicsView, QGraphicsPixmapItem, QGraphicsItemGroup, QVBoxLayout, QHBoxLayout
+from PyQt5.QtWidgets import QWidget, QPushButton, QGraphicsItem, QApplication, QMainWindow, QGraphicsScene, QGraphicsView, QGraphicsPixmapItem, QGraphicsItemGroup, QVBoxLayout, QHBoxLayout, QSizePolicy
 from PyQt5.QtGui import QPixmap, QBrush, QColor, QTransform
 from PyQt5.QtCore import QRectF, QObject
 from enum import Enum, Flag, auto, unique
@@ -519,9 +519,10 @@ class JunctionView(QGraphicsView):
         self.scene = QGraphicsScene(0, 0, 100, 100)
         self.scene.setBackgroundBrush(QBrush(QColor(70, 70, 70)))  # Set background to grey
         self.setScene(self.scene)
-        self.setStyleSheet("border: 2px solid black;")
         maxSize = (70*2) + (6*2) + (31*12) + (1*10) + 4
-        self.setFixedSize(maxSize, maxSize)
+        self.setMinimumHeight(maxSize)
+        self.setMinimumWidth(maxSize)
+        self.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Expanding)
     
     def set_junction(self, junction_data):
         # Updates the display to show the junction represented by junction_data

@@ -19,7 +19,7 @@ class HomeWindow(QDialog):
                     "\n"
                     "Department of Computer Science 2025\n"
                     "\n"
-                    "Authors: Ani Bitri, Krister Hughes, Thomas Phuong, Josh Turner, Antoni Zyla\n"
+                    "Authors: Ani Bitri, Krister Hughes, Thomas Phuong, Josh Turner, Antoni Zyla, Eshan Sharif\n"
                     "\n"
                     "Click the button below to go to the Input Parameters page.")
         
