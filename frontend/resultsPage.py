@@ -286,7 +286,77 @@ class ResultsWidget(QWidget):
             group_box.setVisible(False)
 
     def get_results(self, results):
+        # Process the 3D results list.
+        # Assume each junction’s data is structured as:
+        # junction = [ [avg, max, queue] for each road direction in order:
+        #              south, north, west, east, 
+        #              overall_score ] where the overall score is the last element.
+        # First, create a list to hold overall scores per junction.
+        self.overall_scores = []
+        # Initialize metrics for up to 5 configurations if needed.
+        # Each configuration will have one list per road direction (order: south, north, west, east).
+        # For configuration 1:
+        self.average_wait = [0, 0, 0, 0]
+        self.max_wait_time = [0, 0, 0, 0]
+        self.max_queue_length = [0, 0, 0, 0]
+        # For configuration 2:
+        self.alt_avg_wait = [0, 0, 0, 0]
+        self.alt_max_wait_time = [0, 0, 0, 0]
+        self.alt_max_queue_length = [0, 0, 0, 0]
+        # For configuration 3:
+        self.alt1_avg_wait = [0, 0, 0, 0]
+        self.alt1_max_wait_time = [0, 0, 0, 0]
+        self.alt1_max_queue_length = [0, 0, 0, 0]
+        # For configuration 4:
+        self.alt2_avg_wait = [0, 0, 0, 0]
+        self.alt2_max_wait_time = [0, 0, 0, 0]
+        self.alt2_max_queue_length = [0, 0, 0, 0]
+        # For configuration 5:
+        self.alt3_avg_wait = [0, 0, 0, 0]
+        self.alt3_max_wait_time = [0, 0, 0, 0]
+        self.alt3_max_queue_length = [0, 0, 0, 0]
+
+        # Loop through each junction's results.
+        for j, junction_data in enumerate(results):
+            # The last element of each junction list is the overall score.
+            overall = junction_data[-1]
+            self.overall_scores.append(overall)
+            # For the four road directions, assign metrics.
+            for i in range(4):
+                metrics = junction_data[i]  # Expected to be [avg_wait, max_wait, max_queue]
+                if j == 0:
+                    self.average_wait[i] = metrics[0]
+                    print(f"Average wait time for junction {i+1} is {self.average_wait[i]}")
+
+                    self.max_wait_time[i] = metrics[1]
+                    print(f"Max wait time for junction {i+1} is {self.max_wait_time[i]}")
+
+                    self.max_queue_length[i] = metrics[2]
+                    print(f"Max queue length for junction {i+1} is {self.max_queue_length[i]}")
+                elif j == 1:
+                    self.alt_avg_wait[i] = metrics[0]
+                    print(f"Average wait time for junction {i+1} is {self.alt_avg_wait[i]}")
+                    self.alt_max_wait_time[i] = metrics[1]
+                    print(f"Max wait time for junction {i+1} is {self.alt_max_wait_time[i]}")
+                    self.alt_max_queue_length[i] = metrics[2]
+                    print(f"Max queue length for junction {i+1} is {self.alt_max_queue_length[i]}")
+                elif j == 2:
+                    self.alt1_avg_wait[i] = metrics[0]
+                    print(f"Average wait time for junction {i+1} is {self.alt1_avg_wait[i]}")
+                    self.alt1_max_wait_time[i] = metrics[1]
+                    print(f"Max wait time for junction {i+1} is {self.alt1_max_wait_time[i]}")
+                    self.alt1_max_queue_length[i] = metrics[2]
+                    print(f"Max queue length for junction {i+1} is {self.alt1_max_queue_length[i]}")
+                elif j == 3:
+                    self.alt2_avg_wait[i] = metrics[0]
+                    self.alt2_max_wait_time[i] = metrics[1]
+                    self.alt2_max_queue_length[i] = metrics[2]
+                elif j == 4:
+                    self.alt3_avg_wait[i] = metrics[0]
+                    self.alt3_max_wait_time[i] = metrics[1]
+                    self.alt3_max_queue_length[i] = metrics[2]
         self.results_generated = True
+        
 
         for road_name in ["south_traffic_flow", "north_traffic_flow", "west_traffic_flow", "east_traffic_flow"]:
             base_name = road_name.lower().replace(' ', '_')
@@ -312,7 +382,7 @@ class ResultsWidget(QWidget):
         # Create new overall scores layout with a maximum of two labels per row
         self.overall_layout = QGridLayout()
         for i in range(self.number):
-            overall_label = QLabel(f"Overall Score (Junction {i+1}): {overallScore}")
+            overall_label = QLabel(f"Overall Score (Junction {i+1}): {self.overall_scores[i]}")
             overall_label.setAlignment(Qt.AlignCenter)
             overall_label.setObjectName("overallScoreLabel")
             row = i // 2
@@ -324,26 +394,6 @@ class ResultsWidget(QWidget):
                 self.overall_layout.addWidget(overall_label, row, col)
         self.layout().insertLayout(0, self.overall_layout)
 
-        # Only placeholder values for charts are needed
-        self.average_wait = [20, 30, 25, 15]
-        self.max_wait_time = [40, 50, 35, 20]
-        self.max_queue_length = [10, 15, 12, 8]
-
-        self.alt_avg_wait = [30, 40, 35, 25]
-        self.alt_max_wait_time = [60, 70, 55, 40]
-        self.alt_max_queue_length = [20, 25, 22, 18]
-
-        self.alt1_avg_wait = [32, 42, 37, 27]
-        self.alt1_max_wait_time = [62, 72, 57, 42]
-        self.alt1_max_queue_length = [21, 26, 23, 19]
-
-        self.alt2_avg_wait = [33, 43, 38, 28]
-        self.alt2_max_wait_time = [63, 73, 58, 43]
-        self.alt2_max_queue_length = [22, 27, 24, 20]
-
-        self.alt3_avg_wait = [34, 44, 39, 29]
-        self.alt3_max_wait_time = [64, 74, 59, 44]
-        self.alt3_max_queue_length = [23, 28, 25, 21]
 
         # Update the main configuration charts
         for idx, road_name in enumerate(["south_traffic_flow", "north_traffic_flow", "west_traffic_flow", "east_traffic_flow"]):
