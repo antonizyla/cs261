@@ -17,6 +17,17 @@ class MockVehicle:
     def getTimeEntered(self): 
         return self._time_entered
 
+    #Add alternate method names for compatibility
+    def get_direction_to(self):
+        return self.getDirectionTo()
+
+    def get_direction_from(self):
+        return self.getDirectionFrom()
+
+    def get_time_entered(self):
+        return self.getTimeEntered()
+
+
 
 
 class TestLane:

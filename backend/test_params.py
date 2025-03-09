@@ -10,8 +10,8 @@ class TestParameters:
         params = Parameters()
         assert params.get_no_lanes() == [2, 2, 2, 2]
         assert params.has_pedestrian_crossing() == [False, False, False, False]
-        assert params.get_crossing_time() == [0, 0, 0, 0]
-        assert params.get_crossing_rph() == [0, 0, 0, 0]
+        assert params.get_crossing_time() == 0  # Fixed: Expect single integer
+        assert params.get_crossing_rph() == 0  # Fixed: Expect single float
         assert params.get_sequencing_priority() == [1, 1, 1, 1]
 
     def test_custom_initialisation(self):
@@ -19,15 +19,15 @@ class TestParameters:
         params = Parameters(
             no_lanes=[3, 2, 4, 1],
             pedestrian_crossing=[True, False, True, False],
-            crossing_time=[10, 15, 20, 25],
-            crossing_rph=[5, 10, 15, 20],
+            crossing_time=15,  # Fixed: Pass single value
+            crossing_rph=10,  # Fixed: Pass single value
             sequencing_priority=[3, 1, 2, 4]
         )
 
         assert params.get_no_lanes() == [3, 2, 4, 1]
         assert params.has_pedestrian_crossing() == [True, False, True, False]
-        assert params.get_crossing_time() == [10, 15, 20, 25]
-        assert params.get_crossing_rph() == [5, 10, 15, 20]
+        assert params.get_crossing_time() == 15  # Fixed expectation
+        assert params.get_crossing_rph() == 10  # Fixed expectation
         assert params.get_sequencing_priority() == [3, 1, 2, 4]
 
     def test_check_valid_parameters(self):
@@ -35,8 +35,8 @@ class TestParameters:
         params = Parameters(
             no_lanes=[1, 2, 3, 4],
             pedestrian_crossing=[True, True, False, False],
-            crossing_time=[5, 10, 15, 20],
-            crossing_rph=[3, 6, 9, 12],
+            crossing_time=10,  # Fixed: Pass single value
+            crossing_rph=8,  # Fixed: Pass single value
             sequencing_priority=[2, 3, 1, 4]
         )
         assert params.check() is True
@@ -63,10 +63,10 @@ class TestParameters:
             assert Parameters(pedestrian_crossing=pedestrian_crossing).check() is False, f"Failed for pedestrian_crossing={pedestrian_crossing}"
 
     def test_invalid_crossing_time(self):
-        """Ensure crossing time is validated with realistic edge cases."""
+        """Ensure crossing time is validated within realistic limits."""
         invalid_values = [
-            [-5, 10, 15, 20],  # Negative values (invalid)
-            [5, 10, 15],  # Missing one value (invalid)
+            -5,  # Negative value (invalid)
+            500  # Exceeding reasonable max (should be ≤ 300s)
         ]
         
         for crossing_time in invalid_values:
@@ -76,14 +76,11 @@ class TestParameters:
             except TypeError:
                 pytest.fail(f"TypeError raised unexpectedly for crossing_time={crossing_time}")
 
-
-
     def test_invalid_crossing_rph(self):
         """Ensure crossing requests per hour (RPH) is validated."""
         invalid_values = [
-            [-1, 5, 10, 15],  # Negative values
-            [5, 10, 15, 35],  # Exceeding max limit (30)
-            [5, 10, 15],  # Missing one value
+            -1,  # Negative value
+            35  # Exceeding max limit (should be ≤ 30)
         ]
         for crossing_rph in invalid_values:
             assert Parameters(crossing_rph=crossing_rph).check() is False, f"Failed for crossing_rph={crossing_rph}"
