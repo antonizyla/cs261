@@ -7,9 +7,10 @@ class VehicleType(Flag):
 
 
 class Vehicle:
-    def __init__(self, direction_from, direction_to, t=VehicleType.CAR):
+    def __init__(self, direction_from, direction_to, time_entered, t=VehicleType.CAR):
         self.direction_from = direction_from
         self.direction_to = direction_to
+        self.time_entered = time_entered
         self.type = t
 
     def getDirectionFrom(self):
@@ -17,3 +18,6 @@ class Vehicle:
 
     def getDirectionTo(self):
         return self.direction_to
+
+    def getTimeEntered(self):
+        return self.time_entered

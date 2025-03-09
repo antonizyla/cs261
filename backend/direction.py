@@ -25,7 +25,10 @@ class Direction:
         self.max_length = 0
         self.avg_wait = 0
         self.lanes = []
-        self.calculating_max_wait = False
+        #self.calculating_max_wait = False
+        self.time_elapsed = 0
+        self.total_cars_exited = 0
+        self.cumulative_time_waited = 0
 
         # the vehicle pools that need to go into lanes
         self.p_ahead_c: list[Vehicle] = []
@@ -119,34 +122,45 @@ class Direction:
     def simulateUpdate(self, trafficLights, trafficlight_timing):
         # Dequeue cars
         spaces_in_lanes = []
-        vehicles_before = self.get_total_vehicles()
+        #vehicles_before = self.get_total_vehicles()
         for lane in self.lanes:
+            cars_exited = lane.get_num_vehicles()
             if (trafficLights in TrafficLights.NORTH_SOUTH_RIGHT) and (
                     self.flows.get_direction_from() in Dir.NORTH | Dir.SOUTH):
-                lane.simulate_update([right_of(self.flows.get_direction_from())], trafficlight_timing)
+                time_data = lane.simulate_update([right_of(self.flows.get_direction_from())], trafficlight_timing, self.time_elapsed)
             elif (trafficLights in TrafficLights.NORTH_SOUTH_OTHER) and (
                     self.flows.get_direction_from() in Dir.NORTH | Dir.SOUTH):
-                lane.simulate_update(
+                time_data = lane.simulate_update(
                     [left_of(self.flows.get_direction_from()), opposite_of(self.flows.get_direction_from())],
-                    trafficlight_timing)
+                    trafficlight_timing, self.time_elapsed)
             elif (trafficLights in TrafficLights.EAST_WEST_RIGHT) and (
                     self.flows.get_direction_from() in Dir.EAST | Dir.WEST):
-                lane.simulate_update([right_of(self.flows.get_direction_from())], trafficlight_timing)
+                time_data = lane.simulate_update([right_of(self.flows.get_direction_from())], trafficlight_timing, self.time_elapsed)
             elif (trafficLights in TrafficLights.EAST_WEST_OTHER) and (
                     self.flows.get_direction_from() in Dir.EAST | Dir.WEST):
-                lane.simulate_update(
+                time_data = lane.simulate_update(
                     [left_of(self.flows.get_direction_from()), opposite_of(self.flows.get_direction_from())],
-                    trafficlight_timing)
+                    trafficlight_timing, self.time_elapsed)
+            
+            cars_exited -= lane.get_num_vehicles()
+            self.total_cars_exited += cars_exited
+            self.cumulative_time_waited += time_data[1]
+            
+            if self.total_cars_exited != 0:
+                self.avg_wait = self.cumulative_time_waited / self.total_cars_exited
+
+            if time_data[0] > self.max_wait:
+                self.max_wait = time_data
 
             spaces_in_lanes.append(lane.get_no_available_spaces())  # How many free spaces are there
 
-        if self.calculating_max_wait and vehicles_before != 0:
-            self.max_wait += trafficlight_timing
+        #if self.calculating_max_wait and vehicles_before != 0:
+        #    self.max_wait += trafficlight_timing
 
         # print("before sticky loop")
 
         # Enqueue cars / add them into the lanes from each pool
-        self.enqueue_to_lanes(spaces_in_lanes)
+        self.enqueue_to_lanes(spaces_in_lanes, traffic_light_timing)
         
         # print("completed sticky loop")
         # Calculating max length
@@ -206,9 +220,11 @@ class Direction:
         for lane in self.lanes:
             spaces_in_lanes.append(lane.get_no_available_spaces())
         
-        self.enqueue_to_lanes(spaces_in_lanes)
+        self.enqueue_to_lanes(spaces_in_lanes, seconds)
 
-    def enqueue_to_lanes(self, spaces_in_lanes):
+    def enqueue_to_lanes(self, spaces_in_lanes, time):
+        self.time_elapsed += time
+
         while sum(spaces_in_lanes) != 0:  # Include condition for if there aren't any more cars to add
             index = 0
             emptiest_lane = spaces_in_lanes[0]  # spaces is the array of number of available spaces in each lane
