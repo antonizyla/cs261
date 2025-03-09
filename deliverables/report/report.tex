@@ -89,36 +89,39 @@ it will give an insight into the algorithms and formulas used to calculate the t
 
         \begin{figure}[H]
             \centering
-            \includegraphics[width=7cm]{img/homepage.png}
+            \includegraphics[width=7cm]{homepage.png}
             \caption{Home Page of the System}
             \label{fig:homepage}
         \end{figure}
     
     \subsection{Input and Validation Page}
 
-        The Input Page provides a structured interface for configuring traffic flow conditions. The page initially consists of a parent junction box, labelled "Junction 1", which contains child boxes for 
-        each direction of traffic flow. Each child box contains input fields for the user to input the desired parameters for the simulation. The image below shows the parent junction box and the child boxes for
-        each direction of traffic flow:
+        The Input Page provides a structured interface for configuring traffic flow conditions. The layout of the Input Parameters page made use of a grid and box layout to organise the input boxes for each junction. The widget uses PyQt's QScrollArea to allow the user to scroll through the multiple junction configurations, where each one of them 
+        is contained in a QGroupBox and stored as JunctionInputAndParameterWidget. Each JunctionInputAndParameterWidget contains 4 QGroupBoxes, one for each direction of traffic flow stored as RoadGroupWidget. Each RoadGroupWidget contains the input fields for the 
+        traffic flow, number of lanes, dedicated lanes, such as bus lanes and bus lane configuration, left turn lane and right turn lane; and also a priority input field. The image below shows the input page of the system:
         
         \begin{figure}[h!]
             \centering
-            \includegraphics[width=\textwidth]{img/inputbox.png}
+            \includegraphics[width=\textwidth]{parameter.png}
             \caption{Illustration of the Input Box}
-            \label{fig:inputBox}
+            \label{fig:parameter}
         \end{figure}
 
-        The parent box also contains two checkboxes for the user to select whether they want to add pedestrian crossing options and whether they want to see the updates on the junction on real time. A visual representation of the
-        junction is displayed on the right side of the parent box, which updates in real time as the user inputs the parameters. The image below shows the visual representation:
+        The JunctionInputAndParameterWidget also contains two checkboxes for the user to select whether they want to add pedestrian crossing options and whether they want to see the updates on the junction on real time. A visual representation of the
+        junction is displayed on the right side of the parent box, which updates in real time as the user inputs the parameters. Furthermore, the parent box contains copy and paste buttons, where the user can copy the data entered 
+        in the first junction configuration, and reuse it in the other configurations. The image below shows the visual representation:
 
         \begin{figure}[H]
             \centering
-            \includegraphics[width=\textwidth]{img/inputboxextra.png}
+            \includegraphics[width=\textwidth]{inputExtra.png}
             \caption{Illustration of the Input Box with additional options}
-            \label{fig:inputBox}
+            \label{fig:inputExtra}
         \end{figure}
 
-        This layout was achieved by using the PyQT library to create the boxes using QGroupBox widgets.
+        Once the user has input the desired parameters, they can click the "Start Simulation" button at the bottom of the page to send the data to the backend and start the simulation. After the user has clicked the "Start Simulation" button, they
+        will be taken to the Results Page where the results of the simulation will be displayed.
 
+        
     \subsection{Results Page}
         
         The Results Page initially displays a divided design, a 2x2 grid where each cell is planned to contain result information about the traffic flow for each direction, but initially,
@@ -163,6 +166,8 @@ it will give an insight into the algorithms and formulas used to calculate the t
         \end{figure}
 
     \subsection{PDF generation}
+
+        The PDF 
 
     \subsection{Error Handling}
     Within our application, there are many scenarios which require the user to input certain parameters or complete steps in a specific order. The way we handled these problems as a team were by checking and verifying the user's inputs by setting up certain constraints on the input boxes and by displaying error messages with the necessary steps to fix the issue on them.
