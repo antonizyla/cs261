@@ -214,7 +214,7 @@ class ResultsWidget(QWidget):
         # Loop through each junction's results.
         for j, junction_data in enumerate(results):
             # The last element of each junction list is the overall score.
-            overall = int(junction_data[-1])
+            overall = round(float(junction_data[-1]), 2)
             self.overall_scores.append(overall)
             # For the four road directions, assign metrics.
             for i in range(4):
