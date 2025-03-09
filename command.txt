@@ -1,1 +1,6 @@
-python -m  PyInstaller --add-data "frontend/stylesheet.qss:." --add-data "frontend/tiles:tiles" --add-data "backend:backend" frontend/frontend.py
+
+Linux and Mac?
+python -m  PyInstaller --add-data "frontend/stylesheet.qss:." --add-data "frontend/tiles:tiles" --add-data "backend:backend" --add-data "frontend/check.png:check.png" --noconsole --onefile frontend/frontend.py
+
+Windows
+python -m  PyInstaller --add-data "frontend/stylesheet.qss;." --add-data "frontend/tiles;tiles" --add-data "backend;backend" --add-data "frontend/check.png;check.png" --noconsole --onefile frontend/frontend.py
