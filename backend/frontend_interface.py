@@ -1,5 +1,5 @@
-from backend.flowrates import FlowRates
-from backend.junction import Junction
+from flowrates import FlowRates
+from junction import Junction
 
 
 def front_backend_join(junc_params, flowrates: list[FlowRates]):
