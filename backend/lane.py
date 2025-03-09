@@ -89,12 +89,8 @@ class Lane:
 
                     first_flag = False
                 else:
-                    if self.current_vehicles[0].getDirectionTo() == right_of(
-                            self.current_vehicles[0].getDirectionFrom()):
-                        timer -= 4  # Different since each right turning car needs to wait for a right turning car from the opposite direction to finish turning.
-                    else:
-                        timer -= 1
-
+                    timer -= 1  #Remembered right-turning cars from opposite directions turned before each other rather than after each other 
+                    
                 vehicle = self.current_vehicles.pop(0)
                 if earliest_time == -1:
                     earliest_time = vehicle.getTimeEntered()

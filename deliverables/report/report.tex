@@ -24,7 +24,7 @@
 Dorset Software tasked our team with creating a traffic junction simulator. And we fucking did it. 
 
 Dorset Software has tasked our team with the creation of a traffic junction simulator which will be used for the modelling of traffic junctions on various parameters. The system provides data on how these configurations 
-affect the traffic flow and the overall efficiency of the junction in comparsion to other configurations. 
+affect the traffic flow and the overall efficiency of the junction in comparison to other configurations. 
 
 This document explains the development process of the system and provide an explanation to the key changes and decisions made throughout the implementation of the prototype. Furthermore,
 it will give an insight into the algorithms and formulas used to calculate the traffic flow and efficiency of the junctions.
@@ -38,14 +38,14 @@ it will give an insight into the algorithms and formulas used to calculate the t
 
     \subsection{Developer Tools Used}
 
-        The sytem was developed using Python and a few of its libraries. This allowd for easier transition between the frontend and backend of the system. The
+        The sytem was developed using Python and a few of its libraries. This allowed for easier transition between the frontend and backend of the system. The
         fronted was developed using PyQT5 for the GUI and MatPlotLib for aid in the Visualisation of the results. 
 
         Our team also utilised GitHub for version control and better collaboration between team members.
 
     \subsection{User Interaction}
 
-        The system is designed to be user-friendly and intuitive. When the application first opens, the user is greeted with the "Input Parameters"
+        The system is designed to be user-friendly and intuitive. When the application first opens, the user is greeted with the Home page where it displays the overview of the application and have the option to either exit to application or go to the "Input Parameters" page.
         page where they can input the desired parameters for the simulation.
         
     \subsection{System Architecture and Interaction}
@@ -96,7 +96,7 @@ it will give an insight into the algorithms and formulas used to calculate the t
     
     \subsection{Input and Validation Page}
 
-        The Input Page provides a structured interface for configuring traffic flow conditions. The page intially consists of a parent junction box, labelled "Junction 1", which contains child boxes for 
+        The Input Page provides a structured interface for configuring traffic flow conditions. The page initially consists of a parent junction box, labelled "Junction 1", which contains child boxes for 
         each direction of traffic flow. Each child box contains input fields for the user to input the desired parameters for the simulation. The image below shows the parent junction box and the child boxes for
         each direction of traffic flow:
         
@@ -121,8 +121,8 @@ it will give an insight into the algorithms and formulas used to calculate the t
 
     \subsection{Results Page}
         
-        The Results Page initially displays a divided design, a 2x2 grid where each cell is planned to contain result information about the traffic flow for each direction, but intially,
-        they display instructions on how the user can generate the results and how they they will be displayed. The image below shows the inital state of a box in the results page:
+        The Results Page initially displays a divided design, a 2x2 grid where each cell is planned to contain result information about the traffic flow for each direction, but initially,
+        they display instructions on how the user can generate the results and how they they will be displayed. The image below shows the initial state of a box in the results page:
 
         \begin{figure}[H]
             \centering
@@ -142,7 +142,7 @@ it will give an insight into the algorithms and formulas used to calculate the t
             \label{fig:results2}
         \end{figure}
 
-        Once the results are generated, the overall scores for each junction configuration are also shown above the box layout of the directions. Depending on the number of junction configurotaions, the 
+        Once the results are generated, the overall scores for each junction configuration are also shown above the box layout of the directions. Depending on the number of junction configuration, the 
         the overall score labels will be adjusted accordingly to the layout of the page. The image below shows the results page with the overall scores displayed:
 
         \begin{figure}[H]
@@ -162,20 +162,20 @@ it will give an insight into the algorithms and formulas used to calculate the t
             \label{fig:samplePDF}
         \end{figure}
 
-    \subsection{PDF genereation}
+    \subsection{PDF generation}
 
     \subsection{Error Handling}
     Within our application, there are many scenarios which require the user to input certain parameters or complete steps in a specific order. The way we handled these problems as a team were by checking and verifying the user's inputs by setting up certain constraints on the input boxes and by displaying error messages with the necessary steps to fix the issue on them.
     \subsubsection{Input Checking}
     On the Input and Parameter page we ensured that the user entered the correct inputs by having certain checks in place:
     \begin{itemize}
-        \item When the user enters the VpH exiting each exit, we ensured that the input was an integer, greater or equal to 0, and had an upperbound of 999 VpH.
+        \item When the user enters the VpH exiting each exit, we ensured that the input was an integer, greater or equal to 0, and had an upper bound of 999 VpH.
         \item When the user enters the number of lanes for each exit, the number had to be greater than 0, had an upper bound of 5, and was always an integer.
         \item For the Priority, we made sure that the user could only have a priority that was greater than or equal to 0, at most 4, and was an integer.
         \item If the user had chosen to add a pedestrian crossing, we made sure that the time it takes for people to cross and the number of crossing requests per hour were both greater than 0, less than 1000, and always an integer.
     \end{itemize}
     \subsubsection{Error Messages}
-    There are features in our application that require the user to complete steps in a certain order. If the prerequirement is not met for a certain feature, an error message will be displayed:
+    There are features in our application that require the user to complete steps in a certain order. If the pre-requirement is not met for a certain feature, an error message will be displayed:
     \begin{itemize}
         \item If the user chooses to remove an alternate configuration without creating one in the first place, an error message will be displayed that will tell the user too add an alternate configuration before they are able to remove one.
         \item In the scenario that the user decides to generate a report PDF without generating any results, an error message would display: telling the user to press the generate results button in order to generate the results of their configuration before pressing the report button again.
@@ -207,7 +207,7 @@ it will give an insight into the algorithms and formulas used to calculate the t
                 \begin{itemize}
                     \item When attempting to remove an alternate configuration without having created one, an error message is displayed prompting the user to add one first.
                     \item When attempting to generate a report PDF without first generating results, an error message is displayed informing the user to generate results before generating a report.
-                    \item when Attempting to start the simulation when the lanes arent balanced with the traffic, the error message should always be raised.
+                    \item when Attempting to start the simulation when the lanes aren't balanced with the traffic, the error message should always be raised.
                 \end{itemize}
             \end{itemize}
             \item Sequence Testing
@@ -262,6 +262,9 @@ it will give an insight into the algorithms and formulas used to calculate the t
 \section{Process Evaluation}
 
     \subsection{Team Coordination and Communication}
+    As stated in the planning and design document, we met up once a week to discuss what needed to be worked on in the project. We discusses which each person had to do that week and whether and problems came up. While creating the application we met up again each week to work on the application together in the DCS labs where we would walk through what each person worked on so everyone on the team understood whast they had written. Furthermore, everyone was active on the discord group we created to discuss any problems that arose.
+
+    Overall, our team coordination and communication was very good as everyone was able to keep up-to-date with the application, what was needed to be done, and any problems that came up.
 
     \subsection{Methodology Feasibility and Evaluation}
 
