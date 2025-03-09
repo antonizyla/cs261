@@ -455,21 +455,19 @@ class JunctionInputAndParameterWidget(QGroupBox):
     
 
 class RoadGroupWidget(QGroupBox):
-    def __init__(self, road_source: CardinalDirection, update_visualisation: Callable[None, None], parent: Optional[QWidget] = None) -> None:
+    def __init__(self, road_source: CardinalDirection, update_visualisation: Callable[[], None], parent: Optional[QWidget] = None) -> None:
         road_name = road_source.simple_string().capitalize() + " Traffic Flow"
-        
         super().__init__(road_name, parent)
         
         self.road_direction = road_source
         self.setObjectName("road_group")
         
-        """Creates a group box for each road section with input fields."""
         form_layout = QFormLayout()
-
+        
         # Total Vehicles per Hour display
         self.total_vph_label = QLabel("Total Vehicles per Hour (VpH): 0")
         form_layout.addRow(self.total_vph_label)
-
+        
         # Exiting VpH inputs
         self.exit_vph_inputs = []
         for direction in CardinalDirection.all_except_clockwise(road_source):
@@ -479,16 +477,15 @@ class RoadGroupWidget(QGroupBox):
             exit_input.setPlaceholderText("0")  
             exit_input.textChanged.connect(self.update_total_vph)
             self.exit_vph_inputs.append(exit_input)
-            
             form_layout.addRow(exit_label, exit_input)
-            
+        
         # Number of lanes input
         self.lanes_label = QLabel("Number of Lanes:")
         self.lanes_input = QSpinBox()
         self.lanes_input.setRange(1, 5)
         self.lanes_input.valueChanged.connect(update_visualisation)
         form_layout.addRow(self.lanes_label, self.lanes_input)
-
+        
         self.priority_label = QLabel("Priority:")
         self.priority_input = QSpinBox()
         self.priority_input.setRange(0, 4)
@@ -504,13 +501,12 @@ class RoadGroupWidget(QGroupBox):
         self.right_turn_lane_checkbox.stateChanged.connect(update_visualisation)
         self.right_turn_lane_checkbox.stateChanged.connect(self.ensure_valid_lanes)
         form_layout.addRow(self.right_turn_lane_checkbox)
-
-        # Checkboxes for lane types
+        
         self.bus_lane_checkbox = QCheckBox("Bus Lane")
         self.bus_lane_checkbox.stateChanged.connect(update_visualisation)
         self.bus_lane_checkbox.stateChanged.connect(self.select_bus)
         form_layout.addRow(self.bus_lane_checkbox)
-
+        
         self.exit_vph_bus_label = QLabel("Number of buses:")
         self.exit_vph_bus_label.hide()
         self.exit_vph_bus_input = QLineEdit()
@@ -519,9 +515,23 @@ class RoadGroupWidget(QGroupBox):
         self.exit_vph_bus_input.setPlaceholderText("0")  
         self.exit_vph_bus_input.hide()
         form_layout.addRow(self.exit_vph_bus_label, self.exit_vph_bus_input)
-
+        
         self.setLayout(form_layout)
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)  
+
+    def update_total_vph(self):
+        """Updates the total vehicles per hour label by summing input values."""
+        total_vph = 0
+        for input_field in self.exit_vph_inputs:
+            value = input_field.text()
+            if value.isdigit():
+                total_vph += int(value)
+
+        bus_value = self.exit_vph_bus_input.text()
+        if bus_value.isdigit():
+            total_vph += int(bus_value)
+        
+        self.total_vph_label.setText(f"Total Vehicles per Hour (VpH): {total_vph}")
     
     def ensure_valid_lanes(self):
         if (self.right_turn_lane_checkbox.isChecked() + self.left_turn_lane_checkbox.isChecked()) > self.lanes_input.value():
@@ -540,20 +550,7 @@ class RoadGroupWidget(QGroupBox):
 
     def select_left(self):
         if self.left_turn_lane_checkbox.isChecked():
-            self.bus_lane_checkbox.setChecked(False)
-
-    def update_total_vph(self):
-        """ Updates the total VpH label based on the sum of exit values. """
-        try:
-            total_vph = (
-                sum(int(input_field.text()) if input_field.text().isdigit() else 0 
-                           for input_field in self.exit_vph_inputs)
-                + int(self.exit_vph_bus_input.text()) if self.bus_lane_checkbox.isChecked() and self.exit_vph_bus_input.text().isdigit() else 0
-            )
-        except ValueError:
-            total_vph = 0  
-
-        self.total_vph_label.setText(f"Total Vehicles per Hour (VpH): {total_vph}")    
+            self.bus_lane_checkbox.setChecked(False) 
 
     def validate_inputs(self) -> Optional[list[str]]:      
         if not all([self.exit_vph_inputs[i].text().isdigit() for i in range(3)]):
