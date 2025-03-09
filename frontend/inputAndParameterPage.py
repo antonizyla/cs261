@@ -497,10 +497,12 @@ class RoadGroupWidget(QGroupBox):
         self.left_turn_lane_checkbox = QCheckBox("Left Turn Lane")
         self.left_turn_lane_checkbox.stateChanged.connect(update_visualisation)
         self.left_turn_lane_checkbox.stateChanged.connect(self.select_left)
+        self.left_turn_lane_checkbox.stateChanged.connect(self.ensure_valid_lanes)
         form_layout.addRow(self.left_turn_lane_checkbox)
         
         self.right_turn_lane_checkbox = QCheckBox("Right Turn Lane")
         self.right_turn_lane_checkbox.stateChanged.connect(update_visualisation)
+        self.right_turn_lane_checkbox.stateChanged.connect(self.ensure_valid_lanes)
         form_layout.addRow(self.right_turn_lane_checkbox)
 
         # Checkboxes for lane types
@@ -521,6 +523,12 @@ class RoadGroupWidget(QGroupBox):
         self.setLayout(form_layout)
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)  
     
+    def ensure_valid_lanes(self):
+        if (self.right_turn_lane_checkbox.isChecked() + self.left_turn_lane_checkbox.isChecked()) > self.lanes_input.value():
+            self.lanes_input.setRange(2, 5)
+        else:
+            self.lanes_input.setRange(1, 5)
+
     def select_bus(self):
         if self.bus_lane_checkbox.isChecked():
             self.left_turn_lane_checkbox.setChecked(False)
