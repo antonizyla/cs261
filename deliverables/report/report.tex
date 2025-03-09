@@ -181,7 +181,6 @@ it will give an insight into the algorithms and formulas used to calculate the t
     There are features in our application that require the user to complete steps in a certain order. If the pre-requirement is not met for a certain feature, an error message will be displayed:
     \begin{itemize}
         \item If the user chooses to remove an alternate configuration without creating one in the first place, an error message will be displayed that will tell the user too add an alternate configuration before they are able to remove one.
-        \item In the scenario that the user decides to generate a report PDF without generating any results, an error message would display: telling the user to press the generate results button in order to generate the results of their configuration before pressing the report button again.
         \item As the user is setting up their junction configuration, if the user does not set a suitable number of lanes, when starting the simulation an error message will display. The error message will prompt the user to change the number of lanes on the exit that has an inconsistent number of lanes and incoming traffic. The error message should tell the user which junction configuration is causing an issue and which direction of traffic flow needs to be changed.
     \end{itemize}
 
@@ -209,7 +208,6 @@ it will give an insight into the algorithms and formulas used to calculate the t
                 \item Ensured that error messages were displayed when prerequisites for actions were not met:
                 \begin{itemize}
                     \item When attempting to remove an alternate configuration without having created one, an error message is displayed prompting the user to add one first.
-                    \item When attempting to generate a report PDF without first generating results, an error message is displayed informing the user to generate results before generating a report.
                     \item when Attempting to start the simulation when the lanes aren't balanced with the traffic, the error message should always be raised.
                 \end{itemize}
             \end{itemize}
@@ -218,7 +216,6 @@ it will give an insight into the algorithms and formulas used to calculate the t
                 \item Validated that the correct error messages were triggered when users followed incorrect sequences of actions:
                 \begin{itemize}
                     \item Attempting to start the simulation without setting a suitable number of lanes triggers an error message specifying the exit lane inconsistency.
-                    \item Attempting to generate a report without generating results triggers an error message instructing the user to press the generate results button first.
                     \item Attempting to remove an alternate configuration before generating an alternate configuration should raise the error.
                 \end{itemize}
             \end{itemize}
@@ -228,7 +225,6 @@ it will give an insight into the algorithms and formulas used to calculate the t
                 \begin{itemize}
                     \item If an exit lane configuration is inconsistent with incoming traffic, the error message always specifies which direction of traffic and which exit are causing the issue.
                     \item Made sure the error message when removing an alternate configuration only happened when there were 0 alternate configurations generated.
-                    \item Made sure that the error message was always displayed if the user tried to generate a report before trying to generate any results
                 \end{itemize}
             \end{itemize}
         \end{itemize}
