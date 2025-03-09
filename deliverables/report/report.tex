@@ -119,7 +119,9 @@ it will give an insight into the algorithms and formulas used to calculate the t
 
         This layout was achieved by using the PyQT library to create the boxes using QGroupBox widgets.
     \subsubsection{Visualisation}
-    
+    In the original design, we had the idea to have a Sankey diagram placed on top of the visualisation so that the user could view the flow of traffic into each exit where the size of the arrow would be the VpH going towards that exit. We decided against this as it would overcomplicate the visualisation by including this overlay with the addition of add buttons to choose which exit you would like to view. 
+
+    Instead, we chose to have an adapting visualisation where the diagram of the junction would update whenever the user would add an exit or change a parameter, such as adding an extra lane or adding a pedestrian crossing.
     \subsection{Results Page}
         
         The Results Page initially displays a divided design, a 2x2 grid where each cell is planned to contain result information about the traffic flow for each direction, but initially,
