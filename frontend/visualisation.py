@@ -1,11 +1,11 @@
 import sys
-from PyQt5.QtWidgets import QWidget, QPushButton, QGraphicsItem, QApplication, QMainWindow, QGraphicsScene, QGraphicsView, QGraphicsPixmapItem, QGraphicsItemGroup, QVBoxLayout, QHBoxLayout, QSizePolicy
+from PyQt5.QtWidgets import QWidget, QPushButton, QGraphicsItem, QGraphicsScene, QGraphicsView, QGraphicsPixmapItem, QGraphicsItemGroup, QVBoxLayout, QHBoxLayout, QSizePolicy
 from PyQt5.QtGui import QPixmap, QBrush, QColor, QTransform
 from PyQt5.QtCore import QRectF, QObject
-from enum import Enum, Flag, auto, unique
-from abc import ABC, abstractmethod, ABCMeta
+from enum import Flag, auto
+from abc import abstractmethod, ABCMeta
 from pathlib import Path
-from typing import TypeVar, Generic, Optional, Callable, Any
+from typing import TypeVar, Generic
 from random import randint
 import os
 from PyQt5.QtCore import Qt
