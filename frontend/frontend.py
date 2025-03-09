@@ -2,8 +2,11 @@ import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow, QTabWidget, QWidget, QLabel, QVBoxLayout, QPushButton, QDialog
 from inputAndParameterPage import InputAndParameterWidget
 from resultsPage import ResultsWidget
-from visualisation import ImageViewer
 import os
+from pathlib import Path
+print((Path(__file__).parent.parent / 'backend').resolve().__str__())
+sys.path.append((Path(__file__).parent.parent / 'backend').resolve().__str__())
+from frontend_interface import front_backend_join
 
 class HomeWindow(QDialog):
     def __init__(self):
@@ -76,18 +79,13 @@ class MainApplication(QMainWindow):
         self.input_tab = InputAndParameterWidget()
         self.tab_widget.addTab(self.input_tab, "Input Parameters")
 
-        # Tab 2: Simulation 
-        self.simulation_tab = ImageViewer()  
-        self.tab_widget.addTab(self.simulation_tab, "Simulation")
-
-        # Tab 3: Simulation Results
+        # Tab 2: Simulation Results
         self.results_tab = ResultsWidget(1)  # Initialize with 1 junction
         self.tab_widget.addTab(self.results_tab, "Simulation Results")
 
 
         # Connect the "Start Simulation" button to the method to switch to the Simulation tab
         self.input_tab.submit_button.clicked.connect(self.go_to_results_tab)
-        self.input_tab.submit_button.clicked.connect(self.update_results_tab)
         self.results_tab.go_inputs_button.clicked.connect(self.go_to_input_tab)
         self.results_tab.exit_button.clicked.connect(self.exit_app)
 
@@ -95,12 +93,17 @@ class MainApplication(QMainWindow):
         self.tab_widget.setCurrentWidget(self.simulation_tab)
 
     def go_to_results_tab(self):
+        if not self.input_tab.junctions_list.validate_inputs():
+            return
+        data = self.input_tab.update_global_inputs_backend()
+        results = front_backend_join(data[0], data[1])
+        self.results_tab.get_results(results)
+        self.update_results_tab()
         self.tab_widget.setCurrentWidget(self.results_tab)
         
     def update_results_tab(self):
         number_junctions = self.get_number()
         self.results_tab.update_junctions(number_junctions)
-        self.go_to_results_tab()
 
     def get_number(self):
         return self.input_tab.junctions_list.count_junctions()
