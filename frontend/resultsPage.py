@@ -175,7 +175,7 @@ class ResultsWidget(QWidget):
 
         # Button to generate results
         self.generate_results_button = QPushButton("Generate Results")
-        self.generate_results_button.clicked.connect(self.get_results)
+        # self.generate_results_button.clicked.connect(self.get_results)
         main_layout.addWidget(self.generate_results_button, 2, 0)  # Bottom-left
 
         # Button to get report
@@ -285,7 +285,7 @@ class ResultsWidget(QWidget):
             toggle_button.setText(road_name + " ►")  # Hide the content
             group_box.setVisible(False)
 
-    def get_results(self):
+    def get_results(self, results):
         self.results_generated = True
 
         for road_name in ["south_traffic_flow", "north_traffic_flow", "west_traffic_flow", "east_traffic_flow"]:
