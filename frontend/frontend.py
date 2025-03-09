@@ -99,8 +99,8 @@ class MainApplication(QMainWindow):
         results = []
         for junction_data in data:
             results.append(front_backend_join(junction_data[0], junction_data[1]))
-        self.results_tab.get_results(results)
         self.update_results_tab()
+        self.results_tab.get_results(results)
         self.tab_widget.setCurrentWidget(self.results_tab)
         
     def update_results_tab(self):
