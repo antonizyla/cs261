@@ -68,23 +68,23 @@ class Lane:
 
     def simulate_update(self, directions: list[Dir],
                         traffic_light_time: int, time_elapsed):  # work in progress, may need to control range upper limit with traffic light duration
-        timer = traffic_light_time
-        first_flag = True
-        earliest_time = -1
-        total_for_average = 0
+        timer:int = traffic_light_time
+        first_flag:bool = True
+        earliest_time:int = -1
+        total_for_average:int = 0
 
         while timer > 0:  # Choose more appropriate constants/make dependent on number of lanes
             # if len(self.current_vehicles) > 0 and self.current_vehicles[0].getDirectionTo in directions:
-            if len(self.current_vehicles) > 0 and self.current_vehicles[0].getDirectionTo() in directions:
+            if len(self.current_vehicles) > 0 and self.current_vehicles[0].get_direction_to() in directions:
                 if first_flag:  # First car will take a while to clear, but the cars after it will take less time since they can start moving while the one in front of it is in the junction
-                    if self.current_vehicles[0].getDirectionTo() == left_of(
-                            self.current_vehicles[0].getDirectionFrom()):
+                    if self.current_vehicles[0].get_direction_to() == left_of(
+                            self.current_vehicles[0].get_direction_from()):
                         timer -= 4
-                    elif self.current_vehicles[0].getDirectionTo() == opposite_of(
-                            self.current_vehicles[0].getDirectionFrom()):
+                    elif self.current_vehicles[0].get_direction_to() == opposite_of(
+                            self.current_vehicles[0].get_direction_from()):
                         timer -= 6
-                    elif self.current_vehicles[0].getDirectionTo() == right_of(
-                            self.current_vehicles[0].getDirectionFrom()):
+                    elif self.current_vehicles[0].get_direction_to() == right_of(
+                            self.current_vehicles[0].get_direction_from()):
                         timer -= 10
 
                     first_flag = False
@@ -93,18 +93,18 @@ class Lane:
                     
                 vehicle = self.current_vehicles.pop(0)
                 if earliest_time == -1:
-                    earliest_time = vehicle.getTimeEntered()
-                elif vehicle.getTimeEntered() < earliest_time:
-                    earliest_time = vehicle.getTimeEntered()
+                    earliest_time = vehicle.get_time_entered()
+                elif vehicle.get_time_entered() < earliest_time:
+                    earliest_time = vehicle.get_time_entered()
 
-                total_for_average += (time_elapsed - vehicle.getTimeEntered())
+                total_for_average += (time_elapsed - vehicle.get_time_entered())
 
                 if not self.current_vehicles:
                     break
             else:
                 break
 
-        return [time_elapsed - earliest_time, total_for_average]
+        return [time_elapsed - earliest_time, total_for_average] # [max time any car had to wait, sum of all cars wait times]
 
     def get_queue_limit(self):
         return self.queue_limit

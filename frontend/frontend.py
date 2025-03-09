@@ -96,7 +96,9 @@ class MainApplication(QMainWindow):
         if not self.input_tab.junctions_list.validate_inputs():
             return
         data = self.input_tab.update_global_inputs_backend()
-        results = front_backend_join(data[0], data[1])
+        results = []
+        for junction_data in data:
+            results.append(front_backend_join(junction_data[0], junction_data[1]))
         self.results_tab.get_results(results)
         self.update_results_tab()
         self.tab_widget.setCurrentWidget(self.results_tab)
