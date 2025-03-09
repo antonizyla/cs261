@@ -6,12 +6,12 @@ class FlowRates:
     def __init__(self, dir_from, ahead: int, left: int, right: int, dedicated_left: bool, dedicated_bus: int,
                  dedicated_right: bool):
         self.dir_from = dir_from
-        self.ahead = ahead
-        self.left = left
-        self.right = right
-        self.dedicated_left = dedicated_left  # left dedicated and bus lane are mutually exclusive
-        self.dedicated_bus = dedicated_bus
-        self.dedicated_right = dedicated_right
+        self.ahead:int = ahead
+        self.left:int = left
+        self.right:int = right
+        self.dedicated_left:bool = dedicated_left  # left dedicated and bus lane are mutually exclusive
+        self.dedicated_bus:int = dedicated_bus
+        self.dedicated_right:bool = dedicated_right
 
     def get_direction_from(self):
         return self.dir_from

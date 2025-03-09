@@ -14,5 +14,3 @@ print(
     [j_params.check(), [northerly_flow.check(), easterly_flow.check(), southerly_flow.check(), westerly_flow.check()]])
 
 J = Junction(j_params, [northerly_flow, easterly_flow, southerly_flow, westerly_flow])
-J.add_vehicles(3600)
-print(J.run_simulation())

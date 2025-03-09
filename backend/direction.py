@@ -185,7 +185,7 @@ class Direction:
                         VehicleType.CAR))
         self.residuals[2] -= math.floor(self.residuals[2])
 
-        self.bus_residuals[0] += (seconds * self.flows.get_flow_bus_left() / 3600)
+        self.bus_residuals[0] += float(seconds * self.flows.get_flow_bus_left() / 3600)
         # self.pools_bus[0] += math.floor(self.bus_residuals[0])
         for i in range(0, math.floor(self.bus_residuals[0])):
             self.p_left_b.append(

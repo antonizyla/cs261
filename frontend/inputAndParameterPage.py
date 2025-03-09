@@ -434,7 +434,7 @@ class JunctionInputAndParameterWidget(QGroupBox):
                     ahead = int(road_group.exit_vph_inputs[1].text()),  
                     right = int(road_group.exit_vph_inputs[2].text()), 
                     dedicated_left = road_group.left_turn_lane_checkbox.isChecked(), 
-                    dedicated_bus = [int(road_group.exit_vph_bus_input.text()) if road_group.bus_lane_checkbox.isChecked() else 0],
+                    dedicated_bus = int(road_group.exit_vph_bus_input.text()) if road_group.bus_lane_checkbox.isChecked() else 0,
                     dedicated_right = road_group.right_turn_lane_checkbox.isChecked()
                 )
             )
