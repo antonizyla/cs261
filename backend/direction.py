@@ -16,19 +16,16 @@ class TrafficLights(Flag):
 
 class Direction:
     def __init__(self, flows: FlowRates, num_lanes: int):
-        self.bus_residuals = [0, 0, 0]
-        self.residuals = [0, 0, 0]
+        self.bus_residuals:list[float] = [0, 0, 0]
+        self.residuals:list[float] = [0, 0, 0]
         self.flows: FlowRates = flows
-        #self.pools: list[int] = [0, 0, 0]
-        #self.pools_bus: list[int] = [0, 0, 0]
-        self.max_wait = 0
-        self.max_length = 0
-        self.avg_wait = 0
-        self.lanes = []
-        #self.calculating_max_wait = False
-        self.time_elapsed = 0
-        self.total_cars_exited = 0
-        self.cumulative_time_waited = 0
+        self.max_wait:int = 0
+        self.max_length:int = 0
+        self.avg_wait:int = 0
+        self.lanes: list[Lane] = []
+        self.time_elapsed:int = 0
+        self.total_cars_exited:int = 0
+        self.cumulative_time_waited:int = 0
 
         # the vehicle pools that need to go into lanes
         self.p_ahead_c: list[Vehicle] = []
@@ -44,7 +41,7 @@ class Direction:
             if flows.dedicated_bus:
                 self.lanes.append(Lane(60, flows.dir_from, [left_of(flows.dir_from)], bus=True))
                 self.lanes.append(Lane(60, flows.dir_from, [left_of(flows.dir_from), opposite_of(flows.dir_from),
-                                                           right_of(flows.dir_from)]))
+                                                            right_of(flows.dir_from)]))
             else:
                 if (flows.dedicated_left and flows.dedicated_right) or (
                         flows.dedicated_right and not flows.dedicated_left):
@@ -61,7 +58,7 @@ class Direction:
             if flows.dedicated_bus:
                 self.lanes.append(Lane(60, flows.dir_from, [left_of(flows.dir_from)], bus=True))
                 self.lanes.append(Lane(60, flows.dir_from, [left_of(flows.dir_from), opposite_of(flows.dir_from),
-                                                           right_of(flows.dir_from)]))
+                                                            right_of(flows.dir_from)]))
                 if flows.dedicated_right:
                     self.lanes.append(Lane(60, flows.dir_from, [right_of(flows.dir_from)]))
                 else:
@@ -71,7 +68,7 @@ class Direction:
                     self.lanes.append(Lane(60, flows.dir_from, [left_of(flows.dir_from)]))
                     self.lanes.append(Lane(60, flows.dir_from, [right_of(flows.dir_from)]))
                     self.lanes.append(Lane(60, flows.dir_from, [right_of(flows.dir_from), left_of(flows.dir_from),
-                                                               opposite_of(flows.dir_from)]))
+                                                                opposite_of(flows.dir_from)]))
                 elif flows.dedicated_right:
                     self.lanes.append(Lane(60, flows.dir_from, [left_of(flows.dir_from), opposite_of(flows.dir_from)]))
                     self.lanes.append(Lane(60, flows.dir_from, [right_of(flows.dir_from), opposite_of(flows.dir_from)]))
@@ -104,30 +101,19 @@ class Direction:
                     self.lanes.append(Lane(60, flows.dir_from, [right_of(flows.dir_from)]))
                 for i in range(num_lanes - n_generated):
                     self.lanes.append(Lane(60, flows.dir_from, [opposite_of(flows.dir_from)]))
-        print(f"generated {len(self.lanes)} lanes")
-
-    # hourly/longer period update
-    #def simulate_hourly(self):
-    #    # working on assumption that bus flows are on top of flow for the direction
-    #    self.pools[0] += self.flows.get_flow_left()
-    #    self.pools_bus[0] += self.flows.get_flow_bus_left()
-    #
-    #    self.pools[1] += self.flows.get_flow_ahead()
-    #    self.pools_bus[1] += self.flows.get_flow_bus_ahead()
-    #
-    #    self.pools[2] += self.flows.get_flow_right()
-    #    self.pools_bus[2] += self.flows.get_flow_bus_right()
 
     # tick based update
     def simulateUpdate(self, trafficLights, trafficlight_timing):
         # Dequeue cars
         spaces_in_lanes = []
-        #vehicles_before = self.get_total_vehicles()
+        time_data = [0,0]
+        # vehicles_before = self.get_total_vehicles()
         for lane in self.lanes:
             cars_exited = lane.get_num_vehicles()
             if (trafficLights in TrafficLights.NORTH_SOUTH_RIGHT) and (
                     self.flows.get_direction_from() in Dir.NORTH | Dir.SOUTH):
-                time_data = lane.simulate_update([right_of(self.flows.get_direction_from())], trafficlight_timing, self.time_elapsed)
+                time_data = lane.simulate_update([right_of(self.flows.get_direction_from())], trafficlight_timing,
+                                                 self.time_elapsed)
             elif (trafficLights in TrafficLights.NORTH_SOUTH_OTHER) and (
                     self.flows.get_direction_from() in Dir.NORTH | Dir.SOUTH):
                 time_data = lane.simulate_update(
@@ -135,33 +121,34 @@ class Direction:
                     trafficlight_timing, self.time_elapsed)
             elif (trafficLights in TrafficLights.EAST_WEST_RIGHT) and (
                     self.flows.get_direction_from() in Dir.EAST | Dir.WEST):
-                time_data = lane.simulate_update([right_of(self.flows.get_direction_from())], trafficlight_timing, self.time_elapsed)
+                time_data = lane.simulate_update([right_of(self.flows.get_direction_from())], trafficlight_timing,
+                                                 self.time_elapsed)
             elif (trafficLights in TrafficLights.EAST_WEST_OTHER) and (
                     self.flows.get_direction_from() in Dir.EAST | Dir.WEST):
                 time_data = lane.simulate_update(
                     [left_of(self.flows.get_direction_from()), opposite_of(self.flows.get_direction_from())],
                     trafficlight_timing, self.time_elapsed)
-            
+
             cars_exited -= lane.get_num_vehicles()
             self.total_cars_exited += cars_exited
             self.cumulative_time_waited += time_data[1]
-            
+
             if self.total_cars_exited != 0:
                 self.avg_wait = self.cumulative_time_waited / self.total_cars_exited
 
             if time_data[0] > self.max_wait:
-                self.max_wait = time_data
+                self.max_wait = time_data[0]
 
             spaces_in_lanes.append(lane.get_no_available_spaces())  # How many free spaces are there
 
-        #if self.calculating_max_wait and vehicles_before != 0:
+        # if self.calculating_max_wait and vehicles_before != 0:
         #    self.max_wait += trafficlight_timing
 
         # print("before sticky loop")
 
         # Enqueue cars / add them into the lanes from each pool
-        self.enqueue_to_lanes(spaces_in_lanes, traffic_light_timing)
-        
+        self.enqueue_to_lanes(spaces_in_lanes, trafficlight_timing)
+
         # print("completed sticky loop")
         # Calculating max length
         max_lane = 0
@@ -169,57 +156,63 @@ class Direction:
             if lane.get_num_vehicles() > max_lane:
                 max_lane = lane.get_num_vehicles()
 
-        max_candidate = max_lane + math.ceil((len(self.p_ahead_b) + len(self.p_ahead_c) + len(self.p_left_b) + len(self.p_left_c) + len(self.p_right_b) + len(self.p_right_c)) / len(self.lanes))
+        max_candidate = max_lane + math.ceil((len(self.p_ahead_b) + len(self.p_ahead_c) + len(self.p_left_b) + len(
+            self.p_left_c) + len(self.p_right_b) + len(self.p_right_c)) / len(self.lanes))
         if max_candidate > self.max_length:
             self.max_length = max_candidate
 
     def add_to_pools(self, seconds):
         self.residuals[0] += (seconds * self.flows.get_flow_left() / 3600)
-        #self.pools[0] += math.floor(self.residuals[0])
+        # self.pools[0] += math.floor(self.residuals[0])
         for i in range(0, math.floor(self.residuals[0])):
-            self.p_left_c.append(Vehicle(self.flows.get_direction_from(), left_of(self.flows.get_direction_from()),
-                                VehicleType.CAR))
+            self.p_left_c.append(Vehicle(self.flows.get_direction_from(), left_of(self.flows.get_direction_from())
+                                         , self.time_elapsed, t=VehicleType.CAR))
         self.residuals[0] -= math.floor(self.residuals[0])
 
         self.residuals[1] += (seconds * self.flows.get_flow_ahead() / 3600)
-        #self.pools[1] += math.floor(self.residuals[1])
+        # self.pools[1] += math.floor(self.residuals[1])
         for i in range(0, math.floor(self.residuals[1])):
             self.p_ahead_c.append(Vehicle(self.flows.get_direction_from(), opposite_of(self.flows.get_direction_from()),
-                                VehicleType.CAR))
+                                          self.time_elapsed,
+                                          VehicleType.CAR))
         self.residuals[1] -= math.floor(self.residuals[1])
 
         self.residuals[2] += (seconds * self.flows.get_flow_right() / 3600)
-        #self.pools[2] += math.floor(self.residuals[2])
+        # self.pools[2] += math.floor(self.residuals[2])
         for i in range(0, math.floor(self.residuals[2])):
-            self.p_right_c.append(Vehicle(self.flows.get_direction_from(), right_of(self.flows.get_direction_from()),
-                                VehicleType.CAR))
+            self.p_right_c.append(
+                Vehicle(self.flows.get_direction_from(), right_of(self.flows.get_direction_from()), self.time_elapsed,
+                        VehicleType.CAR))
         self.residuals[2] -= math.floor(self.residuals[2])
 
         self.bus_residuals[0] += (seconds * self.flows.get_flow_bus_left() / 3600)
-        #self.pools_bus[0] += math.floor(self.bus_residuals[0])
+        # self.pools_bus[0] += math.floor(self.bus_residuals[0])
         for i in range(0, math.floor(self.bus_residuals[0])):
-            self.p_left_b.append(Vehicle(self.flows.get_direction_from(), left_of(self.flows.get_direction_from()),
-                                VehicleType.BUS))
+            self.p_left_b.append(
+                Vehicle(self.flows.get_direction_from(), left_of(self.flows.get_direction_from()), self.time_elapsed,
+                        VehicleType.BUS))
         self.bus_residuals[0] -= math.floor(self.bus_residuals[0])
 
         self.bus_residuals[1] += (seconds * self.flows.get_flow_bus_ahead() / 3600)
-        #self.pools_bus[1] += math.floor(self.bus_residuals[1])
+        # self.pools_bus[1] += math.floor(self.bus_residuals[1])
         for i in range(0, math.floor(self.bus_residuals[1])):
             self.p_ahead_b.append(Vehicle(self.flows.get_direction_from(), opposite_of(self.flows.get_direction_from()),
-                                VehicleType.BUS))
+                                          self.time_elapsed,
+                                          VehicleType.BUS))
         self.bus_residuals[1] -= math.floor(self.bus_residuals[1])
 
         self.bus_residuals[2] += (seconds * self.flows.get_flow_bus_right() / 3600)
-        #self.pools_bus[2] += math.floor(self.bus_residuals[2])
+        # self.pools_bus[2] += math.floor(self.bus_residuals[2])
         for i in range(0, math.floor(self.bus_residuals[2])):
-            self.p_right_b.append(Vehicle(self.flows.get_direction_from(), right_of(self.flows.get_direction_from()),
-                                VehicleType.BUS))
+            self.p_right_b.append(
+                Vehicle(self.flows.get_direction_from(), right_of(self.flows.get_direction_from()), self.time_elapsed,
+                        VehicleType.BUS))
         self.bus_residuals[2] -= math.floor(self.bus_residuals[2])
 
         spaces_in_lanes = []
         for lane in self.lanes:
             spaces_in_lanes.append(lane.get_no_available_spaces())
-        
+
         self.enqueue_to_lanes(spaces_in_lanes, seconds)
 
     def enqueue_to_lanes(self, spaces_in_lanes, time):
@@ -248,7 +241,7 @@ class Direction:
                 elif lane.goes_to(opposite_of(self.flows.get_direction_from())) and len(self.p_ahead_c) > 0:
                     lane.add_vehicle(self.p_ahead_c.pop(0))
                     spaces_in_lanes[index] -= 1
-                elif self.p_left_b > 0:
+                elif len(self.p_left_b) > 0:
                     lane.add_vehicle(self.p_left_b.pop(0))
                     spaces_in_lanes[index] -= 1
                 elif lane.goes_to(opposite_of(self.flows.get_direction_from())) and len(self.p_ahead_b) > 0:
@@ -256,29 +249,9 @@ class Direction:
                     spaces_in_lanes[index] -= 1
                 else:
                     spaces_in_lanes[index] = 0  # If we couldn't add anything to the lane, pretend the lane is full
-                # if lane.is_bus_lane:
-                #     if self.pools_bus[0] > 0:
-                #         lane.add_vehicle(Vehicle(self.flows.get_direction_from(), left_of(self.flows.get_direction_from()), VehicleType.BUS))
-                #         spaces[index] -= 1
-                #         self.pools_bus[0] -= 1
-                #     elif self.pools_bus[1] > 0:
-                #         lane.add_vehicle(Vehicle(self.flows.get_direction_from(), opposite_of(self.flows.get_direction_from()), VehicleType.BUS))
-                #         self.pools_bus[1] -= 1
-                #         spaces[index] -= 1
-                # else:
-                #     if self.pools[0] > 0:
-                #         lane.add_vehicle(Vehicle(self.flows.get_direction_from(), left_of(self.flows.get_direction_from()), VehicleType.CAR))
-                #         spaces[index] -= 1
-                #         self.pools[0] -= 1
-                #     elif self.pools[1] > 0:
-                #         lane.add_vehicle(Vehicle(self.flows.get_direction_from(), opposite_of(self.flows.get_direction_from()), VehicleType.CAR))
-                #         spaces[index] -= 1
-                #         self.pools[1] -= 1
-                #     else:
-                #         spaces[index] = 0
-            # the lane goes to the right or ahead
             elif lane.goes_to(right_of(self.flows.get_direction_from())) and not lane.goes_to(
-                    left_of(self.flows.get_direction_from())):  # Lane with right turn but no left turn (might have ahead)
+                    left_of(
+                        self.flows.get_direction_from())):  # Lane with right turn but no left turn (might have ahead)
                 if len(self.p_right_c) > 0 or len(self.p_right_b) > 0:
                     vehicle = None
                     if len(self.p_right_c) > 0 and len(self.p_right_b) > 0:
@@ -294,7 +267,8 @@ class Direction:
 
                     lane.add_vehicle(vehicle)
                     spaces_in_lanes[index] -= 1
-                elif lane.goes_to(opposite_of(self.flows.get_direction_from())) and len(self.p_ahead_c):  # Don't technically need the third condition since we don't have right turning bus lanes
+                elif lane.goes_to(opposite_of(self.flows.get_direction_from())) and len(
+                        self.p_ahead_c):  # Don't technically need the third condition since we don't have right turning bus lanes
                     lane.add_vehicle(self.p_ahead_c.pop(0))
                     spaces_in_lanes[index] -= 1
                 else:
@@ -319,7 +293,7 @@ class Direction:
                 if len(self.p_right_c) > 0:
                     directions.append(right_of(self.flows.get_direction_from()))
 
-                if directions:  #NEEDS EDITING
+                if directions:  # NEEDS EDITING
                     direction = random.choice(directions)
                     if direction == left_of(self.flows.get_direction_from()):
                         vehicle = self.p_left_c.pop(0)
@@ -331,9 +305,10 @@ class Direction:
                     spaces_in_lanes[index] -= 1
                 else:
                     spaces_in_lanes[index] = 0
-    
+
     def get_total_vehicles(self):
-        return len(self.p_ahead_b) + len(self.p_ahead_c) + len(self.p_left_b) + len(self.p_left_c) + len(self.p_right_b) + len(self.p_right_c) + sum([lane.get_num_vehicles() for lane in self.lanes])
+        return len(self.p_ahead_b) + len(self.p_ahead_c) + len(self.p_left_b) + len(self.p_left_c) + len(
+            self.p_right_b) + len(self.p_right_c) + sum([lane.get_num_vehicles() for lane in self.lanes])
 
     def set_calculating_max_wait(self, bool):
         self.calculating_max_wait = bool
