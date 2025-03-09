@@ -76,8 +76,8 @@ class TestDirection:
         bus_flow_invalid = FlowRates(Dir.NORTH, ahead=50, left=30, right=20, dedicated_left=True, dedicated_bus=-5, dedicated_right=True)
 
         # Adjusted expectation: Bus flow should be zero or positive.
-        assert bus_flow_invalid.get_flow_bus_total() >= 0, "Bus flow should be zero or positive."
         assert bus_flow_invalid.check() is False, "Negative bus flow should be rejected."
+        assert bus_flow_invalid.get_flow_bus_total() >= 0, "Bus flow should be zero or positive."
 
     def test_sequence_errors(self):
         """Ensure errors appear when actions are performed in an incorrect sequence."""

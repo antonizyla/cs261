@@ -446,8 +446,8 @@ class JunctionInputAndParameterWidget(QGroupBox):
 
             # Note: backend used to (or still does?) assume that crossings are independent, frontend assumes they are all identical
             pedestrian_crossing = [self.pedestrian_crossing_checkbox.isChecked()] * 4,
-            crossing_time = [int(self.crossing_time_input.text()) if self.pedestrian_crossing_checkbox.isChecked() else 0] * 4,
-            crossing_rph = [int(self.crossing_rph_input.text()) if self.pedestrian_crossing_checkbox.isChecked() else 0] * 4,
+            crossing_time = int(self.crossing_time_input.text()) if self.pedestrian_crossing_checkbox.isChecked() else 0,
+            crossing_rph = int(self.crossing_rph_input.text()) if self.pedestrian_crossing_checkbox.isChecked() else 0,
 
             sequencing_priority = [self.road_groups[direction.index].priority_input.value() for direction in CardinalDirection]
         )
