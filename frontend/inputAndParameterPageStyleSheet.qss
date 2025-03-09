@@ -112,14 +112,13 @@ QCheckBox {
 }
 
 QCheckBox::indicator:checked {
-    image: url(check.png);
+    image: url(frontend/check.png);
 }
 
 QCheckBox::indicator {
     border: 1px solid white;
     height: 13px;
     width: 13px;
-
 }
 
 QMessageBox {
