@@ -89,39 +89,37 @@ it will give an insight into the algorithms and formulas used to calculate the t
 
         \begin{figure}[H]
             \centering
-            \includegraphics[width=7cm]{homepage.png}
+            \includegraphics[width=7cm]{img/homepage.png}
             \caption{Home Page of the System}
             \label{fig:homepage}
         \end{figure}
     
     \subsection{Input and Validation Page}
 
-        The Input Page provides a structured interface for configuring traffic flow conditions. The layout of the Input Parameters page made use of a grid and box layout to organise the input boxes for each junction. The widget uses PyQt's QScrollArea to allow the user to scroll through the multiple junction configurations, where each one of them 
-        is contained in a QGroupBox and stored as JunctionInputAndParameterWidget. Each JunctionInputAndParameterWidget contains 4 QGroupBoxes, one for each direction of traffic flow stored as RoadGroupWidget. Each RoadGroupWidget contains the input fields for the 
-        traffic flow, number of lanes, dedicated lanes, such as bus lanes and bus lane configuration, left turn lane and right turn lane; and also a priority input field. The image below shows the input page of the system:
+        The Input Page provides a structured interface for configuring traffic flow conditions. The page initially consists of a parent junction box, labelled "Junction 1", which contains child boxes for 
+        each direction of traffic flow. Each child box contains input fields for the user to input the desired parameters for the simulation. The image below shows the parent junction box and the child boxes for
+        each direction of traffic flow:
         
         \begin{figure}[h!]
             \centering
-            \includegraphics[width=\textwidth]{parameter.png}
+            \includegraphics[width=\textwidth]{img/inputbox.png}
             \caption{Illustration of the Input Box}
-            \label{fig:parameter}
+            \label{fig:inputBox}
         \end{figure}
 
-        The JunctionInputAndParameterWidget also contains two checkboxes for the user to select whether they want to add pedestrian crossing options and whether they want to see the updates on the junction on real time. A visual representation of the
-        junction is displayed on the right side of the parent box, which updates in real time as the user inputs the parameters. Furthermore, the parent box contains copy and paste buttons, where the user can copy the data entered 
-        in the first junction configuration, and reuse it in the other configurations. The image below shows the visual representation:
+        The parent box also contains two checkboxes for the user to select whether they want to add pedestrian crossing options and whether they want to see the updates on the junction on real time. A visual representation of the
+        junction is displayed on the right side of the parent box, which updates in real time as the user inputs the parameters. The image below shows the visual representation:
 
         \begin{figure}[H]
             \centering
-            \includegraphics[width=\textwidth]{inputExtra.png}
+            \includegraphics[width=\textwidth]{img/inputboxextra.png}
             \caption{Illustration of the Input Box with additional options}
-            \label{fig:inputExtra}
+            \label{fig:inputBox}
         \end{figure}
 
-        Once the user has input the desired parameters, they can click the "Start Simulation" button at the bottom of the page to send the data to the backend and start the simulation. After the user has clicked the "Start Simulation" button, they
-        will be taken to the Results Page where the results of the simulation will be displayed.
-
-        
+        This layout was achieved by using the PyQT library to create the boxes using QGroupBox widgets.
+    \subsubsection{Visualisation}
+    
     \subsection{Results Page}
         
         The Results Page initially displays a divided design, a 2x2 grid where each cell is planned to contain result information about the traffic flow for each direction, but initially,
@@ -166,8 +164,6 @@ it will give an insight into the algorithms and formulas used to calculate the t
         \end{figure}
 
     \subsection{PDF generation}
-
-        The PDF 
 
     \subsection{Error Handling}
     Within our application, there are many scenarios which require the user to input certain parameters or complete steps in a specific order. The way we handled these problems as a team were by checking and verifying the user's inputs by setting up certain constraints on the input boxes and by displaying error messages with the necessary steps to fix the issue on them.
@@ -267,7 +263,7 @@ it will give an insight into the algorithms and formulas used to calculate the t
 \section{Process Evaluation}
 
     \subsection{Team Coordination and Communication}
-    As stated in the planning and design document, we met up once a week to discuss what needed to be worked on in the project. We discusses which each person had to do that week and whether and problems came up. While creating the application we met up again each week to work on the application together in the DCS labs where we would walk through what each person worked on so everyone on the team understood whast they had written. Furthermore, everyone was active on the discord group we created to discuss any problems that arose.
+    As stated in the planning and design document, we met up once a week to discuss what needed to be worked on in the project. We discusses which each person had to do that week and whether and problems came up. While creating the application we met up again each week to work on the application together in the DCS labs where we would walk through what each person worked on so everyone on the team understood what they had written. Furthermore, everyone was active on the discord group we created to discuss any problems that arose.
 
     Overall, our team coordination and communication was very good as everyone was able to keep up-to-date with the application, what was needed to be done, and any problems that came up.
 
