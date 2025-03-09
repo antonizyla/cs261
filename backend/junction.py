@@ -42,7 +42,7 @@ class Junction:
                 traffic_light_order.append(TrafficLights.EAST_WEST_OTHER)
 
         for i in range(0, 4):  # Value to change during development
-            if self.accumulator < (3600 / self.params.get_crossing_rph()):
+            if self.accumulator < (3600 / self.params.get_crossing_rph()) or params.has_pedestrian_crossing() == [False, False, False, False]:
                 if traffic_light_timing[i % 4] == NSR or traffic_light_timing[i % 4] == NSO:
                     seconds_spent = (max(self.params.get_sequencing_priority()[0],
                                         self.params.get_sequencing_priority()[2]) + 1) * 10
