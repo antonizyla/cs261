@@ -2,7 +2,6 @@ import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow, QTabWidget, QWidget, QLabel, QVBoxLayout, QPushButton, QDialog
 from inputAndParameterPage import InputAndParameterWidget
 from resultsPage import ResultsWidget
-from visualisation import ImageViewer
 import os
 
 class HomeWindow(QDialog):
@@ -76,11 +75,7 @@ class MainApplication(QMainWindow):
         self.input_tab = InputAndParameterWidget()
         self.tab_widget.addTab(self.input_tab, "Input Parameters")
 
-        # Tab 2: Simulation 
-        self.simulation_tab = ImageViewer()  
-        self.tab_widget.addTab(self.simulation_tab, "Simulation")
-
-        # Tab 3: Simulation Results
+        # Tab 2: Simulation Results
         self.results_tab = ResultsWidget(1)  # Initialize with 1 junction
         self.tab_widget.addTab(self.results_tab, "Simulation Results")
 
