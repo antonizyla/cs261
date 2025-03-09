@@ -78,6 +78,12 @@ QGroupBox::title {
     background-color: #6A89A7;
 }
 
+JunctionView {
+    margin-top: 5px;
+    border: 2px solid black;
+    border-radius: 5px;
+}
+
 QGroupBox {
     background-color: rgb(63, 63, 63);
     margin-top: 5px;
@@ -112,14 +118,13 @@ QCheckBox {
 }
 
 QCheckBox::indicator:checked {
-    image: url(check.png);
+    image: url(frontend/check.png);
 }
 
 QCheckBox::indicator {
     border: 1px solid white;
     height: 13px;
     width: 13px;
-
 }
 
 QMessageBox {

@@ -33,6 +33,7 @@ class CopyPaste():
 
     valid_paste: bool = False
 
+
 class InputAndParameterWidget(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -53,7 +54,6 @@ class InputAndParameterWidget(QWidget):
         # Submit button centered below the grid
         self.submit_button = QPushButton("Start Simulation")
         self.submit_button.setObjectName("submit_button")
-        self.submit_button.clicked.connect(self.update_global_inputs_backend)
         
         self.update_layout()
         
@@ -79,6 +79,9 @@ class InputAndParameterWidget(QWidget):
         self.setLayout(layout)
     
     def add_junction(self):
+        if self.junctions_list.count_junctions() >= 5:
+            QMessageBox.warning(self, "Maximum Reached", "Maximum of 5 junctions reached.")
+            return
         self.check_alternate += 1
         self.junctions_list.add_junction()
     
@@ -494,10 +497,12 @@ class RoadGroupWidget(QGroupBox):
         self.left_turn_lane_checkbox = QCheckBox("Left Turn Lane")
         self.left_turn_lane_checkbox.stateChanged.connect(update_visualisation)
         self.left_turn_lane_checkbox.stateChanged.connect(self.select_left)
+        self.left_turn_lane_checkbox.stateChanged.connect(self.ensure_valid_lanes)
         form_layout.addRow(self.left_turn_lane_checkbox)
         
         self.right_turn_lane_checkbox = QCheckBox("Right Turn Lane")
         self.right_turn_lane_checkbox.stateChanged.connect(update_visualisation)
+        self.right_turn_lane_checkbox.stateChanged.connect(self.ensure_valid_lanes)
         form_layout.addRow(self.right_turn_lane_checkbox)
 
         # Checkboxes for lane types
@@ -518,6 +523,12 @@ class RoadGroupWidget(QGroupBox):
         self.setLayout(form_layout)
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)  
     
+    def ensure_valid_lanes(self):
+        if (self.right_turn_lane_checkbox.isChecked() + self.left_turn_lane_checkbox.isChecked()) > self.lanes_input.value():
+            self.lanes_input.setRange(2, 5)
+        else:
+            self.lanes_input.setRange(1, 5)
+
     def select_bus(self):
         if self.bus_lane_checkbox.isChecked():
             self.left_turn_lane_checkbox.setChecked(False)

@@ -67,9 +67,11 @@ class Lane:
         return d in self.directions_to
 
     def simulate_update(self, directions: list[Dir],
-                        traffic_light_time: int):  # work in progress, may need to control range upper limit with traffic light duration
+                        traffic_light_time: int, time_elapsed):  # work in progress, may need to control range upper limit with traffic light duration
         timer = traffic_light_time
         first_flag = True
+        earliest_time = -1
+        total_for_average = 0
 
         while timer > 0:  # Choose more appropriate constants/make dependent on number of lanes
             # if len(self.current_vehicles) > 0 and self.current_vehicles[0].getDirectionTo in directions:
@@ -87,18 +89,22 @@ class Lane:
 
                     first_flag = False
                 else:
-                    if self.current_vehicles[0].getDirectionTo() == right_of(
-                            self.current_vehicles[0].getDirectionFrom()):
-                        timer -= 4  # Different since each right turning car needs to wait for a right turning car from the opposite direction to finish turning.
-                    else:
-                        timer -= 1
+                    timer -= 1  #Remembered right-turning cars from opposite directions turned before each other rather than after each other 
+                    
+                vehicle = self.current_vehicles.pop(0)
+                if earliest_time == -1:
+                    earliest_time = vehicle.getTimeEntered()
+                elif vehicle.getTimeEntered() < earliest_time:
+                    earliest_time = vehicle.getTimeEntered()
 
-                self.current_vehicles.pop(0)
+                total_for_average += (time_elapsed - vehicle.getTimeEntered())
 
                 if not self.current_vehicles:
                     break
             else:
                 break
+
+        return [time_elapsed - earliest_time, total_for_average]
 
     def get_queue_limit(self):
         return self.queue_limit
