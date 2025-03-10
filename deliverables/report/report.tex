@@ -317,6 +317,22 @@
     Vehicle objects from pools to lanes. Another method introduced was get\_total\_vehicles(), which returns how many vehicles are currently in
     that road of the junction (all vehicles in lanes + all vehicles in pools).
 
+    For Direction.simulateUpdate(), it iterates through each Lane object it contains, calling simulate\_update() on the lane if the cardinal direction 
+    the Direction corresponds to matches with the current traffic light setting, with the list of directions passed being dependent on whether the 
+    traffic light setting is for right turning vehicles or left and ahead vehicles. The total number of vehicles dequeued is then added to a running 
+    total, with the cumulative time waited by the dequeued vehicles (returned by simulate\_update()) being added to the attribute cumulative\_time\_waited, 
+    and then the average wait being calculated by dividing the latter by the former. The current maximum time waited by a vehicle that exited that lane 
+    is also returned, and compared to the current maximum of that direction, replacing it if it is larger. Max queue length is calculated after calling 
+    enqueue\_to\_lanes(), by taking the lane with the largest number of vehicles and adding the total of all vehicles in pools divided by the number of 
+    lanes, rounded up.
+
+    For Direction.enqueue\_to\_lanes(), it creates a list of how many empty spaces there are in each lane, and then repeatedly picks the lane with the most 
+    empty spaces, adding a vehicle to the lane and decreasing the empty spaces for that lane by 1 if there are vehicles in pools which match that lane’s 
+    criteria (e.g. left turning cars or cars driving ahead), removing the vehicle from that pool, or setting the empty spaces to 0 if there are no vehicles 
+    in the pools that match the lane’s criteria (so then the lane is disregarded and treated as having no empty spaces to allocate to in subsequent 
+    iterations). This repeats until all lanes have no more empty spaces/are treated as having no more empty spaces.
+
+
     Lane received the additional attributes is bus\_lane and maximum vehicle\_wait\_time, used for indicating whether the lane is a bus lane and
     keeping track of the maximum time a vehicle that exited that lane has had to wait for (used for calculating the maximum wait time in the 
     lane’s direction) respectively. The goes\_to() method returns whether one of the directions the lanes goes in is the direction passed in,
