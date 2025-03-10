@@ -272,7 +272,9 @@
 
     \subsection{Data Classes}
 
-    The system is split into the same classes as defined in the planning and design.
+    The system is split into the same classes as defined in the planning and design. However, during the development of the 
+    classes, we realised that the system hadn’t been considered thoroughly enough, so a lot of the methods and attributes 
+    inside the classes received changes. 
 
     \subsubsection{Params and Flowrates}
 
@@ -291,6 +293,24 @@
     data from the backend to the frontend, this was deemed uneccesary, and instead we used raw data in a set of lists.
     This was easier not only for the backend to handle but also the frontend who could use the data directly when iterating
     over it whilst drawing the graphs in the frontend comparison function.
+
+    \subsubsection{Junction, Vehicle, Direction, and Lane}
+    For the Junction class, an accumulator attribute was introduced to implement pedestrian crossings: the accumulator would 
+    count the seconds since the previous pedestrian crossing started, pausing all directions traffic for the pedestrian crossing 
+    time when it became greater than the crossing rate per hour converted to seconds between crossings (3600 / crossing rate per hour) 
+    and then resetting to 0. The Vehicle class was updated with two extra attributes: time_entered (discussed in the Results section) and 
+    type, used to indicate whether the vehicle is a car or a bus, used for implementing bus lanes. 
+    
+    Direction received major changes, having the pools changed from a list of counters to lists containing Vehicle objects (discussed further 
+    in the Results section), having the dedicatedLane and dedicatedLaneFlow attributes removed due to being handled by the FlowRates object. 
+    Direction also had a flows attribute added to store the flow rates corresponding to that road of the junction, as well as time_elapsed, 
+    total_cars_exited, and cumulative_time_waited attributes, for the purposes of calculating the average wait. In terms of methods, 
+    simulateUpdate() was used for moving Vehicle objects out of Lanes, whilst a new method add_to_pools() was used for adding Vehicle objects 
+    to pools, where flow rates were divided by 3600 and multiplied by the number of simulation seconds to find out how many vehicles to add, 
+    with any fractional parts being stored in the residuals or bus_residuals attributes (with vehicles being created the moment the cumulation 
+    of fractional parts exceed 1). Each of these also make a call to the method enqueue_to_lanes, which updates time_elapsed as well as moving 
+    Vehicle objects from pools to lanes. Another method introduced was get_total_vehicles(), which returns how many vehicles are currently in 
+    that road of the junction (all vehicles in lanes + all vehicles in pools).
 
     \subsection{Simulation}
 
