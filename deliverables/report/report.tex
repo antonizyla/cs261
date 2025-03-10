@@ -323,11 +323,29 @@
     Vehicle objects from pools to lanes. Another method introduced was get\_total\_vehicles(), which returns how many vehicles are currently in
     that road of the junction (all vehicles in lanes + all vehicles in pools).
 
+    Lane received the additional attributes is_bus_lane and maximum_vehicle_wait_time, used for indicating whether the lane is a bus lane and 
+    keeping track of the maximum time a vehicle that exited that lane has had to wait for (used for calculating the maximum wait time in the 
+    lane’s direction) respectively. The goes_to() method returns whether one of the directions the lanes goes in is the direction passed in, 
+    while get_queue_limit() and get_no_available_spaces() return the queue limit for the lane and how many more objects can be added to the 
+    lane with respect to the queue limit.
+
+    The implementation of simulate_update() in Lane - the main function in Lane - works as follows. The function is passed a list of directions, 
+    the time the traffic light setting is on for, and the current value of time_elapsed from the Direction object it belongs to (see the Results 
+    section), and sets an internal variable called timer to the time the traffic light setting is on for. The function then repeatedly dequeues 
+    Vehicle objects from the lane, decreasing the timer each time, until either the timer reaches 0, the lane is considered empty, or the next 
+    vehicle to be dequeued is headed in a direction not in the passed list of directions. The first dequeued vehicle causes the timer to be decreased 
+    by a decent amount, dependent on the direction the vehicle is headed, whereas all subsequent vehicles decrease the timer by 1, with the logic 
+    being that these vehicles can be moving while the first vehicle is going through the junction, so don’t need to decrease the timer by the same 
+    amount as the first vehicle. For each vehicle dequeued, the time that vehicle has waited for is added to a cumulative total for the purposes of 
+    calculating the average wait time, and if the time waited by that vehicle is greater than the stored maximum time waited by a vehicle that was in 
+    that lane, the maximum time is updated to the newly dequeued vehicle’s maximum wait time.
+
+
     \subsection{Simulation}
 
     For the simulation we utilised a top down nested structure. For example traffic light timing is generated in the
-    junction class, passed down into the direction classs and then from those individual lanes are set to be flowing
-    or nat based on where their vehicles are going and what their current traffic light is.
+    junction class, passed down into the direction class and then from those individual lanes are set to be flowing
+    or not based on where their vehicles are going and what their current traffic light is.
 
     This is all done synchronously and works based on working with non intersecting paths, the left and ahead turns are
     all simulated for the same number of times in a given axis, then the right turn traffic. This allows us to not deal
