@@ -10,14 +10,16 @@
 \usepackage{hyperref}
 
 % editable bits
-\title{\vspace{-1.5cm}CS261 Group 29 Report}
+\title{\vspace{-1.5cm}CS261 Group 29 Final Report}
 \author{Ani Bitri, Krister Hughes, Thomas Phuong, Eshan Sharif, Josh Turner, Antoni Zyla}
-\date{January 2025}
-\fancyfoot[L]{Report}
+\date{January 2025 - March 2025}
+\fancyfoot[L]{Final Report}
 \fancyfoot[R]{\thepage}
 
 \begin{document}
     \maketitle
+
+    \tableofcontents
 
     \section{Preface}
 
@@ -102,7 +104,8 @@
     \subsection{Home Page}
 
     The user is first greeted with the home page where some general information about the system is displayed. The user can then click the "Go to Input Parameters" button to go to the Inputs Page
-    or click the "Exit" button to exit the application. The image below shows the home page of the system:
+    or click the \("\)Exit\("\) button to exit the application.
+    The image below shows the home page of the system:
 
     \begin{figure}[H]
         \centering
@@ -119,7 +122,7 @@
 
     \begin{figure}[h!]
         \centering
-        \includegraphics[width=\textwidth]{parameter.png}
+        \includegraphics[width=\textwidth]{parameter}
         \caption{Illustration of the Input Box}
         \label{fig:parameter}
     \end{figure}
@@ -130,7 +133,7 @@
 
     \begin{figure}[H]
         \centering
-        \includegraphics[width=\textwidth]{inputExtra.png}
+        \includegraphics[width=\textwidth]{inputExtra}
         \caption{Illustration of the Input Box with additional options}
         \label{fig:inputExtra}
     \end{figure}
@@ -142,14 +145,14 @@
             In the initial design document, the implementation of the junction visualization was left fairly open to allow for future revisions, as permitted by the modified version of the Waterfall Methodology used by the group. Once a basic input window had been created, the constraints (Such as left lanes and bus lanes being mutually exclusive) on the junction became clearer; this then aided with design of the classes involved:
             \begin{figure}[H]
                 \centering
-                \includegraphics[width=\textwidth]{visualisation_class.png}
+                \includegraphics[width=\textwidth]{visualisation_class}
                 \caption{Class diagram for the visualisation}
                 \label{fig:visualisation_class}
             \end{figure}
             The overall structure was made to be hierarchical so that each layer could independently create and position the Tiles that they contained. Having both TileGroups and PixmapTiles inherit from Tile was intended to provide a layer of abstraction that would simplify the code.
             \begin{figure}[H]
                 \centering
-                \includegraphics[width=0.6\textwidth]{visualisation_relationship.png}
+                \includegraphics[width=0.6\textwidth]{visualisation_relationship}
                 \caption{Relationships between classes in the visualisation}
                 \label{fig:visualisation_relationship}
             \end{figure}
@@ -171,7 +174,7 @@
 
     \begin{figure}[H]
         \centering
-        \includegraphics[width=\textwidth]{results1.png}
+        \includegraphics[width=\textwidth]{results1}
         \caption{Illustration of the initial state of a box in Results Page}
         \label{fig:results1}
     \end{figure}
@@ -182,17 +185,18 @@
 
     \begin{figure}[H]
         \centering
-        \includegraphics[width=\textwidth]{results2.png}
+        \includegraphics[width=\textwidth]{results2}
         \caption{Illustration of the chart with the results of the simulation for 3 different junction configurations}
         \label{fig:results2}
     \end{figure}
 
-    The results set is retrievied as a 3D list from the backend, where te first dimension represents tje junction configuration, the second dimension represents the direction of the traffic flow, and the third dimension represents the metrics. The overall scores
-    for each junction are saved in the last index of the second dimension as a float. The image below represents the structure of the results set:
+    The results set is retrieved as a 3D list from the backend, where te first dimension represents tje junction configuration, the second dimension represents the direction of the traffic flow, and the third dimension represents the metrics. The overall scores
+    for each junction are saved in the last index of the second dimension as a float.
+    The image below represents the structure of the results set:
 
     \begin{figure}[H]
         \centering
-        \includegraphics[width=\textwidth]{results3d.png}
+        \includegraphics[width=\textwidth]{results3d}
         \caption{Illustration of result set structure}
         \label{fig:results3d}
     \end{figure}
@@ -202,7 +206,7 @@
 
     \begin{figure}[H]
         \centering
-        \includegraphics[width=\textwidth]{overallScores.png}
+        \includegraphics[width=\textwidth]{overallScores}
         \caption{Illustration of how the overall scores are displayed}
         \label{fig:overallScores}
     \end{figure}
@@ -219,12 +223,12 @@
 
     \begin{figure}[H]
         \centering
-        \includegraphics[width=\textwidth]{samplePDF.png}
+        \includegraphics[width=\textwidth]{samplePDF}
         \caption{Sample of a PDF report generated by the system}
         \label{fig:samplePDF}
     \end{figure}
 
-    \subsection{Error Handling}
+    \subsection{Error Handling}\label{subsec:error-handling}
     Within our application, there are many scenarios which require the user to input certain parameters or complete steps in a specific order. The way we handled these problems as a team were by checking and verifying the user's inputs by setting up certain constraints on the input boxes and by displaying error messages with the necessary steps to fix the issue on them.
 
     \subsubsection{Input Checking}
@@ -239,12 +243,19 @@
     \subsubsection{Error Messages}
     There are features in our application that require the user to complete steps in a certain order.
     If the pre-requirement is not met for a certain feature, an error message will be displayed:
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.7\textwidth]{example_error}
+        \caption{Example of an error message displayed when an input is not entered}
+        \label{fig:sampleError}
+    \end{figure}
+
     \begin{itemize}
         \item If the user chooses to remove an alternate configuration without creating one in the first place, an error message will be displayed that will tell the user too add an alternate configuration before they are able to remove one.
         \item In the scenario that the user decides to generate a report PDF without generating any results, an error message would display: telling the user to press the generate results button in order to generate the results of their configuration before pressing the report button again.
         \item As the user is setting up their junction configuration, if the user does not set a suitable number of lanes, when starting the simulation an error message will display. The error message will prompt the user to change the number of lanes on the exit that has an inconsistent number of lanes and incoming traffic. The error message should tell the user which junction configuration is causing an issue and which direction of traffic flow needs to be changed.
     \end{itemize}
-
 
     \section{Backend}
 
@@ -400,6 +411,9 @@
 
     \section{Product Evaluation}
 
+    The system meets the majority of the requirements we outlined previously, it meets all of the must requirements and
+    most of the should requirements.
+
     \subsection{Deployment}
 
     \subsection{User Feedback}
@@ -414,6 +428,18 @@
 
     \subsection{Future Improvements}
 
+    Implementing a database or a way to save configurations and their results to a file would be a good way of improving
+    the system. Users would be able to save their work and come back to it if they could not complete it in a single
+    session and would prevent them having to write results down and come back to them. It would also allow for easier
+    testing of the consistency of the system over a larger period time and number of updates.
+
+    Implementation of different junction types such as roundabouts or more complex 3 or 5 way junctions would be something
+    that would be very useful to implement in the future. This would expand the size of the market that would make use
+    of the software.
+
+    Not mentioned by user testing but we could implement the ability to find an optimal junction layout for a set of
+    flow rates and certain restrictions, e.g 150 vehicles per hour in all directions but can only have 3 lanes North and
+    2 in the other directions, the system would then find the optimal layout and suggest to the planner.
 
     \section{Process Evaluation}
 
