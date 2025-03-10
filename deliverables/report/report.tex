@@ -147,6 +147,13 @@ it will give an insight into the algorithms and formulas used to calculate the t
 
         The results set is retrievied as a 3D list from the backend, where te first dimension represents tje junction configuration, the second dimension represents the direction of the traffic flow, and the third dimension represents the metrics. The overall scores 
         for each junction are saved in the last index of the second dimension as a float. The image below represents the structure of the results set:
+
+        \begin{figure}[H]
+            \centering
+            \includegraphics[width=\textwidth]{results3f.png}
+            \caption{Illustration of result set structure} 
+            \label{fig:results3d}
+        \end{figure}
         
         The overall scores for each junction configuration are also shown above the box layout of the directions. Depending on the number of junction configuration, the 
         the overall score labels will be adjusted accordingly to the layout of the page. The image below shows the results page with the overall scores displayed:
@@ -192,8 +199,6 @@ it will give an insight into the algorithms and formulas used to calculate the t
         \item In the scenario that the user decides to generate a report PDF without generating any results, an error message would display: telling the user to press the generate results button in order to generate the results of their configuration before pressing the report button again.
         \item As the user is setting up their junction configuration, if the user does not set a suitable number of lanes, when starting the simulation an error message will display. The error message will prompt the user to change the number of lanes on the exit that has an inconsistent number of lanes and incoming traffic. The error message should tell the user which junction configuration is causing an issue and which direction of traffic flow needs to be changed.
     \end{itemize}
-
-    \subsection{Styling}
 
 \section{Backend}
 
@@ -307,6 +312,14 @@ Thorough unit testing ensured that all core components functioned correctly befo
     \subsection{Deployment}
 
     \subsection{User Feedback}
+
+    We managed to get feedback from a few users who tested a protoptype of the system. The feedback was generally positive with users finding the system easy to use and understand. However, there were a few suggestions for improvements:
+
+    \begin{itemize}
+        \item One user suggested that the system should have a feature to save the results of the simulation in a database so that they can be accessed at a later time.
+        \item Another user suggested that the system should have a feature to save the junction configurations so that they can be loaded at a later time.
+        \item It was also suggested that the system be should have a feature to alternate between different types of junctions.
+    \end{itemize}
 
     \subsection{Future Improvements}
 
