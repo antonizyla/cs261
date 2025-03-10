@@ -12,3 +12,8 @@ To start the application:
 
 ### Mac
 Dont know
+
+## Cross Platform Approach
+- Install Python3.12
+- Install frontend folder's requirements.txt
+- from the cs261 folder (has frontend and backend in it) run frontend/frontend.py
