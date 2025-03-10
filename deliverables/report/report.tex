@@ -41,7 +41,7 @@
 
     \subsection{Developer Tools Used}
 
-    The sytem was developed using Python and a few of its libraries. This allowed for easier transition between the frontend and backend of the system. The
+    The system was developed using Python and a few of its libraries. This allowed for easier transition between the frontend and backend of the system. The
     fronted was developed using PyQT5 for the GUI and MatPlotLib for aid in the Visualisation of the results.
 
     Our team also utilised GitHub for version control and better collaboration between team members.
@@ -55,8 +55,8 @@
 
     In the planning and design of the document it was decided that there would be a single point of contact between
     the frontend and backend portions, this has remained true. There is a single function which is called by the
-    frontend to do all of the computation. The frontend does use the data classes from the backend as a base for
-    storing it's data however they are not copied over but used as is so any modifications or refactoring would not
+    frontend to do all the computation. The frontend does use the data classes from the backend as a base for
+    storing its data however they are not copied over but used as is so any modifications or refactoring would not
     require any major work.
 
 
@@ -69,13 +69,11 @@
 
     The backend had quite a few modifications, the planning and design document whilst a good start for the system was
     not fleshed out to the level required to implement a solution and make sure it was true to form. There are modifications
-    in almost all data classes as well as the way they interact with eachother.
+    in almost all data classes as well as the way they interact with each-other.
 
-    For example we did not end up using a resultset class at all as it was uneccessary and just another layer between
+    For example we did not end up using a resultset class at all as it was necessary and just another layer between
     the data and it's usage. Passing it as raw data in a set of arrays was better for the frontend as they could
     directly iterate over it when drawing the graphs.
-
-    One of the considerations
 
     More of these changes are listed later in the backend section of this file.
 
@@ -140,7 +138,7 @@
     will be taken to the Results Page where the results of the simulation will be displayed.
 
     \subsubsection{Visualisation}
-    In the initial design document, the implementation of the junction visualization was left fairly open to allow for future revisions, as permitted by the
+    In the initial design document, the implementation of the junction visualisation was left fairly open to allow for future revisions, as permitted by the
     modified version of the Waterfall Methodology used by the group. Once a basic input window had been created, the constraints (Such as left lanes and bus
     lanes being mutually exclusive) on the junction became clearer; this then aided with the design of the classes involved:
     \begin{figure}[H]
@@ -172,7 +170,7 @@
     \subsection{Results Page}
 
     The Results Page initially displays a divided design using QGridLayout, a 2x2 grid where each cell is a QGroupBox planned to contain result information about the traffic flow for each direction, but initially,
-    they display instructions on how the user can generate the results and how they they will be displayed. The image below shows the initial state of a box in the results page:
+    they display instructions on how the user can generate the results and how they will be displayed. The image below shows the initial state of a box in the results page:
 
     \begin{figure}[H]
         \centering
@@ -203,7 +201,7 @@
         \label{fig:results3d}
     \end{figure}
 
-    The overall scores for each junction configuration are also shown above the box layout of the directions. Depending on the number of junction configuration, the
+    The overall scores for each junction configuration are also shown above the box layout of the directions. Depending on the number of junction configuration,
     the overall score labels will be adjusted accordingly to the layout of the page. The image below shows the results page with the overall scores displayed:
 
     \begin{figure}[H]
@@ -254,7 +252,7 @@
     \end{figure}
 
     \begin{itemize}
-        \item If the user chooses to remove an alternate configuration without creating one in the first place, an error message will be displayed that will tell the user too add an alternate configuration before they are able to remove one.
+        \item If the user chooses to remove an alternate configuration without creating one in the first place, an error message will be displayed that will tell the user to add an alternate configuration before they are able to remove one.
         \item In the scenario that the user decides to generate a report PDF without generating any results, an error message would display: telling the user to press the generate results button in order to generate the results of their configuration before pressing the report button again.
         \item As the user is setting up their junction configuration, if the user does not set a suitable number of lanes, when starting the simulation an error message will display. The error message will prompt the user to change the number of lanes on the exit that has an inconsistent number of lanes and incoming traffic. The error message should tell the user which junction configuration is causing an issue and which direction of traffic flow needs to be changed.
     \end{itemize}
@@ -286,7 +284,7 @@
     \subsubsection{Results Handling}
 
     In the planning and design it was intended to use an object \texttt{resultSet} to handle the passing of the result
-    data from the backend to the frontend, this was deemed uneccesary, and instead we used raw data in a set of lists.
+    data from the backend to the frontend, this was deemed unnecessary, and instead we used raw data in a set of lists.
     This was easier not only for the backend to handle but also the frontend who could use the data directly when iterating
     over it whilst drawing the graphs in the frontend comparison function.
 
@@ -303,7 +301,7 @@
     total\_cars\_exited, and cumulative\_time\_waited attributes, for the purposes of calculating the average wait. In terms of methods,
     simulateUpdate() was used for moving Vehicle objects out of Lanes, whilst a new method add\_to\_pools() was used for adding Vehicle objects
     to pools, where flow rates were divided by 3600 and multiplied by the number of simulation seconds to find out how many vehicles to add,
-    with any fractional parts being stored in the residuals or bus\_residuals attributes (with vehicles being created the moment the cumulation
+    with any fractional parts being stored in the residuals or bus\_residuals attributes (with vehicles being created the moment the cumulative sum
     of fractional parts exceed 1). Each of these also make a call to the method enqueue\_to\_lanes, which updates time\_elapsed as well as moving
     Vehicle objects from pools to lanes. Another method introduced was get\_total\_vehicles(), which returns how many vehicles are currently in
     that road of the junction (all vehicles in lanes + all vehicles in pools).
@@ -332,7 +330,7 @@
     junction class, passed down into the direction class and then from those individual lanes are set to be flowing
     or not based on where their vehicles are going and what their current traffic light is.
 
-    This is all done synchronously and works based on working with non intersecting paths, the left and ahead turns are
+    This is all done synchronously and works based on working with non-intersecting paths, the left and ahead turns are
     all simulated for the same number of times in a given axis, then the right turn traffic. This allows us to not deal
     with the problem of cars in the junction at the same time or possible colliding paths.
 
@@ -344,7 +342,7 @@
     (each counter corresponding to a direction a vehicle may exit), calculating the average wait and maximum wait would
     be difficult and we could only get an approximation - vehicles couldn’t store how long they had actually been waiting,
     since they were initially represented as part of a counter. This led us to the decision to rewrite the pools from being
-    a list of counters for the number of vehicles outside of the Lane objects heading in each direction, to each pool being
+    a list of counters for the number of vehicles outside the Lane objects heading in each direction, to each pool being
     a list containing Vehicle objects, all headed in the direction the pool was designated to. Along with this, the Vehicle
     class was updated to contain a time\_entered attribute, a timestamp indicating what time it arrived to the junction,
     and each Direction object had a time\_elapsed attribute (indicating the time in simulated seconds since the start of
@@ -355,7 +353,7 @@
 
     For the overall score, after working on it as a group, we came up with the following equation:
     $$score(J) = \sum_{d \in Dirs}\frac{flow(d) + k_P\times crossTime(d) \times crossRate(d)}{k_W (meanWait(d)+\frac{(maxWait(d))^2}{meanWait(d)}) + k_L\times maxLength(d)}$$
-    The reasoning for making it dependent on the flow rate of each direction was because if a junction achieves a specific set of metrics (excluding overall score) for each direction with a certain set of flow rates, but another junction achieves that same set of metrics with a set of higher flow rates, then that second junction must be better and therefore receive a higher score. We decided to include crossing time and crossing rate in the equation since otherwise including pedestrian crossings would always lower the overall score due to preventing any traffic from flowing at given points, and in real life, pedestrian crossings do have value despite reducing how often traffic can flow. Since the score should reduce as average wait, max wait and max length increase, we decided to divide the flow rate and pedestrian crossing adjustment by average wait and max length, as well by max wait multiplied by max wait over average wait. Max wait was multiplied by this since we thought max wait should have more significance the further the value gets from average wait - for example, a junction with an average wait of 1 minute but maximum wait of an hour isn’t a very good junction. The equation also includes constants to allow for fine tuning to prefer certain junction configurations over others.
+    The reasoning for making it dependent on the flow rate of each direction was because if a junction achieves a specific set of metrics (excluding overall score) for each direction with a certain set of flow rates, but another junction achieves that same set of metrics with a set of higher flow rates, then that second junction must be better and therefore receive a higher score. We decided to include crossing time and crossing rate in the equation since otherwise including pedestrian crossings would always lower the overall score due to preventing any traffic from flowing at given points, and in real life, pedestrian crossings do have value despite reducing how often traffic can flow. Since the score should reduce as average wait, max wait and max length increase, we decided to divide the flow rate and pedestrian crossing adjustment by average wait and max length, as well by max wait multiplied by max wait over average wait. Max wait was multiplied by this since we thought max wait should have more significance the further the value gets from average wait - for example, a junction with an average wait of 1 minute but maximum wait of an hour isn’t a very good junction. The equation also includes constants to allow for fine-tuning to prefer certain junction configurations over others.
 
 
     \section{Testing}
@@ -461,7 +459,7 @@
 
     \section{Product Evaluation}
 
-    The system meets the majority of the requirements we outlined previously, it meets all of the must requirements and
+    The system meets the majority of the requirements we outlined previously, it meets all the must requirements and
     most of the should requirements.
 
     \begin{figure}[H]
@@ -478,7 +476,7 @@
                 \hline
                 4C          & User Will have a graphical representation of the junction                                           & Passed - User Test             \\
                 \hline
-                5C          & User Will be able to create multiple Junction Configurations and simulate simulataneously & Passed - User Test \\
+                5C          & User Will be able to create multiple Junction Configurations and simulate simultaneously & Passed - User Test \\
                 \hline
                 6C          & User Will be presented with statistics about the Junction's performance                             & Passed - User Tested           \\
                 \hline
@@ -490,7 +488,7 @@
                 \hline
                 10C         & The user should be able to view the flow from any arm of the junction in a Sankey Diagram & Failed - Not Implemented \\
                 \hline
-                11C         & The User Must be provided with user friendly messages on system failure or erorr & Passed - User Test \\
+                11C         & The User Must be provided with user friendly messages on system failure or error & Passed - User Test \\
                 \hline
             \end{tabular}
             \caption{Customer Facing Requirements Tested}
@@ -507,7 +505,7 @@
                 \hline
                 13 & Run on Linux, Mac and Windows & Passed - Developed and ran on all 3 \\
                 \hline
-                14 & Modular and Well documented & Borderline - Modular but not documented \\
+                14 & Modular and Well documented & Borderline - Modular but not fully documented \\
                 \hline
             \end{tabular}
             \caption{Non Functional Requirements Evaluated}
@@ -516,9 +514,18 @@
 
     \subsection{Deployment}
 
+    The project is provided with an instructions file \texttt{command.txt} which has instructions for running the
+    project, installing any necessary libraries.
+    There are also compiled executables for Linux and Windows provided in the git repo.
+
+    We did want to use docker to have a consistent build environment however this proved challenging as only one person
+    on the team actually used a linux computer every day and would have required everyone else to use virtualised solution.
+    We also felt that it was out of the scope of a basic project to include docker when the requirements for packaging were
+    still unknown.
+
     \subsection{User Feedback}
 
-    We managed to get feedback from a few users who tested a protoptype of the system. The feedback was generally positive with users finding the system easy to use and understand. However, there were a few suggestions for improvements:
+    We managed to get feedback from a few users who tested a prototype of the system. The feedback was generally positive with users finding the system easy to use and understand. However, there were a few suggestions for improvements:
 
     \begin{itemize}
         \item One user suggested that the system should have a feature to save the results of the simulation in a database so that they can be accessed at a later time.
@@ -537,19 +544,18 @@
     that would be very useful to implement in the future. This would expand the size of the market that would make use
     of the software.
 
-    Not mentioned by user testing but we could implement the ability to find an optimal junction layout for a set of
-    flow rates and certain restrictions, e.g 150 vehicles per hour in all directions but can only have 3 lanes North and
+    Not mentioned by user testing, but we could implement the ability to find an optimal junction layout for a set of
+    flow rates and certain restrictions, e.g. 150 vehicles per hour in all directions but can only have 3 lanes North and
     2 in the other directions, the system would then find the optimal layout and suggest to the planner.
-
 
     \section{Process Evaluation}
 
     \subsection{Time Management}
 
     Due to unforeseen circumstances, one of our group members could not contribute to the project as much as they would have liked to. This meant that the rest of the group had to distribute 
-    the work betweent the remaining members. Since the work was being distributed, we had to reevaluate our time management strategy to make sure that the work was being done. 
-    We increased the number of meetings we had per week to make sure that the work was being done and that everyone was on the same page.  Additionally, we prioritized task delegation based on each member’s strengths 
-    and availability to ensure an efficient workflow. This approach allowed us to distribute the workload fairly while maintaining productivity. To track our progress, we utilized project management tools to document 
+    the work between the remaining members. Since the work was being distributed, we had to reevaluate our time management strategy to make sure that the work was being done.
+    We increased the number of meetings we had per week to make sure that the work was being done and that everyone was on the same page.  Additionally, we prioritised task delegation based on each member’s strengths
+    and availability to ensure an efficient workflow. This approach allowed us to distribute the workload fairly while maintaining productivity. To track our progress, we utilised project management tools to document
     completed tasks, pending work, and any challenges faced. By increasing communication and adapting our strategy, we were able to mitigate the impact of the unforeseen circumstances. Regular check-ins helped us identify potential 
     bottlenecks early, allowing for quick resolution. Despite the unexpected challenge, our ability to collaborate effectively and adjust our approach ensured that we remained on track to complete the project successfully. The image 
     below shows a Gantt chart of the project timeline:
@@ -565,7 +571,7 @@
 
     As outlined in our Planning and Design document, we opted for a slight variation of the Waterfall methodology, incorporating incremental development and reuse methodologies. This approach allowed us to maintain a structured 
     development process while retaining some adaptability to reevaluate requirements and design midway through the project if new needs arose. We chose this methodology due to its clear phase-based structure, which provided 
-    organization and direction, while the incremental aspect ensured that we could validate progress at multiple stages. Given our limited development timeframe, this hybrid approach balanced the predictability of Waterfall 
+    organisation and direction, while the incremental aspect ensured that we could validate progress at multiple stages. Given our limited development timeframe, this hybrid approach balanced the predictability of Waterfall
     with the flexibility needed to handle any unforeseen changes efficiently.
 
     Having completed the development phase, we believe that our methodology choice was well-suited to our project. The structured nature of Waterfall helped us establish clear milestones and manage our resources effectively, 
@@ -583,13 +589,13 @@
 
     \subsection{Key Strengths and Limitations}
 
-    Overall, our team is of the opinion that our project was mostly successful. The aspect of communication and team coordination was a cruical part of the project and we believe that we did well in that aspect. The team was able to overcome the 
+    Overall, our team is of the opinion that our project was mostly successful. The aspect of communication and team coordination was a crucial part of the project, and we believe that we did well in that aspect. The team was able to overcome the
     challenges that arose during the project and through re-distribution of the workload and good communication, we were able to complete the project on time. Another key aspect that aided the development of the project was the division of the group 
     into roles. This allowed for a more efficient workflow as each person had a specific role to do and could focus on that. Our strong initial meeting and planning phase also helped us to stay on track and complete the project on time. We were able to
     identify potential issues early on and address them before they became a problem. Moreover, the usage of Git allowed us to work on the project simultaneously without any issues. The use of Git also allowed us to keep track of the changes made to 
     the project and revert back to previous versions if needed.
 
-    However, there were some limitations to the project. One of the main limitations was the underestimation of the time it would take to get familiar with some of the technologies we used. The development of the frontend was commpleted on time, thanks to the
+    However, there were some limitations to the project. One of the main limitations was the underestimation of the time it would take to get familiar with some of the technologies we used. The development of the frontend was completed on time, thanks to the
     coordination of them team, but during its development, more errors were found than expected. Furthermore, the backend suffered from a lack of testing, which meant that some errors were not found until the end of the project. This was due to the unforeseen
     circumstances that arose during the project.
 
