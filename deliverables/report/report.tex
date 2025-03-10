@@ -351,10 +351,6 @@
     all simulated for the same number of times in a given axis, then the right turn traffic. This allows us to not deal
     with the problem of cars in the junction at the same time or possible colliding paths.
 
-    We make sure to have the first car off the line take longer than the subsequent cars to cross a junction, the second
-    car would be crossing the junction having already accelerated before entering, this makes the simulation more
-    realistic compared to the real world.
-
     \subsection{Results}\label{subsec:results_backend}
     The results required to be displayed by the simulator per junction were the average wait time, maximum wait time and
     maximum queue length in each direction, along with an overall score for the junction. When implementing code to
