@@ -51,9 +51,23 @@
 
     \subsection{System Architecture and Interaction}
 
+    In the planning and design of the document it was decided that there would be a single point of contact between
+    the frontend and backend portions, this has remained true. There is a single function which is called by the
+    frontend to do all of the computation. The frontend does use the data classes from the backend as a base for
+    storing it's data however they are not copied over but used as is so any modifications or refactoring would not
+    require any major work.
 
     \section{Modifications}
 
+    \subsubsection{Backend}
+
+    The backend had quite a few modifications, the planning and design document whilst a good start for the system was
+    not fleshed out to the level required to implement a solution and make sure it was true to form. There are modifications
+    in almost all data classes as well as the way they interact with eachother.
+
+    For example we did not end up using a resultset class at all as it was uneccessary and just another layer between
+    the data and it's usage. Passing it as raw data in a set of arrays was better for the frontend as they could
+    directly iterate over it when drawing the graphs.
 
     \section{Algorithms and Formulas}
 
@@ -64,7 +78,6 @@
     \subsection{Calculating Metrics}
 
     \subsection{Overall Score}
-
 
     \section{Frontend}
 
@@ -227,6 +240,13 @@
     dedicated right and dedicated bus lanes, with this comes a larger constructor as well as more getters for the
     flows derived from various combinations of the above. There is also a check function included in both classes to
     check that the data is of the correct format due to the lazy type system of python
+
+    \subsubsection{Results Handling}
+
+    In the planning and design it was intended to use an object \texttt{resultSet} to handle the passing of the result
+    data from the backend to the frontend, this was deemed uneccesary, and instead we used raw data in a set of lists.
+    This was easier not only for the backend to handle but also the frontend who could use the data directly when iterating
+    over it whilst drawing the graphs in the frontend comparison function.
 
     \subsection{Simulation}
 
