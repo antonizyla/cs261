@@ -1,12 +1,14 @@
 # CS261 Group Project Group 29
 
-## Running Via Executbale
-- Donload Repo (You're here)
-- Have python3.12 installd on you machine
-- Follow Instruction in Distributions/Instructions.txt based on your OS
+## Running the Application
+### Windows
+To start the application do one of the following:
+- Open the distributions folder in File Explorer, then double click Traffic_App_Windows.exe file
+- cd into the distributions directory via the command line, then run .\Traffic_App_Windows.exe
 
-## Running 'Locally'
-- Downloa Repo
-- Install Python3.12
-- Install fronted folder's requirements.txt
-- from the cs261 folder (has frontend and backend in it) run frontend/frontend.py
+### Linux
+To start the application:
+- cd into the distributions directory via the command line, then run ./Traffic_App_Linux
+
+### Mac
+Dont know
