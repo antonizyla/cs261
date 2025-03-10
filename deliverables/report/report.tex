@@ -19,8 +19,6 @@
 \begin{document}
     \maketitle
 
-    \tableofcontents
-
     \section{Preface}
 
     Dorset Software tasked our team with creating a traffic junction simulator. And we fucking did it.
@@ -196,7 +194,7 @@
         \label{fig:results2}
     \end{figure}
 
-    The results set is retrieved as a 3D list from the backend, where te first dimension represents tje junction configuration, the second dimension represents the direction of the traffic flow, and the third dimension represents the metrics. The overall scores
+    The results set is retrieved as a 3D list from the backend, where the first dimension represents the junction configuration, the second dimension represents the direction of the traffic flow, and the third dimension represents the metrics. The overall scores
     for each junction are saved in the last index of the second dimension as a float.
     The image below represents the structure of the results set:
 
@@ -470,19 +468,55 @@
 
     \section{Process Evaluation}
 
-    \subsection{Team Coordination and Communication}
-    As stated in the planning and design document, we met up once a week to discuss what needed to be worked on in the project. We discusses which each person had to do that week and whether and problems came up. While creating the application we met up again each week to work on the application together in the DCS labs where we would walk through what each person worked on so everyone on the team understood whast they had written. Furthermore, everyone was active on the discord group we created to discuss any problems that arose.
+    \subsection{Time Management}
 
-    Overall, our team coordination and communication was very good as everyone was able to keep up-to-date with the application, what was needed to be done, and any problems that came up.
+    Due to unforeseen circumstances, one of our group members could not contribute to the project as much as they would have liked to. This meant that the rest of the group had to distribute 
+    the work betweent the remaining members. Since the work was being distributed, we had to reevaluate our time management strategy to make sure that the work was being done. 
+    We increased the number of meetings we had per week to make sure that the work was being done and that everyone was on the same page.  Additionally, we prioritized task delegation based on each member’s strengths 
+    and availability to ensure an efficient workflow. This approach allowed us to distribute the workload fairly while maintaining productivity. To track our progress, we utilized project management tools to document 
+    completed tasks, pending work, and any challenges faced. By increasing communication and adapting our strategy, we were able to mitigate the impact of the unforeseen circumstances. Regular check-ins helped us identify potential 
+    bottlenecks early, allowing for quick resolution. Despite the unexpected challenge, our ability to collaborate effectively and adjust our approach ensured that we remained on track to complete the project successfully. The image 
+    below shows a Gantt chart of the project timeline:
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=\textwidth]{ganttChart}
+        \caption{The Gantt Chart of the project timeline after the reevaluation of the time management strategy}
+        \label{fig:ganttChart}
+    \end{figure}
 
     \subsection{Methodology Feasibility and Evaluation}
 
-    \subsection{Time Management}
+    As outlined in our Planning and Design document, we opted for a slight variation of the Waterfall methodology, incorporating incremental development and reuse methodologies. This approach allowed us to maintain a structured 
+    development process while retaining some adaptability to reevaluate requirements and design midway through the project if new needs arose. We chose this methodology due to its clear phase-based structure, which provided 
+    organization and direction, while the incremental aspect ensured that we could validate progress at multiple stages. Given our limited development timeframe, this hybrid approach balanced the predictability of Waterfall 
+    with the flexibility needed to handle any unforeseen changes efficiently.
+
+    Having completed the development phase, we believe that our methodology choice was well-suited to our project. The structured nature of Waterfall helped us establish clear milestones and manage our resources effectively, 
+    ensuring that each phase was well-defined and completed before moving forward. However, the ability to reassess requirements mid-development proved crucial, as it allowed us to accommodate necessary refinements without major 
+    disruptions. Additionally, the reuse methodologies we incorporated helped streamline development, reducing redundant work and allowing us to focus more on system functionality. This approach was particularly beneficial given 
+    our team’s initial unfamiliarity with large-scale software development, as it ensured a clear framework while still allowing for course corrections.
+
+    That said, we did encounter some limitations with our methodology. The sequential nature of Waterfall made it challenging to accommodate last-minute changes efficiently, and while our incremental approach mitigated some of these 
+    issues, we occasionally found ourselves constrained by the rigidity of predefined phases. Furthermore, although reuse methodologies helped speed up development, they also required careful integration and testing to ensure consistency 
+    across components. In hindsight, a more iterative agile approach might have provided greater flexibility in addressing evolving requirements, though it would have required a higher level of adaptability from the team.
+
+    Overall, we believe that our chosen methodology was a feasible and effective choice given the nature of our project. It provided structure and clarity while allowing for necessary adjustments, ultimately ensuring the timely 
+    delivery of a functional product. However, future projects with similarly tight timelines and evolving requirements might benefit from an approach that incorporates even more iterative elements, such as a hybrid Agile-Waterfall 
+    methodology, to maximize both adaptability and efficiency.
 
     \subsection{Key Strengths and Limitations}
 
+    Overall, our team is of the opinion that our project was mostly successful. The aspect of communication and team coordination was a cruical part of the project and we believe that we did well in that aspect. The team was able to overcome the 
+    challenges that arose during the project and through re-distribution of the workload and good communication, we were able to complete the project on time. Another key aspect that aided the development of the project was the division of the group 
+    into roles. This allowed for a more efficient workflow as each person had a specific role to do and could focus on that. Our strong initial meeting and planning phase also helped us to stay on track and complete the project on time. We were able to
+    identify potential issues early on and address them before they became a problem. Moreover, the usage of Git allowed us to work on the project simultaneously without any issues. The use of Git also allowed us to keep track of the changes made to 
+    the project and revert back to previous versions if needed.
 
-    \section{Conclusion}
+    However, there were some limitations to the project. One of the main limitations was the underestimation of the time it would take to get familiar with some of the technologies we used. The development of the frontend was commpleted on time, thanks to the
+    coordination of them team, but during its development, more errors were found than expected. Furthermore, the backend suffered from a lack of testing, which meant that some errors were not found until the end of the project. This was due to the unforeseen
+    circumstances that arose during the project.
 
-
+    To conclude, while our project faced some challenges, our structured approach, strong communication, and effective teamwork allowed us to successfully complete it on time, providing us with valuable experience in software development, collaboration, and 
+    problem-solving.
 \end{document}
