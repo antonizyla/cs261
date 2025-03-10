@@ -1,9 +1,9 @@
 
 Linux 
-python -m  PyInstaller --add-data "frontend/stylesheet.qss:." --add-data "frontend/tiles:tiles" --add-data "backend:backend" --add-data "frontend/check.png:check.png" --noconsole --onefile frontend/frontend.py
+python -m  PyInstaller --add-data "frontend/stylesheet.qss:." --add-data "frontend/tiles:tiles" --add-data "backend:backend" --add-data "frontend/check.png:frontend/check.png" --noconsole --onefile frontend/frontend.py
 
 Windows
-python -m  PyInstaller --add-data "frontend/stylesheet.qss;." --add-data "frontend/tiles;tiles" --add-data "backend;backend" --add-data "frontend/check.png;check.png" --noconsole --onefile frontend/frontend.py
+python -m  PyInstaller --add-data "frontend/stylesheet.qss;." --add-data "frontend/tiles;tiles" --add-data "backend;backend" --add-data "frontend/check.png;frontend/check.png" --noconsole --onefile frontend/frontend.py
 
 
 
@@ -15,5 +15,5 @@ activate the venv and install packages
     pip install -r frontend/requirements.txt
     pip install pyinstaller
 Then create the executable
-    python -m  PyInstaller --add-data "frontend/stylesheet.qss:." --add-data "frontend/tiles:tiles" --add-data "backend:backend" --add-data "frontend/check.png:check.png" --noconsole --onefile frontend/frontend.py
+    python -m  PyInstaller --add-data "frontend/stylesheet.qss:." --add-data "frontend/tiles:tiles" --add-data "backend:backend" --add-data "frontend/check.png:frontend/check.png" --noconsole --onefile frontend/frontend.py
 this should create an executable in the dist folder, check that it works, then rename it and move it to the distributions folder
