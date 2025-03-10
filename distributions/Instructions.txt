@@ -1,6 +1,0 @@
-To start the application on Windows, either:
-    - Open the distributions folder in File Explorer, then double click Traffic_App_Windows.exe file
-    - cd into the distributions folder via the command line, then run .\Traffic_App_Windows.exe
-
-To start the application on Linux:
-    - cd into the distributions folder via the command line, then run ./Traffic_App_Linux
