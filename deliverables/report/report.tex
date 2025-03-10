@@ -295,13 +295,13 @@
     and then resetting to 0. The Vehicle class was updated with two extra attributes: time\_entered (discussed in the Results section) and
     type, used to indicate whether the vehicle is a car or a bus, used for implementing bus lanes.
 
-    The implementation of run_simulation() in Junction - the main function in Junction - works as follows. The largest flow rate corresponding 
+    The implementation of run\_simulation() in Junction - the main function in Junction - works as follows. The largest flow rate corresponding
     to each traffic light setting (North-South Right, North-South Other, East-West Right, East-West Other) is calculated and then sorted from 
     largest to smallest. A for loop then runs for a set number of iterations, with the iterations cycling through the traffic light settings 
     in the sorted order previously determined. The number of simulation seconds a traffic light setting is on for is calculated by taking the 
     larger traffic light priority of the two directions indicated by the traffic light setting, adding 1 and then multiplying by 10. Then, the 
     Direction objects belonging to the Junction each have their simulateUpdate() method called, with the traffic light setting and simulation 
-    seconds the setting is on for being passed in, after which add_to_pools() is called on all of the Direction objects to add the number of 
+    seconds the setting is on for being passed in, after which add\_to\_pools() is called on all of the Direction objects to add the number of
     vehicles that should have arrived during the time passed to the pools and/or lanes of the Direction. If the junction is configured to have 
     pedestrian crossings and a positive crossing rate per hour, then the accumulator’s value is considered at each iteration, skipping the calls 
     to Direction.simulateUpdate() when it reaches the threshold value mentioned earlier.
