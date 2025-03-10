@@ -1,10 +1,12 @@
-# CS261 Group Project
-Repo is hosted on my github at `git@github.com:antonizyla/cs261.git`
+# CS261 Group Project Group 29
 
-## Deliverables
-Holds 3 separate folders for the required documents we will need to submit, each of these is a LaTex file, I have included a script to compile these but you can use whatever method to compile.
+## Running Via Executbale
+- Donload Repo (You're here)
+- Have python3.12 installd on you machine
+- Follow Instruction in Distributions/Instructions.txt based on your OS
 
-- Will need a working latex installation along with `chktex`
-
-## Implementation
-Java Backend and Nextjs frontend. Maven project setup in `simulation` folder.
+## Running 'Locally'
+- Downloa Repo
+- Install Python3.12
+- Install fronted folder's requirements.txt
+- from the cs261 folder (has frontend and backend in it) run frontend/frontend.py
