@@ -126,27 +126,36 @@
     will be taken to the Results Page where the results of the simulation will be displayed.
 
         \subsubsection{Visualisation}
-            In the initial design document, the implementation of the junction visualization was left fairly open to allow for future revisions, as permitted by the modified version of the Waterfall Methodology used by the group. Once a basic input window had been created, the constraints (Such as left lanes and bus lanes being mutually exclusive) on the junction became clearer; this then aided with design of the classes involved:
+            In the initial design document, the implementation of the junction visualization was left fairly open to allow for future revisions, as permitted by the 
+            modified version of the Waterfall Methodology used by the group. Once a basic input window had been created, the constraints (Such as left lanes and bus 
+            lanes being mutually exclusive) on the junction became clearer; this then aided with the design of the classes involved:
             \begin{figure}[H]
                 \centering
                 \includegraphics[width=\textwidth]{visualisation_class.png}
                 \caption{Class diagram for the visualisation}
                 \label{fig:visualisation_class}
             \end{figure}
-            The overall structure was made to be hierarchical so that each layer could independently create and position the Tiles that they contained. Having both TileGroups and PixmapTiles inherit from Tile was intended to provide a layer of abstraction that would simplify the code.
+            The overall structure was made to be hierarchical so that each layer could independently create and position the Tiles that they contained. Having both 
+            TileGroups and PixmapTiles inherit from Tile was intended to provide a layer of abstraction that would simplify the code.
             \begin{figure}[H]
                 \centering
                 \includegraphics[width=0.6\textwidth]{visualisation_relationship.png}
                 \caption{Relationships between classes in the visualisation}
                 \label{fig:visualisation_relationship}
             \end{figure}
-            When implementing this design for the implementation, the team realised that it was inefficient to create a QPixmap for each tile in the image. This was because for some junction configurations there would be as many as one hundred and fifty QPixmaps created each time the junction was updated. To increase the efficiency, a class named Pixmap was created which held a single copy of each QPixmap. These QPixmaps are persistent between updates so only need to be created once when they are first needed.\\
+            When implementing this design for the visualisation, the team realised that it was inefficient to create a QPixmap for each tile in the image. This 
+            was because for some junction configurations there would be as many as one hundred and fifty QPixmaps created each time the junction was updated. To 
+            increase the efficiency, a class named Pixmap was created which held a single copy of each QPixmap. These QPixmaps are persistent between updates so 
+            only need to be created once when they are first used.\\
 
-            The visualisation ended up meeting requirement 12 as it updates in real time as can be seen in the Dragon's Den video; however it was decided not to complete requirement 10 as this could have made the visualisation too cluttered, and could potentially be unintuitive to the user.
+            The visualisation ended up meeting requirement 12 as it updates in real time as can be seen in the Dragon's Den video; however it was decided not to 
+            complete requirement 10 as it was decided that the Sanked diagrams could have made the visualisation too cluttered, and could potentially be 
+            unintuitive to the user.
         
         \subsubsection{Copy and Paste}
             Although not in the origin design, the team decided to add copy and paste buttons as a quality of life improvement for the user.
-            Before being implemented, comparing two junctions with the same flow rates required all twelve values to be copied manually from one junction to another; however, with the copy and paste button not only can these be copied with two clicks, but all other configurations for that junction are copied as well. 
+            Before being implemented, comparing two junctions with the same flow rates required all twelve values to be copied manually from one junction to another; 
+            however, with the copy and paste button not only can these be copied with two clicks, but all other configurations for that junction are copied as well. 
             This significantly improves the efficiency with which the user can compare two junctions with minor differences (Likely a common use case for this application).
 
 
