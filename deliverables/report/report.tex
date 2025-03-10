@@ -323,14 +323,14 @@
     Vehicle objects from pools to lanes. Another method introduced was get\_total\_vehicles(), which returns how many vehicles are currently in
     that road of the junction (all vehicles in lanes + all vehicles in pools).
 
-    Lane received the additional attributes is_bus_lane and maximum_vehicle_wait_time, used for indicating whether the lane is a bus lane and 
+    Lane received the additional attributes is bus\_lane and maximum vehicle\_wait\_time, used for indicating whether the lane is a bus lane and
     keeping track of the maximum time a vehicle that exited that lane has had to wait for (used for calculating the maximum wait time in the 
-    lane’s direction) respectively. The goes_to() method returns whether one of the directions the lanes goes in is the direction passed in, 
-    while get_queue_limit() and get_no_available_spaces() return the queue limit for the lane and how many more objects can be added to the 
+    lane’s direction) respectively. The goes\_to() method returns whether one of the directions the lanes goes in is the direction passed in,
+    while get\_queue\_limit() and get\_no\_available\_spaces() return the queue limit for the lane and how many more objects can be added to the
     lane with respect to the queue limit.
 
-    The implementation of simulate_update() in Lane - the main function in Lane - works as follows. The function is passed a list of directions, 
-    the time the traffic light setting is on for, and the current value of time_elapsed from the Direction object it belongs to (see the Results 
+    The implementation of simulate\_update() in Lane - the main function in Lane - works as follows. The function is passed a list of directions,
+    the time the traffic light setting is on for, and the current value of time\_elapsed from the Direction object it belongs to (see the Results
     section), and sets an internal variable called timer to the time the traffic light setting is on for. The function then repeatedly dequeues 
     Vehicle objects from the lane, decreasing the timer each time, until either the timer reaches 0, the lane is considered empty, or the next 
     vehicle to be dequeued is headed in a direction not in the passed list of directions. The first dequeued vehicle causes the timer to be decreased 
