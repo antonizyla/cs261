@@ -21,9 +21,10 @@
 
     \tableofcontents
 
+
     \section{Preface}
 
-    Dorset Software tasked our team with creating a traffic junction simulator. And we fucking did it.
+    Dorset Software tasked our team with creating a traffic junction simulator.
 
     Dorset Software has tasked our team with the creation of a traffic junction simulator which will be used for the modelling of traffic junctions on various parameters. The system provides data on how these configurations
     affect the traffic flow and the overall efficiency of the junction in comparison to other configurations.
@@ -59,7 +60,11 @@
     storing it's data however they are not copied over but used as is so any modifications or refactoring would not
     require any major work.
 
+
     \section{Modifications}
+
+    It turned out that the planning and design was not sufficiently detailed to properly create a fully functioning
+    system just by itself, there were quite a few modifications required, some examples are listed below.
 
     \subsubsection{Backend}
 
@@ -71,15 +76,24 @@
     the data and it's usage. Passing it as raw data in a set of arrays was better for the frontend as they could
     directly iterate over it when drawing the graphs.
 
+    One of the considerations
+
+    More of these changes are listed later in the backend section of this file.
+
+
     \section{Algorithms and Formulas}
 
-    \subsection{Semaphores}
+    There was no decisison on how the overall score should be calculated before the implementation of the project
+    began, the formula in section 6.3 was made by taking into account what makes a junction good,
+    a mix of flow rate, quick average wait times, a minimal maximum wait time and a minimal maximum queue length, the
+    factor of maximum wait time was deemed more important than the other two so uses a square term in the formula.
 
     \subsection{Traffic Flow}
 
     \subsection{Calculating Metrics}
 
     \subsection{Overall Score}
+
 
     \section{Frontend}
 
@@ -109,7 +123,7 @@
 
     \begin{figure}[H]
         \centering
-        \includegraphics[width=7cm]{homepage.png}
+        \includegraphics[width=11cm]{homepage}
         \caption{Home Page of the System}
         \label{fig:homepage}
     \end{figure}
@@ -142,36 +156,34 @@
     will be taken to the Results Page where the results of the simulation will be displayed.
 
     \subsubsection{Visualisation}
-        In the initial design document, the implementation of the junction visualization was left fairly open to allow for future revisions, as permitted by the
-        modified version of the Waterfall Methodology used by the group. Once a basic input window had been created, the constraints (Such as left lanes and bus
-        lanes being mutually exclusive) on the junction became clearer; this then aided with the design of the classes involved:
-        \begin{figure}[H]
-            \centering
-            \includegraphics[width=\textwidth]{visualisation_class}
-            \caption{Class diagram for the visualisation}
-            \label{fig:visualisation_class}
-        \end{figure}
-        The overall structure was made to be hierarchical so that each layer could independently create and position the Tiles that they contained. Having both
-        TileGroups and PixmapTiles inherit from Tile was intended to provide a layer of abstraction that would simplify the code.
-        \begin{figure}[H]
-            \centering
-            \includegraphics[width=0.6\textwidth]{visualisation_relationship}
-            \caption{Relationships between classes in the visualisation}
-            \label{fig:visualisation_relationship}
-        \end{figure}
-        When implementing this design for the visualisation, the team realised that it was inefficient to create a QPixmap for each tile in the image. This
-        was because for some junction configurations there would be as many as one hundred and fifty QPixmaps created each time the junction was updated. To
-        increase the efficiency, a class named Pixmap was created which held a single copy of each QPixmap. These QPixmaps are persistent between updates so
-        only need to be created once when they are first used.\\
+    In the initial design document, the implementation of the junction visualization was left fairly open to allow for future revisions, as permitted by the
+    modified version of the Waterfall Methodology used by the group. Once a basic input window had been created, the constraints (Such as left lanes and bus
+    lanes being mutually exclusive) on the junction became clearer; this then aided with the design of the classes involved:
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=\textwidth]{visualisation_class}
+        \caption{Class diagram for the visualisation}
+        \label{fig:visualisation_class}
+    \end{figure}
+    The overall structure was made to be hierarchical so that each layer could independently create and position the Tiles that they contained. Having both
+    TileGroups and PixmapTiles inherit from Tile was intended to provide a layer of abstraction that would simplify the code.
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.6\textwidth]{visualisation_relationship}
+        \caption{Relationships between classes in the visualisation}
+        \label{fig:visualisation_relationship}
+    \end{figure}
+    When implementing this design for the visualisation, the team realised that it was inefficient to create a QPixmap for each tile in the image. This
+    was because for some junction configurations there would be as many as one hundred and fifty QPixmaps created each time the junction was updated. To
+    increase the efficiency, a class named Pixmap was created which held a single copy of each QPixmap. These QPixmaps are persistent between updates so
+    only need to be created once when they are first used.\\
 
-            The visualisation ended up meeting requirement 12 as it updates in real time as can be seen in the Dragon's Den video; however it was decided not to complete requirement 10 as this could have made the visualisation too cluttered, and could potentially be unintuitive to the user.
-        
-        \subsubsection{Copy and Paste}
-            Although not in the origin design, the team decided to add copy and paste buttons as a quality of life improvement for the user.
-            Before being implemented, comparing two junctions with the same flow rates required all twelve values to be copied manually from one junction to another; however, with the copy and paste button not only can these be copied with two clicks, but all other configurations for that junction are copied as well. 
-            This significantly improves the efficiency with which the user can compare two junctions with minor differences (Likely a common use case for this application).
+    The visualisation ended up meeting requirement 12 as it updates in real time as can be seen in the Dragon's Den video; however it was decided not to complete requirement 10 as this could have made the visualisation too cluttered, and could potentially be unintuitive to the user.
 
-
+    \subsubsection{Copy and Paste}
+    Although not in the origin design, the team decided to add copy and paste buttons as a quality of life improvement for the user.
+    Before being implemented, comparing two junctions with the same flow rates required all twelve values to be copied manually from one junction to another; however, with the copy and paste button not only can these be copied with two clicks, but all other configurations for that junction are copied as well.
+    This significantly improves the efficiency with which the user can compare two junctions with minor differences (Likely a common use case for this application).
 
     \subsection{Results Page}
 
@@ -272,9 +284,9 @@
 
     \subsection{Data Classes}
 
-    The system is split into the same classes as defined in the planning and design. However, during the development of the 
-    classes, we realised that the system hadn’t been considered thoroughly enough, so a lot of the methods and attributes 
-    inside the classes received changes. 
+    The system is split into the same classes as defined in the planning and design. However, during the development of the
+    classes, we realised that the system hadn’t been considered thoroughly enough, so a lot of the methods and attributes
+    inside the classes received changes.
 
     \subsubsection{Params and Flowrates}
 
@@ -295,26 +307,38 @@
     over it whilst drawing the graphs in the frontend comparison function.
 
     \subsubsection{Junction, Vehicle, Direction, and Lane}
-    For the Junction class, an accumulator attribute was introduced to implement pedestrian crossings: the accumulator would 
-    count the seconds since the previous pedestrian crossing started, pausing all directions traffic for the pedestrian crossing 
-    time when it became greater than the crossing rate per hour converted to seconds between crossings (3600 / crossing rate per hour) 
-    and then resetting to 0. The Vehicle class was updated with two extra attributes: time_entered (discussed in the Results section) and 
-    type, used to indicate whether the vehicle is a car or a bus, used for implementing bus lanes. 
-    
-    Direction received major changes, having the pools changed from a list of counters to lists containing Vehicle objects (discussed further 
-    in the Results section), having the dedicatedLane and dedicatedLaneFlow attributes removed due to being handled by the FlowRates object. 
-    Direction also had a flows attribute added to store the flow rates corresponding to that road of the junction, as well as time_elapsed, 
-    total_cars_exited, and cumulative_time_waited attributes, for the purposes of calculating the average wait. In terms of methods, 
-    simulateUpdate() was used for moving Vehicle objects out of Lanes, whilst a new method add_to_pools() was used for adding Vehicle objects 
-    to pools, where flow rates were divided by 3600 and multiplied by the number of simulation seconds to find out how many vehicles to add, 
-    with any fractional parts being stored in the residuals or bus_residuals attributes (with vehicles being created the moment the cumulation 
-    of fractional parts exceed 1). Each of these also make a call to the method enqueue_to_lanes, which updates time_elapsed as well as moving 
-    Vehicle objects from pools to lanes. Another method introduced was get_total_vehicles(), which returns how many vehicles are currently in 
+    For the Junction class, an accumulator attribute was introduced to implement pedestrian crossings: the accumulator would
+    count the seconds since the previous pedestrian crossing started, pausing all directions traffic for the pedestrian crossing
+    time when it became greater than the crossing rate per hour converted to seconds between crossings (3600 / crossing rate per hour)
+    and then resetting to 0. The Vehicle class was updated with two extra attributes: time\_entered (discussed in the Results section) and
+    type, used to indicate whether the vehicle is a car or a bus, used for implementing bus lanes.
+
+    Direction received major changes, having the pools changed from a list of counters to lists containing Vehicle objects (discussed further
+    in the Results section), having the dedicatedLane and dedicatedLaneFlow attributes removed due to being handled by the FlowRates object.
+    Direction also had a flows attribute added to store the flow rates corresponding to that road of the junction, as well as time\_elapsed,
+    total\_cars\_exited, and cumulative\_time\_waited attributes, for the purposes of calculating the average wait. In terms of methods,
+    simulateUpdate() was used for moving Vehicle objects out of Lanes, whilst a new method add\_to\_pools() was used for adding Vehicle objects
+    to pools, where flow rates were divided by 3600 and multiplied by the number of simulation seconds to find out how many vehicles to add,
+    with any fractional parts being stored in the residuals or bus\_residuals attributes (with vehicles being created the moment the cumulation
+    of fractional parts exceed 1). Each of these also make a call to the method enqueue\_to\_lanes, which updates time\_elapsed as well as moving
+    Vehicle objects from pools to lanes. Another method introduced was get\_total\_vehicles(), which returns how many vehicles are currently in
     that road of the junction (all vehicles in lanes + all vehicles in pools).
 
     \subsection{Simulation}
 
-    \subsection{Results}
+    For the simulation we utilised a top down nested structure. For example traffic light timing is generated in the
+    junction class, passed down into the direction classs and then from those individual lanes are set to be flowing
+    or nat based on where their vehicles are going and what their current traffic light is.
+
+    This is all done synchronously and works based on working with non intersecting paths, the left and ahead turns are
+    all simulated for the same number of times in a given axis, then the right turn traffic. This allows us to not deal
+    with the problem of cars in the junction at the same time or possible colliding paths.
+
+    We make sure to have the first car off the line take longer than the subsequent cars to cross a junction, the second
+    car would be crossing the junction having already accelerated before entering, this makes the simulation more
+    realistic compared to the real world.
+
+    \subsection{Results}\label{subsec:results_backend}
     The results required to be displayed by the simulator per junction were the average wait time, maximum wait time and
     maximum queue length in each direction, along with an overall score for the junction. When implementing code to
     calculate the average wait time and maximum wait time for a direction, we realised that due to only representing a
@@ -337,8 +361,6 @@
 
 
     \section{Testing}
-
-    \subsection{Unit Testing}
 
     \subsection{Unit Testing}
     Unit testing was a crucial step in ensuring the accuracy and reliability of the traffic simulation system. By testing components in isolation before integrating them, we identified and resolved potential issues early. This approach validated the system’s functionality under various traffic conditions, ensured stable performance when handling large datasets, and prevented erroneous behaviours caused by unexpected inputs.
@@ -382,6 +404,9 @@
     Thorough unit testing ensured that all core components functioned correctly before full integration. By systematically validating sequencing logic, queue management, flow rate handling, and simulation outputs, we eliminated potential inconsistencies and performance issues. Identifying and resolving errors early improved system reliability, minimised unexpected failures, and ensured that edge cases—such as gridlocked intersections, empty roads, and misconfigured parameters—were handled correctly. The results confirmed that the system can adapt to real-world traffic conditions while maintaining stability, accuracy, and efficiency.
 
     \subsection{User Testing}
+
+    The majority of the testing for the frontend was via the use of user testing, any changes made in the code were immediately
+    reflected in the frontend visually
 
     \subsection{Error Handling Testing}
     \begin{itemize}
@@ -441,6 +466,56 @@
     The system meets the majority of the requirements we outlined previously, it meets all of the must requirements and
     most of the should requirements.
 
+    \begin{figure}[H]
+        \begin{center}
+            \begin{tabular}{ |c|p{9cm}|c| }
+                \hline
+                Requirement & Tests                                                                                               & Result \& Justification        \\
+                \hline
+                1C          & Flow rates added using the UI                                                                       & Passed - User Test             \\
+                \hline
+                2C          & Toggle Lane Numbers, Left Lane, Right Lane, Bus Lane and Pedestrian Crossings assigned using the UI & Passed - User Test \\
+                \hline
+                3C          & Priority Values for lanes can be assigned using the UI                                              & Passed - User Test             \\
+                \hline
+                4C          & User Will have a graphical representation of the junction                                           & Passed - User Test             \\
+                \hline
+                5C          & User Will be able to create multiple Junction Configurations and simulate simulataneously & Passed - User Test \\
+                \hline
+                6C          & User Will be presented with statistics about the Junction's performance                             & Passed - User Tested           \\
+                \hline
+                7C          & The User will be given the Overall Score + 6C Results in a tabular format                           & Passed - User Tested           \\
+                \hline
+                8C          & The User should be able to select the side of road that cars drive on                               & Failed - Not implemented       \\
+                \hline
+                9C          & The system should take into account the distance a car needs to travel in the junction & Failed - Not Implemented Fully \\
+                \hline
+                10C         & The user should be able to view the flow from any arm of the junction in a Sankey Diagram & Failed - Not Implemented \\
+                \hline
+                11C         & The User Must be provided with user friendly messages on system failure or erorr & Passed - User Test \\
+                \hline
+            \end{tabular}
+            \caption{Customer Facing Requirements Tested}
+        \end{center}\label{fig:figure}
+    \end{figure}
+
+    \begin{figure}[H]
+        \begin{center}
+            \begin{tabular}{ |c|p{9cm}|c| }
+                \hline
+                Requirement & Description & Tested \\
+                \hline
+                12 & Graphical Representation should respond to input changes in under 0.5 seconds & Passed - Instantaneous updates \\
+                \hline
+                13 & Run on Linux, Mac and Windows & Passed - Developed and ran on all 3 \\
+                \hline
+                14 & Modular and Well documented & Borderline - Modular but not documented \\
+                \hline
+            \end{tabular}
+            \caption{Non Functional Requirements Evaluated}
+        \end{center}\label{fig:figure2k}
+    \end{figure}
+
     \subsection{Deployment}
 
     \subsection{User Feedback}
@@ -467,6 +542,7 @@
     Not mentioned by user testing but we could implement the ability to find an optimal junction layout for a set of
     flow rates and certain restrictions, e.g 150 vehicles per hour in all directions but can only have 3 lanes North and
     2 in the other directions, the system would then find the optimal layout and suggest to the planner.
+
 
     \section{Process Evaluation}
 
