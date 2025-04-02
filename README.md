@@ -12,10 +12,8 @@ To start the application:
 
 ### Mac
 To start the application
-    -Open the folder on Finder
-    -Double-click on the .zip file, that should give the executable file
-    -Double click the executable file, terminal should open
-    -Wait until the app is opened
+    - cd into the distributions directory via the command line, then run ./Traffic_App_Mac
+
 ### Cross-Platform Approach
 - Install Python3.12
 - Install frontend folder's requirements.txt
