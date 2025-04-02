@@ -12,7 +12,7 @@ To start the application:
 
 ### Mac
 To start the application
-    - cd into the distributions directory via the command line, then run ./Traffic_App_Mac
+- cd into the distributions directory via the command line, then run ./Traffic_App_Mac
 
 ### Cross-Platform Approach
 - Install Python3.12
